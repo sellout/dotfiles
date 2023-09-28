@@ -783,7 +783,6 @@
       in
         [
           vpkgs._1Password.op-vscode
-          vpkgs.ms-python.python
           # vpkgs.ms-vsliveshare.vsliveshare
           vpkgs.WakaTime.vscode-wakatime
         ]
