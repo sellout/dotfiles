@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# TODO: The following Shellcheck directive shouldn’t be necessary, but until
+#       koalaman/shellcheck#2668 is fixed, it is.
+# shellcheck disable=SC1091
+source strict-mode.bash
+
+## A wrapper around `emacsclient` to allow it to be used as the value of
+## `PAGER`.
+##
+## references:
+## • https://superuser.com/questions/103612/emacs-as-a-pager
+
+stdin="$(mktemp -t emacs-pager.XXXXXXX)" || exit 1
+cat - >> "${stdin}"
+echo 'reading into Emacs …'
+emacsclient --alternate-editor=less "${stdin}" \
+  || True # to make sure we clean up the temp file
+rm -f -- "${stdin}"

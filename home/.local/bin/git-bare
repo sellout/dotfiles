@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# TODO: The following Shellcheck directive shouldn’t be necessary, but until
+#       koalaman/shellcheck#2668 is fixed, it is.
+# shellcheck disable=SC1091,SC2164
+source strict-mode.bash
+
+usage() {
+  echo "Usage: ${0} DOMAIN ORGANIZATION REPO [PARENT_DIR]"
+  echo
+  echo 'This is a more useful version of «git clone --bare». See'
+  echo 'https://stackoverflow.com/questions/54367011/git-bare-repositories-worktrees-and-tracking-branches'
+  echo 'for why «--bare» is problematic.'
+  echo
+  echo 'NB: I’ve also described my use case for this script at'
+  echo 'https://gist.github.com/sellout/3361145fac9bf2dfdc6a9bc18dcdff36'
+  echo
+  echo '    PARENT_DIR defaults to the directory the script is run from'
+  exit 1
+}
+
+[[ 3 -le ${#} && ${#} -le 4 ]] || usage
+DOMAIN=${1}
+ORGANIZATION=${2}
+REPO=${3}
+PROJECT_DIR=${4:=${PWD}}
+
+CLONE_DIR="${PROJECT_DIR}/${REPO}/repo"
+git clone "${DOMAIN}/${ORGANIZATION}/${REPO}" "${CLONE_DIR}"
+cd "${CLONE_DIR}"
+git checkout "$(git commit-tree "$(git hash-object -t tree /dev/null)" < /dev/null)"

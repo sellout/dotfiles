@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# TODO: The following Shellcheck directive shouldn’t be necessary, but until
+#       koalaman/shellcheck#2668 is fixed, it is.
+# shellcheck disable=SC1091
+source strict-mode.bash
+
+## Originally compiled from various answers to
+## https://stackoverflow.com/questions/16641057/how-can-i-list-the-git-subtrees-on-the-root
+
+IFS=$'\n'
+script_name=$(basename "${0}")
+
+required_bash_version=(4 0)
+if ((BASH_VERSINFO[0] < required_bash_version[0])) \
+  || ( ((BASH_VERSINFO[0] == required_bash_version[0])) \
+    && ((BASH_VERSINFO[1] < required_bash_version[1]))); then
+  cat << EOF
+${script_name} requires Bash $(
+    IFS=$'.'
+    echo "${required_bash_version[*]}"
+  ), but is running in
+Bash $(
+    IFS=$'.'
+    echo "${BASH_VERSINFO[*]}"
+  ).
+│ Known features used:
+│ • ‘readarray’: requires 4.0. It’s possible to replicate the behavior with
+└   ‘read’, but that is difficult to get correct.
+EOF
+  exit 1
+fi
+
+function usag() {
+  cat << EOF
+Usage:
+
+    ${script_name} [-h] [-a] [-d]
+
+  Spit out all the current subtrees that exist in this repo, including the hash
+  they are pinned to.
+
+  -h   show this message
+
+  -a   show all historical subtrees, not just ones that currently exist at the
+       current commit
+
+  -d   show directories only, not the hash
+EOF
+}
+
+## TODO:
+## • add support for including all historical subtrees (which just means
+##   skipping the final filtering)
+## • add support for printing out only the tree paths, not the hashes
+## • it would be great if we could somehow connect these to the upstream
+##   repository they came from, but I don’t think we can reliably
+
+show_all=
+show_directories_only=
+
+while getopts "had" option; do
+  case "${option}" in
+    h)
+      usage
+      exit 0
+      ;;
+    a)
+      show_all=1
+      ;;
+    d)
+      show_directories_only=1
+      ;;
+    ?)
+      usage
+      exit 1
+      ;;
+  esac
+done
+if [[ -v "${OPTIND}" ]]; then
+  usage
+  exit 1
+fi
+
+function all-subtrees() {
+  if [[ -n ${show_directories_only} ]]; then
+    awk_command="/git-subtree-dir/{ print \$NF }"
+  else
+    awk_command="/git-subtree-dir/{ printf \"%s \", \$NF } /git-subtree-split/{ print \$NF }"
+  fi
+
+  git log --format=%b \
+    | awk "${awk_command[*]}" \
+    | sort --key=1,1 --unique
+}
+
+if [[ -n ${show_all} ]]; then
+  all-subtrees
+else
+  IFS=$'\n'
+  for subtree in $(all-subtrees); do
+    readarray -d ' ' -t subtree_fields < <(echo "${subtree}")
+    test -d "${subtree_fields[0]/$'\n'/}" && echo "${subtree}"
+  done
+fi \
+  | column --table

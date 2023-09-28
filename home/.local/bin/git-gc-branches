@@ -1,0 +1,162 @@
+#!/usr/bin/env bash
+# TODO: The following Shellcheck directive shouldn’t be necessary, but until
+#       koalaman/shellcheck#2668 is fixed, it is.
+# shellcheck disable=SC1091
+source strict-mode.bash
+
+## Original script courtesy of Kris Nuttycombe <kris@nutty.land>.
+
+IFS=$'\n'
+script_name=$(basename "${0}")
+
+required_bash_version=(4 2)
+if ((BASH_VERSINFO[0] < required_bash_version[0])) \
+  || ( ((BASH_VERSINFO[0] == required_bash_version[0])) \
+    && ((BASH_VERSINFO[1] < required_bash_version[1]))); then
+  cat << EOF
+${script_name} requires Bash $(
+    IFS=$'.'
+    echo "${required_bash_version[*]}"
+  ), but is running in
+Bash $(
+    IFS=$'.'
+    echo "${BASH_VERSINFO[*]}"
+  ).
+│ Known features used:
+│ • ‘readarray’: requires 4.0. It’s possible to replicate the behavior with
+│   ‘read’, but that is difficult to get correct.
+│ • ‘-v’ conditional: requires 4.2. Prior to this, there is no way to
+└    distinguish an unset variable from an empty one.
+EOF
+  exit 1
+fi
+
+function usage() {
+  cat << EOF
+Usage:
+
+    ${script_name} [-h] [-b DEFAULT_BRANCH] [-u UPSTREAM] [-o ORIGIN]
+
+  Deletes branches (both local and remote) that have been merged upstream.
+
+  DEFAULT_BRANCH serves multiple purposes. On UPSTREAM, it’s the branch we’re
+                 checking to see if we’re merged. On ORIGIN and locally, it’s
+                 a branch we want to keep even if it’s merged. It defaults to
+                 «git config init.defaultBranch».
+
+  UPSTREAM is the name of the remote that we expect to be merged into. It
+           defaults to “upstream”.
+
+  ORIGIN is the name of a fork that we have push access to, so we can delete
+         merged branches from it. If it is not provided, we delete local
+         branches instead.
+EOF
+}
+
+## TODO:
+## • report branches that could have been deleted but weren’t because a worktree
+##   is tracking them.
+## • ensure we don’t delete an `origin_remote` branch that still has a local
+##   branch with unmerged changes tracking it (and vice-versa).
+
+while getopts "hb:u:o:" option; do
+  case "${option}" in
+    h)
+      usage
+      exit 0
+      ;;
+    b)
+      upstream_default_branch="${OPTARG}"
+      origin_default_branch="${OPTARG}"
+      ;;
+    u)
+      upstream_remote="${OPTARG}"
+      ;;
+    o)
+      origin_remote="${OPTARG}"
+      ;;
+    ?)
+      usage
+      exit 1
+      ;;
+  esac
+done
+if [[ -v "${OPTIND}" ]]; then
+  usage
+  exit 1
+fi
+
+## Tries to find the “default” branch for a repo. If it can’t it falls back to
+## the local default for new repos.
+function default_branch() {
+  default_rev="$(git rev-parse --abbrev-ref "${1}HEAD")"
+  if [[ -z $default_rev ]]; then
+    git config init.defaultBranch
+  else
+    basename "${default_rev}"
+  fi
+}
+
+[[ -v upstream_remote ]] || upstream_remote="upstream"
+init_default_branch="$(default_branch "${upstream_remote}/")"
+[[ -v upstream_default_branch ]] || upstream_default_branch="${init_default_branch}"
+[[ -v origin_default_branch ]] || origin_default_branch="${init_default_branch}"
+
+merged_against="${upstream_remote}/${upstream_default_branch}"
+
+## This function sets the variable `proceed`.
+function get_permission() {
+  if [[ -v origin_remote ]]; then
+    where="on ${origin_remote}"
+  else
+    where="locally"
+  fi
+
+  echo "The following branches are about to be deleted (${where}):"
+  for i in "${branches[@]}"; do
+    echo "• ${i}"
+  done
+  read -rp "Do you want to proceed? (y/N) " proceed
+}
+
+git fetch --quiet "${upstream_remote}" "${upstream_default_branch}"
+
+if [[ -v origin_remote ]]; then
+  ## remote branches
+  git fetch --prune "${origin_remote}"
+  readarray -t branches <<< "$(
+    git branch --remotes --list "${origin_remote}/*" --merged "${merged_against}" \
+      | grep -v "${origin_remote}/${origin_default_branch}" \
+      | sed "s#^[[:space:]]\+${origin_remote}/##"
+  )"
+
+  ## local branches
+  readarray -t branches <<< "$(
+    git branch --merged "${merged_against}" \
+      | grep -v '[*+] ' \
+      | grep -v "  ${origin_default_branch}" \
+      | sed "s#^[[:space:]]\+##"
+  )"
+fi
+
+if [[ "${#branches[@]}" -eq 0 ]]; then
+  echo "There are no branches to delete."
+else
+  get_permission
+
+  if [[ "${proceed}" =~ [Yy] ]]; then
+    if [[ -v origin_remote ]]; then
+      refspecs=()
+      for i in "${branches[@]}"; do
+        refspecs+=(":${i}")
+      done
+      echo "Deleting ${#refspecs[@]} branch(es) on ${origin_remote}."
+      git push "${origin_remote}" "${refspecs[@]}"
+    else
+      echo "Deleting ${#branches[@]} local branch(es)."
+      git branch --delete "${branches[@]}"
+    fi
+  else
+    echo "Canceling deletions."
+  fi
+fi

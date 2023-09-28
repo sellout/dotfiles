@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# TODO: The following Shellcheck directive shouldn’t be necessary, but until
+#       koalaman/shellcheck#2668 is fixed, it is.
+# shellcheck disable=SC1091
+source strict-mode.bash
+
+usage() {
+  echo "Usage: ${0} FILENAME"
+  echo
+  echo '  This opens a file in the default editor, according to the standard environment'
+  echo '  variables, in the following order:'
+  echo '• VISUAL'
+  echo '• EDITOR'
+  echo '• ALTERNATIVE_EDITOR'
+  echo
+  echo '  In the case that one is not defined or exits with a non-0 status, we try the'
+  echo '  next one.'
+  exit 1
+}
+
+[[ ${#} -eq 1 ]] || usage
+FILENAME=${1}
+
+[[ -v VISUAL ]] && ${VISUAL} "${FILENAME}" \
+  || [[ -v EDITOR ]] && ${EDITOR} "${FILENAME}" \
+  || [[ -v ALTERNATIVE_EDITOR ]] && ${ALTERNATIVE_EDITOR} "${FILENAME}" \
+  || echo "Could not open “${FILENAME}” with any of the default editors" \
+  && exit 1
