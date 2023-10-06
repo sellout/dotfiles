@@ -8,6 +8,7 @@
     ./emacs.nix
     ./i3.nix
     ./nix-configuration.nix
+    ./shell.nix
   ];
 
   fonts.fontconfig.enable = true;

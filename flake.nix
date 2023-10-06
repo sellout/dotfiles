@@ -78,6 +78,7 @@
         home = import ./nix/modules/home-configuration.nix;
         i3 = import ./nix/modules/i3.nix;
         nix-configuration = import ./nix/modules/nix-configuration.nix;
+        shell = import ./nix/modules/shell.nix;
       };
 
       nixosModules = {
