@@ -4,28 +4,28 @@
 
 Sellout’s general configuration
 
-The non-personal bits of my configuration, suitable for all to see.
+The non-personal bits of Sellout’s configuration, suitable for all to see.
 
-This is missing pieces of my actual configurations, such as
+This is missing pieces of Sellout’s actual configurations, such as
 
 - account information,
 - employer information,
 - keys, and
 - machine information.
 
-My actual system configurations depend on this repo and add some necessary pieces. But this contains the bulk of my configuration in order to be able to share it and to solicit feedback.
+Sellout’s actual system configurations depend on this repository and add some necessary pieces. But this has the bulk of their configuration to be able to share it and to get feedback.
 
 ## development environment
 
-We recommend the following steps to make working in this repo as easy as possible.
+We recommend the following steps to make working in this repository as easy as possible.
 
 ### `direnv allow`
 
-This command ensures that any work you do within this repo is done within a consistent reproducible environment. That environment provides various debugging tools, etc. When you leave this directory, you will leave that environment behind, so it doesn’t impact anything else on your system.
+This command ensures that any work you do within this repository happens within a consistent reproducible environment. That environment provides various debugging tools, etc. When you leave this directory, you will leave that environment behind, so it doesn’t impact anything else on your system.
 
-### `git config --local include.path ../.config/git/config`
+### `git config --local include.path ../.cache/git/config`
 
-This will apply our repo-specific Git configuration to `git` commands run against this repo. It is very lightweight (you should definitely look at it before applying this command) – it does things like telling `git blame` to ignore formatting-only commits.
+This will apply our repository-specific Git configuration to `git` commands run against this repository. It’s lightweight (you should definitely look at it before applying this command) – it does things like telling `git blame` to ignore formatting-only commits.
 
 ## building & development
 
@@ -39,7 +39,7 @@ Especially if you are unfamiliar with the nix ecosystem, there is a Nix build (b
 
 ## versioning
 
-In the absolute, almost every change is a breaking change. This section describes how we mitigate that to provide minor updates and revisions.
+In the absolute, almost every change is a breaking change. This section describes how we mitigate that to offer minor updates and revisions.
 
 ## comparisons
 

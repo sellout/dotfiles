@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# TODO: The following Shellcheck directive shouldn’t be necessary, but until
+# TODO: The following ShellCheck directive shouldn’t be necessary, but until
 #       koalaman/shellcheck#2668 is fixed, it is.
 # shellcheck disable=SC1091
 source strict-mode.bash
@@ -13,7 +13,7 @@ usage() {
   echo '• EDITOR'
   echo '• ALTERNATIVE_EDITOR'
   echo
-  echo '  In the case that one is not defined or exits with a non-0 status, we try the'
+  echo '  In the case that one isn’t defined or exits with a non-0 status, we try the'
   echo '  next one.'
   exit 1
 }
@@ -24,5 +24,5 @@ FILENAME=${1}
 [[ -v VISUAL ]] && ${VISUAL} "${FILENAME}" \
   || [[ -v EDITOR ]] && ${EDITOR} "${FILENAME}" \
   || [[ -v ALTERNATIVE_EDITOR ]] && ${ALTERNATIVE_EDITOR} "${FILENAME}" \
-  || echo "Could not open “${FILENAME}” with any of the default editors" \
+  || echo "Couldn’t open “${FILENAME}” with any of the default editors" \
   && exit 1

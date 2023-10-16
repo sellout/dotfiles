@@ -175,22 +175,18 @@
             # inputs.flake-utils.lib.system.aarch64-linux
             inputs.flake-utils.lib.system.x86_64-linux
           ]);
-
-      lib = {};
     }
     // inputs.flake-utils.lib.eachDefaultSystem (system: let
       pkgs = import inputs.nixpkgs {inherit system;};
-
-      src = pkgs.lib.cleanSource ./.;
-
-      format = inputs.flaky.lib.format pkgs {};
     in {
-      devShells.default =
-        inputs.flaky.lib.devShells.default pkgs inputs.self [] "";
+      projectConfigurations = inputs.flaky.lib.projectConfigurations.default {
+        inherit pkgs;
+        inherit (inputs) self;
+      };
 
-      checks.format = format.check inputs.self;
-
-      formatter = format.wrapper;
+      devShells = inputs.self.projectConfigurations.${system}.devShells;
+      checks = inputs.self.projectConfigurations.${system}.checks;
+      formatter = inputs.self.projectConfigurations.${system}.formatter;
     });
 
   inputs = {
@@ -284,5 +280,14 @@
     # nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     nur.url = "github:nix-community/nur";
+
+    project-manager = {
+      inputs = {
+        bash-strict-mode.follows = "bash-strict-mode";
+        flake-utils.follows = "flake-utils";
+        nixpkgs.follows = "nixpkgs";
+      };
+      url = "github:sellout/project-manager";
+    };
   };
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# TODO: The following Shellcheck directive shouldn’t be necessary, but until
+# TODO: The following ShellCheck directive shouldn’t be necessary, but until
 #       koalaman/shellcheck#2668 is fixed, it is.
 # shellcheck disable=SC1091
 source strict-mode.bash
