@@ -1,4 +1,9 @@
-{config, lib, pkgs, ...}: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   programs = {
     ## shell history database
     atuin = {
@@ -156,8 +161,7 @@
       };
       initExtra = ''
         autoload -U colors && colors
-
       '';
     };
-};
+  };
 }
