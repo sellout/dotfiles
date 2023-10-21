@@ -7,3 +7,4 @@
 /.github/workflows/flakehub-publish.yml linguist-generated
 /garnix.yaml linguist-generated
 /renovate.json linguist-generated
+/.github/workflows/update-nix-lockfile.yml linguist-generated

@@ -210,6 +210,7 @@
     bash-strict-mode = {
       inputs = {
         flake-utils.follows = "flake-utils";
+        flaky.follows = "flaky";
         nixpkgs.follows = "nixpkgs";
       };
       url = "github:sellout/bash-strict-mode";
@@ -280,14 +281,5 @@
     # nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     nur.url = "github:nix-community/nur";
-
-    project-manager = {
-      inputs = {
-        bash-strict-mode.follows = "bash-strict-mode";
-        flake-utils.follows = "flake-utils";
-        nixpkgs.follows = "nixpkgs";
-      };
-      url = "github:sellout/project-manager";
-    };
   };
 }
