@@ -263,6 +263,7 @@
         pkgs.anki # doesn’t contain darwin GUI
         pkgs.bitcoin # doesn’t contain darwin GUI
         pkgs.calibre # marked broken on darwin
+        pkgs.chrysalis # Atreus keyboard customizer # packaged as x86_64-linux binary
         pkgs.cider # we have Music.app on darwin
         pkgs.dosbox # DOS game emulator # fails to build on darwin
         pkgs.eagle # not supported on darwin
