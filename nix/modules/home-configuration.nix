@@ -547,7 +547,10 @@
       enable = true;
       extraConfig = {
         diff.algrithm = "histogram";
-        init.defaultBranch = "main";
+        init = {
+          defaultBranch = "main";
+          templateDir = config.xdg.configFile."git/template".target;
+        };
         log.showSignatures = true;
         merge.conflictStyle = "diff3";
         rebase.autosquash = true;
@@ -797,6 +800,10 @@
         set history filename ${config.xdg.stateHome}/gdb/history
         set history save on
       '';
+      "git/template" = {
+        recursive = true;
+        source = ../../home/${config.lib.local.xdg.config.rel}/git/template;
+      };
       "irb/irbrc".text = ''
         IRB.conf[:EVAL_HISTORY] = 200
         IRB.conf[:HISTORY_FILE] = "${config.xdg.stateHome}/irb/history"
