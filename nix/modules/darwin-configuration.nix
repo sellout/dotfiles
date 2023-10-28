@@ -323,39 +323,7 @@
   };
 
   system = {
-    # NB: It is also possible to set _some_ macOS defaults in home.nix:
-    #    `targets.darwin.defaults`, which is the preferred location. Please
-    #     check there before adding a setting here.
-    defaults = {
-      dock = {
-        autohide = true;
-        minimize-to-application = true;
-        mru-spaces = false; # helps yabai work properly
-        orientation = "left";
-        showhidden = true;
-      };
-      finder = {
-        _FXShowPosixPathInTitle = true;
-        AppleShowAllExtensions = true;
-        AppleShowAllFiles = true;
-        FXPreferredViewStyle = "Nlsv"; # list view
-        ShowPathbar = true;
-        ShowStatusBar = true;
-      };
-      LaunchServices.LSQuarantine = false;
-      NSGlobalDomain = {
-        AppleInterfaceStyleSwitchesAutomatically = true;
-        NSNavPanelExpandedStateForSaveMode = true;
-        NSNavPanelExpandedStateForSaveMode2 = true;
-      };
-      SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
-      # FIXME: Errors with “Could not write domain com.apple.universalaccess;
-      #        exiting” during activation. See mathiasbynens/dotfiles#1027.
-      # universalaccess = {
-      #   closeViewScrollWheelToggle = true;
-      #   reduceTransparency = true;
-      # };
-    };
+    defaults.SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
 
     keyboard = {
       enableKeyMapping = true;
