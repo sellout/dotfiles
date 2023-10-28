@@ -50,6 +50,8 @@
   services.garnix = {
     enable = true;
     builds.exclude = [
+      # TODO: Remove once NixOS/nix#4119 is fixed.
+      "homeConfigurations.aarch64-darwin-${config.project.name}-example"
       # TODO: Remove once garnix-io/garnix#285 is fixed.
       "homeConfigurations.x86_64-darwin-${config.project.name}-example"
     ];
