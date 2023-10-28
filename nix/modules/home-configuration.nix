@@ -720,36 +720,117 @@
   targets.darwin = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     defaults = {
       NSGlobalDomain = {
+        AppleFirstWeekday.gregorian = 2; # Monday
+        AppleICUDateFormatStrings."1" = "y-MM-dd"; # Iso
+        AppleICUForce24HourTime = 1;
+        AppleInterfaceStyleSwitchesAutomatically = true;
         AppleLanguages = ["en"];
         AppleLocale = "en_US";
         AppleMeasurementUnits = "Centimeters";
         AppleMetricUnits = true;
+        AppleICUNumberSymbols = let
+          decimalSeparator = ".";
+          groupSeparator = " "; # NARROW NO-BREAK SPACE
+        in {
+          "0" = decimalSeparator;
+          "1" = groupSeparator;
+          "10" = decimalSeparator;
+          "17" = groupSeparator;
+        };
         AppleTemperatureUnit = "Celsius";
         NSAutomaticCapitalizationEnabled = false;
         NSAutomaticDashSubstitutionEnabled = false;
         NSAutomaticPeriodSubstitutionEnabled = false;
         NSAutomaticQuoteSubstitutionEnabled = false;
         NSAutomaticSpellingCorrectionEnabled = true;
+        NSNavPanelExpandedStateForSaveMode = true;
+        NSNavPanelExpandedStateForSaveMode2 = true;
+        NSUserDictionaryReplacementItems = map (item: {on = 1;} // item) [
+          {
+            replace = "omw";
+            "with" = "On my way!";
+          }
+          {
+            replace = "*shrug*";
+            "with" = "¯\_(ツ)_/¯";
+          }
+          {
+            replace = "*tableflip*";
+            "with" = "(╯°□°)╯︵ ┻━┻";
+          }
+        ];
+        ## Pairs of open/close quotes, in order of nesting.
+        NSUserQuotesArray = ["“" "”" "‘" "’"];
+        "com.apple.sound.beep.flash" = 1;
       };
-      com.apple = {
-        desktopservices = {
-          DSDontWriteNetworkStores = true;
-          DSDontWriteUSBStores = true;
+      "com.apple.desktopservices" = {
+        DSDontWriteNetworkStores = true;
+        DSDontWriteUSBStores = true;
+      };
+      "com.apple.dock" = {
+        autohide = true;
+        expose-group-apps = true;
+        minimize-to-application = true;
+        mru-spaces = false; # helps yabai work properly
+        orientation = "left";
+        showhidden = true;
+        size-immutable = false;
+        tilesize = 256;
+      };
+      "com.apple.finder" = {
+        _FXShowPosixPathInTitle = true;
+        AppleShowAllExtensions = true;
+        AppleShowAllFiles = true;
+        DesktopViewSettings = {
+          GroupBy = "Kind";
+          IconViewSettings = {
+            labelOnBottom = 1;
+            showIconPreview = 1;
+            showItemInfo = 1;
+            ## As large as possible rather than following system font size
+            textSize = 16;
+            ## Given the settings above, these are the sizes that allow it to
+            ## integrate best with Sonoma’s desktop widgets.
+            ##
+            ## TODO: Calculate these using a function from
+            ##     - labeOnBottom
+            ##     - showItemInfo
+            ##     - textSize
+            ##     - desired widgit mapping (“2×1.5 means 2 icons horizontally in
+            ##       one widget unit, and 3 icons for every two widgets of height)
+            gridSpacing = 78;
+            iconSize = 104;
+            ## NB: Everything below here is the default value, but you can’t
+            ##     partially set a value (currently), so we need to make them
+            ##     explicit for everything in `DesktopViewSettings`.
+            arrangeBy = "dateAdded";
+            backgroundColorBlue = 1;
+            backgroundColorGreen = 1;
+            backgroundColorRed = 1;
+            backgroundType = 0;
+            gridOffsetX = 0;
+            gridOffsetY = 0;
+            viewOptionsVersion = 0;
+          };
+          CustomViewStyleVersion = 1;
         };
-        dock = {
-          expose-group-apps = true;
-          size-immutable = false;
-          tilesize = 256;
-        };
-        # I would remove Safari if I could, but we can’t, so at least configure
-        # it.
-        Safari = {
-          AutoFillCreditCardData = false;
-          AutoFillPasswords = false;
-          AutoOpenSafeDownloads = false;
-          IncludeDevelopMenu = true;
-          ShowOverlayStatusBar = true;
-        };
+        FXPreferredViewStyle = "Nlsv"; # list view
+        ShowPathbar = true;
+        ShowStatusBar = true;
+      };
+      "com.apple.LaunchServices".LSQuarantine = false;
+      # I would remove Safari if I could, but we can’t, so at least configure
+      # it.
+      "com.apple.Safari" = {
+        AutoFillCreditCardData = false;
+        AutoFillPasswords = false;
+        AutoOpenSafeDownloads = false;
+        IncludeDevelopMenu = true;
+        ShowOverlayStatusBar = true;
+      };
+      "com.apple.universalaccess" = {
+        closeViewScrollWheelToggle = true;
+        reduceTransparency = true;
       };
     };
     search = "DuckDuckGo";
