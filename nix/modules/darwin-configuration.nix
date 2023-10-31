@@ -7,6 +7,7 @@
   ...
 }: {
   imports = [
+    ./input-devices.nix
     ./nix-configuration.nix
   ];
 
@@ -324,12 +325,6 @@
 
   system = {
     defaults.SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
-
-    keyboard = {
-      enableKeyMapping = true;
-      remapCapsLockToControl = true;
-    };
-
     stateVersion = 4;
   };
 }

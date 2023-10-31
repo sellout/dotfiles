@@ -7,6 +7,7 @@
   imports = [
     ./emacs.nix
     ./i3.nix
+    ./input-devices.nix
     ./nix-configuration.nix
     ./shell.nix
   ];
@@ -142,12 +143,6 @@
         executable = true;
         source = ../../home/${config.lib.local.xdg.bin.rel}/git-ls-subtrees;
       };
-    };
-
-    keyboard = {
-      layout = "us";
-      options = ["ctrl:nocaps"];
-      variant = "dvorak";
     };
 
     ## TODO: Replace these with my ./locale.nix module
