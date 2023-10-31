@@ -251,9 +251,11 @@
         pkgs.tree
         pkgs.wget
         # pkgs.wire-desktop # currently subsumed by ferdium
-        pkgs.zoom-us
       ]
       ++ map (font: font.package) fonts
+      ++ lib.optionals (pkgs.system != "aarch64-linux") [
+        pkgs.zoom-us
+      ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
         pkgs.karabiner-elements
         pkgs.mas
@@ -263,21 +265,23 @@
         pkgs.anki # doesn’t contain darwin GUI
         pkgs.bitcoin # doesn’t contain darwin GUI
         pkgs.calibre # marked broken on darwin
-        pkgs.chrysalis # Atreus keyboard customizer # packaged as x86_64-linux binary
-        pkgs.cider # we have Music.app on darwin
         pkgs.dosbox # DOS game emulator # fails to build on darwin
-        pkgs.eagle # not supported on darwin
-        pkgs.ferdium # not supported on darwin
         # pkgs.github-desktop # not supported on darwin # in 23.05, still uses OpenSSL 1.1.1u
         pkgs.hdhomerun-config-gui # not supported on darwin
         pkgs.inotify-tools # needed so Emacs’ TRAMP can connect # not supported on Darwin
-        pkgs.keybase-gui # not supported on darwin
         pkgs.mumble # not supported on darwin
         pkgs.obs-studio # not supported on darwin
         pkgs.plex # not supported on darwin
         pkgs.plex-media-player # fails to build on darwin
         pkgs.powertop # not supported on darwin
         pkgs.racket # doesn’t contain darwin GUI
+      ]
+      ++ lib.optionals (pkgs.system == "x86_64-linux") [
+        pkgs.chrysalis # Atreus keyboard customizer # packaged as x86_64-linux binary
+        pkgs.cider # we have Music.app on darwin
+        pkgs.eagle # not supported on darwin
+        pkgs.ferdium # not supported on darwin
+        pkgs.keybase-gui # not supported on darwin
         pkgs.signal-desktop # not supported on darwin
         pkgs.tor-browser-bundle-bin # not supported on darwin
       ];
@@ -488,7 +492,7 @@
     };
 
     firefox = {
-      enable = pkgs.stdenv.hostPlatform.isLinux;
+      enable = pkgs.system == "x86_64-linux";
       # Nix really wanted to build the default package from scratch.
       package = pkgs.firefox-bin;
       profiles.default = {
