@@ -5,6 +5,7 @@
   ...
 }: {
   imports = [
+    ./input-devices.nix
     ./nix-configuration.nix
   ];
 
@@ -24,10 +25,7 @@
     systemd-boot.enable = true;
   };
 
-  console = {
-    font = "Lat2-Terminus16";
-    useXkbConfig = true;
-  };
+  console.font = "Lat2-Terminus16";
 
   environment = {
     extraOutputsToInstall = ["devdoc" "doc" "man"];
@@ -148,8 +146,6 @@
 
     blueman.enable = true;
 
-    fprintd.enable = true;
-
     openssh.enable = false; # subsumed by tailscale
 
     pipewire = {
@@ -183,17 +179,7 @@
         enable = true;
       };
       enable = true;
-      layout = "us, dvorak";
-      # Enable touchpad support.
-      libinput = {
-        touchpad = {
-          clickMethod = "clickfinger"; # don't right-click on right side of touchpad
-          naturalScrolling = true;
-          tapping = false; # disable tap-to-click
-        };
-      };
       windowManager.i3.enable = true;
-      xkbOptions = "ctrl:nocaps";
     };
   };
 
