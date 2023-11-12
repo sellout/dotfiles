@@ -35,12 +35,10 @@
       excludes = [
         "*.el"
         "*.lisp"
-        "./.github/workflows/flakehub-publish.yml"
-        "./.github/settings.yml"
         "./home/.local/bin/*"
         "./root/etc/hosts"
       ];
-      vocab.dotfiles.accept = config.programs.vale.vocab.base.accept ++ [
+      vocab.${config.project.name}.accept = [
         "dotfiles"
       ];
     };
