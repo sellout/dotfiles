@@ -9,6 +9,7 @@
   imports = [
     ./input-devices.nix
     ./nix-configuration.nix
+    ./vcs.nix
   ];
 
   environment = {
@@ -16,16 +17,6 @@
     extraOutputsToInstall = ["devdoc" "doc"];
     pathsToLink = ["/share/fonts"];
     systemPackages = [
-      ## source control -- good to have globally, so users can fetch initial
-      ## configurations
-      pkgs.breezy
-      pkgs.cvs
-      pkgs.darcs
-      # not doing `git = super.gitFull` in the overlay, because then everything
-      # gets rebuilt, but want it here for email support
-      pkgs.gitFull
-      pkgs.pijul
-      pkgs.subversion
       ## remote connections
       pkgs.mosh
       ## Nix
