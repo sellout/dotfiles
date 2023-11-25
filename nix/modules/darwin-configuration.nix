@@ -46,6 +46,7 @@
 
   # The preferred location of applications is, in order:
   # 1. home.nix#home.packages (~/Applications/Home Manager Apps)
+  # 1a. pkgs.nixcasks
   # 2. environment.systemPackages (/Applications/Nix Apps)
   # 3. homebrew.casks (/Applications/Homebrew Apps)
   # 4. homebrew.masApps (/Applications)
@@ -59,6 +60,9 @@
   #
   # NB: Ideally this would be managed in home.nix, but that's not yet supported.
   homebrew = {
+    brews = [
+      "sysbench" # not available on darwin via Nix
+    ];
     caskArgs = {
       appdir = "/Applications/Homebrew Apps";
       fontdir = "/Library/Fonts/Homebrew Fonts";
@@ -76,8 +80,8 @@
     casks = [
       ## This is also installed by home.nix#home.packages, but that _probably_
       ## has even more of the “wrong location” issue mentioned below, as it’s
-      ## simply a symlink to the Nix store, so keep this around until I’m
-      ## willing to fight with that.
+      ## simply an alias to the Nix store, so keep this around until I’m willing
+      ## to fight with that.
       {
         name = "1password";
         ## Doesn’t integrate with browsers properly if moved. Search email for
@@ -85,134 +89,21 @@
         args = {appdir = "/Applications";};
         greedy = true;
       }
-      {
-        # license only works for version 6
-        name = "ableton-live-standard";
-        greedy = true;
-      }
-      {
-        name = "acorn";
-        greedy = true;
-      }
-      {
-        name = "adium";
-        greedy = true;
-      }
-      {
-        name = "alfred";
-        greedy = true;
-      }
-      "anki" # not available on darwin via Nix
-      "arduino"
-      {
-        name = "bartender";
-        greedy = true;
-      }
-      "beamer"
+      "bitcoin-core"
       "bowtie"
-      "calibre"
-      "controlplane"
       # "delicious-library" # perhaps removed?
-      {
-        # license only works for version 2
-        name = "devonthink";
-        greedy = true;
-      }
-      # "discord" # currently subsumed by ferdium
-      "disk-inventory-x"
-      "dosbox" # x86 game emulator
-      {
-        name = "dropbox";
-        # I don’t know how to control auto-update
-        greedy = true;
-      }
       "eagle" # doesn't respect appdir # not available on darwin via Nix
-      # "evernote" # currently subsumed by ferdium
-      {
-        name = "fantastical";
-        greedy = true;
-      }
-      {
-        # not available on darwin via Nix
-        name = "ferdium";
-        greedy = true;
-      }
-      {
-        # not available on darwin via Nix
-        name = "firefox";
-        greedy = true;
-      }
-      "freemind"
-      {
-        # not available on darwin via Nix
-        name = "github";
-        # I don’t know how to control auto-update
-        greedy = true;
-      }
       "google-drive" # doesn't respect appdir
-      "gotomeeting"
       "growlnotify"
-      "hammerspoon"
-      "handbrake"
-      "imageoptim"
-      {
-        # not available on darwin via Nix
-        name = "keybase";
-        greedy = true;
-      }
-      {
-        name = "kindle";
-        greedy = true;
-      }
-      "lastfm"
-      "marathon"
-      "mendeley"
-      "mumble" # not available on darwin via Nix
-      "netnewswire"
-      "obs" # not available on darwin via Nix
-      {
-        name = "omnifocus";
-        greedy = true;
-      }
-      "omnigraffle"
-      "omnioutliner"
-      "openoffice"
-      "plex" # not available on darwin via Nix
-      "plex-media-server" # not available on darwin via Nix
       "pokemon-trading-card-game-online" # for the kids
-      "processing"
       "psi"
-      "quicksilver"
       "r" # doesn't respect appdir
       "racket"
-      {
-        name = "remarkable";
-        # I don’t know how to control auto-update
-        greedy = true;
-      }
-      "rowmote-helper"
-      "screenflow"
-      "scrivener"
-      {
-        # not available on darwin via Nix
-        name = "signal";
-        greedy = true;
-      }
-      "skitch"
-      "skype" # doesn't respect appdir
-      # "slate" # perhaps removed?
       "spotify" # not available on darwin via Nix
-      "squeak" # not available on darwin via Nix
       # not available on darwin via Nix
       # I don’t know how to control auto-update
       "steam"
-      "stellarium"
-      # "sysbench" # not available on darwin via Nix and apparently removed from Hombrew
       "timemachineeditor"
-      "tor-browser" # not available on darwin via Nix
-      "tower"
-      "transmission"
-      "ukelele"
       # "virtualbox" # requires Intel architecture
       {
         # not available on darwin via Nix

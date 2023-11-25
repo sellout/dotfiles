@@ -59,6 +59,12 @@
           inputs.bradix.overlays.default
           inputs.emacs-extended-faces.overlays.default
           inputs.epresent.overlays.default
+          (final: prev:
+            if prev.stdenv.hostPlatform.isDarwin
+            then
+              inputs.firefox-darwin.overlay final prev
+              // {nixcasks = inputs.nixcasks.legacyPackages.${final.system};}
+            else {})
           inputs.nur.overlay
           inputs.self.overlays.default
         ];
@@ -252,6 +258,11 @@
       url = "github:sellout/epresent/nix-build";
     };
 
+    firefox-darwin = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:bandithedoge/nixpkgs-firefox-darwin";
+    };
+
     flake-utils.url = "github:numtide/flake-utils";
 
     flaky = {
@@ -272,6 +283,11 @@
     mkalias = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:reckenrode/mkalias";
+    };
+
+    nixcasks = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:jacekszymanski/nixcasks";
     };
 
     nixpkgs.url = "github:NixOS/nixpkgs/release-23.05";
