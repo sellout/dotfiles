@@ -290,7 +290,7 @@
       url = "github:jacekszymanski/nixcasks";
     };
 
-    nixpkgs.url = "github:NixOS/nixpkgs/release-23.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
     ## NB: These are very helpful when they’re needed, but otherwise keep them
     ##     commented out, because they’re big and slow.
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
