@@ -4,6 +4,17 @@
   pkgs,
   ...
 }: {
+  home = {
+    packages = [
+      pkgs.mosh # SSH client replacement
+      pkgs.pinentry.tty
+      pkgs.tree
+      pkgs.viddy
+      pkgs.wget
+    ];
+    shellAliases.watch = "viddy";
+  };
+
   programs = {
     ## shell history database
     atuin = {

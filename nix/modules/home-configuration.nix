@@ -10,6 +10,7 @@
     ./input-devices.nix
     ./nix-configuration.nix
     ./shell.nix
+    ./vcs.nix
   ];
 
   fonts.fontconfig.enable = true;
@@ -131,18 +132,6 @@
         executable = true;
         source = ../../home/${config.lib.local.xdg.bin.rel}/emacs-pager;
       };
-      "${config.lib.local.xdg.bin.rel}/git-bare" = {
-        executable = true;
-        source = ../../home/${config.lib.local.xdg.bin.rel}/git-bare;
-      };
-      "${config.lib.local.xdg.bin.rel}/git-gc-branches" = {
-        executable = true;
-        source = ../../home/${config.lib.local.xdg.bin.rel}/git-gc-branches;
-      };
-      "${config.lib.local.xdg.bin.rel}/git-ls-subtrees" = {
-        executable = true;
-        source = ../../home/${config.lib.local.xdg.bin.rel}/git-ls-subtrees;
-      };
     };
 
     ## TODO: Replace these with my ./locale.nix module
@@ -215,19 +204,14 @@
         pkgs.agenix
         pkgs.awscli
         pkgs.bash-strict-mode
-        pkgs.breezy
-        pkgs.cookiecutter
-        pkgs.darcs
         pkgs.dtach
         # pkgs.discord # currently subsumed by ferdium
         # pkgs.element-desktop # currently subsumed by ferdium
         pkgs.ghostscript
-        pkgs.git-revise # unfortunately not supported by magit
         # pkgs.gitter # currently subsumed by ferdium
         pkgs.imagemagick
         pkgs.jekyll
         pkgs.magic-wormhole
-        pkgs.mosh # SSH client replacement
         (pkgs.nerdfonts.override {
           fonts =
             lib.concatMap
@@ -237,14 +221,10 @@
               else [])
             fonts;
         })
-        pkgs.pijul
-        pkgs.pinentry.tty
         # pkgs.slack # currently subsumed by ferdium
         pkgs.synergy
         pkgs.tailscale
         pkgs.tikzit
-        pkgs.tree
-        pkgs.wget
         # pkgs.wire-desktop # currently subsumed by ferdium
       ]
       ++ map (font: font.package) fonts
@@ -289,7 +269,6 @@
 
     sessionVariables = {
       ALTERNATIVE_EDITOR = "${pkgs.emacs}/bin/emacs";
-      BRZ_LOG = "${config.xdg.stateHome}/breezy/log";
       CABAL_CONFIG = "${config.home.homeDirectory}/${config.xdg.configFile."cabal/config".target}";
       CABAL_DIR = "${config.xdg.stateHome}/cabal";
       CARGO_HOME = "${config.xdg.cacheHome}/cargo";
@@ -533,75 +512,6 @@
           }
         '';
       };
-    };
-
-    git = {
-      aliases = {
-        ## List contributors ordered by number of commits.
-        brag-commits = "shortlog --numbered --summary";
-        ## Log output that approximates Magit under Solarized.
-        lg = "log --color --graph --pretty=format:\"%Cblue%h%Creset %Cgreen%D%Creset %s %>|($((\"$COLUMNS\" - 7)))%C(cyan)%an%Creset %>(6,trunc)%cr\"";
-      };
-      attributes = ["*.lisp diff=lisp"];
-      enable = true;
-      extraConfig = {
-        diff.algrithm = "histogram";
-        init = {
-          defaultBranch = "main";
-          templateDir = config.xdg.configFile."git/template".target;
-        };
-        log.showSignatures = true;
-        merge.conflictStyle = "diff3";
-        rebase.autosquash = true;
-        sendemail.identity = config.lib.local.primaryEmailAccountName;
-        ## TODO: Stuff from my old .gitconfig that needs to be reviewed
-        diff."lisp".xfuncname = "^(\\((def|test).*)$";
-        filter = {
-          "hawser" = {
-            clean = "git hawser clean %f";
-            required = true;
-            smudge = "git hawser smudge %f";
-          };
-          "media" = {
-            clean = "git media clean %f";
-            required = true;
-            smudge = "git media smudge %f";
-          };
-        };
-        mergetool.keepBackup = false;
-      };
-      ignores =
-        [
-          ".cache/" # semi-standard XDG-like cache directory
-          ".dir-locals-2.el" # Local emacs config for repos that have a config.
-          ".local/" # less standard XDG-like local directory
-
-          # Directories potentially created on network file systems
-          ".AppleDB/" # created by Macs
-          ".AppleDesktop" # created by Macs
-          ".TemporaryItems/" # created by Macs
-          ".apdisk" # created by Macs
-
-          # Floobits
-          ".floo"
-          ".flooignore"
-        ]
-        ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-          # https://en.wikipedia.org/wiki/AppleSingle_and_AppleDouble_formats#Usage
-          ".AppleDouble/"
-          # https://en.wikipedia.org/wiki/.DS_Store
-          ".DS_Store"
-          ".LSOverride"
-          # https://en.wikipedia.org/wiki/AppleSingle_and_AppleDouble_formats#Usage
-          "._*"
-        ];
-      lfs.enable = true;
-      # not doing `git = super.gitFull` in the overlay, because then everything
-      # gets rebuilt, but want it here for email support
-      package = pkgs.gitFull;
-      signing.signByDefault = true;
-      userEmail = config.lib.local.primaryEmailAccount.address;
-      userName = config.lib.local.primaryEmailAccount.realName;
     };
 
     gpg = {
@@ -880,10 +790,6 @@
         set history filename ${config.xdg.stateHome}/gdb/history
         set history save on
       '';
-      "git/template" = {
-        recursive = true;
-        source = ../../home/${config.lib.local.xdg.config.rel}/git/template;
-      };
       "irb/irbrc".text = ''
         IRB.conf[:EVAL_HISTORY] = 200
         IRB.conf[:HISTORY_FILE] = "${config.xdg.stateHome}/irb/history"

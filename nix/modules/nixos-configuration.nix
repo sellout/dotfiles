@@ -7,6 +7,7 @@
   imports = [
     ./input-devices.nix
     ./nix-configuration.nix
+    ./vcs.nix
   ];
 
   # TODO: Fix upstream. We shouldn’t need this, but it only has the correct
@@ -30,16 +31,6 @@
   environment = {
     extraOutputsToInstall = ["devdoc" "doc" "man"];
     systemPackages = [
-      ## source control – good to have globally, so users can fetch initial
-      ## configurations
-      pkgs.breezy
-      pkgs.cvs
-      pkgs.darcs
-      # not doing `git = super.gitFull` in the overlay, because then everything
-      # gets rebuilt, but want it here for email support
-      pkgs.gitFull
-      pkgs.pijul
-      pkgs.subversion
       ## Nix
       pkgs.home-manager
       pkgs.nix-du
