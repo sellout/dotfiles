@@ -30,6 +30,7 @@
       aliasApplications =
         lib.mkIf pkgs.stdenv.hostPlatform.isDarwin
         (lib.hm.dag.entryAfter ["writeBoundary"] ''
+          IFS=$'\n'
           app_folder="Home Manager Apps"
           app_path="$(echo ~/Applications)/$app_folder"
           tmp_path="$(mktemp -dt "$app_folder.XXXXXXXXXX")" || exit 1
@@ -43,7 +44,7 @@
             $(find "$newGenPath/home-path/Applications" -type l -exec \
               readlink -f {} \;)
           do
-            $DRY_RUN_CMD ${pkgs.mkalias}/bin/mkalias "$app" "$tmp_path/$(basename $app)"
+            $DRY_RUN_CMD ${pkgs.mkalias}/bin/mkalias "$app" "$tmp_path/$(basename "$app")"
           done
           # TODO: Wish this was atomic, but it’s only tossing symlinks
           $DRY_RUN_CMD [ -e "$app_path" ] && rm -r "$app_path"
@@ -199,11 +200,29 @@
     in
       [
         pkgs._1password # This is the CLI, needed by VSCode 1Password extension
-        pkgs._1password-gui
+        # pkgs._1password-gui # doesn’t get installed in the correct location
         pkgs.age
         pkgs.agenix
+        ## doesn’t contain darwin GUI
+        (
+          if pkgs.stdenv.hostPlatform.isDarwin
+          then pkgs.nixcasks.anki
+          else pkgs.anki
+        )
         pkgs.awscli
         pkgs.bash-strict-mode
+        ## marked broken on darwin
+        (
+          if pkgs.stdenv.hostPlatform.isDarwin
+          then pkgs.nixcasks.calibre
+          else pkgs.calibre
+        )
+        ## DOS game emulator # fails to build on darwin # x86 game emulator
+        (
+          if pkgs.stdenv.hostPlatform.isDarwin
+          then pkgs.nixcasks.dosbox
+          else pkgs.dosbox
+        )
         pkgs.dtach
         # pkgs.discord # currently subsumed by ferdium
         # pkgs.element-desktop # currently subsumed by ferdium
@@ -212,6 +231,12 @@
         pkgs.imagemagick
         pkgs.jekyll
         pkgs.magic-wormhole
+        ## not available on darwin via Nix
+        (
+          if pkgs.stdenv.hostPlatform.isDarwin
+          then pkgs.nixcasks.mumble
+          else pkgs.mumble
+        )
         (pkgs.nerdfonts.override {
           fonts =
             lib.concatMap
@@ -221,6 +246,12 @@
               else [])
             fonts;
         })
+        ## not available on darwin via Nix
+        (
+          if pkgs.stdenv.hostPlatform.isDarwin
+          then pkgs.nixcasks.obs
+          else pkgs.obs-studio
+        )
         # pkgs.slack # currently subsumed by ferdium
         pkgs.synergy
         pkgs.tailscale
@@ -232,20 +263,67 @@
         pkgs.zoom-us
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-        pkgs.karabiner-elements
         pkgs.mas
+        pkgs.nixcasks.ableton-live-standard # license only works for version 6
+        pkgs.nixcasks.acorn
+        pkgs.nixcasks.adium
+        pkgs.nixcasks.alfred
+        pkgs.nixcasks.arduino
+        pkgs.nixcasks.bartender
+        pkgs.nixcasks.beamer
+        # pkgs.nixcasks.bowtie # broken
+        pkgs.nixcasks.controlplane
+        pkgs.nixcasks.devonthink # license only works for version 2
+        # pkgs.nixcasks.discord # currently subsumed by ferdium
+        pkgs.nixcasks.disk-inventory-x
+        pkgs.nixcasks.dropbox
+        # pkgs.nixcasks.evernote # currently subsumed by ferdium
+        pkgs.nixcasks.fantastical
+        pkgs.nixcasks.ferdium # not available on darwin via Nix
+        pkgs.nixcasks.fertigt-slate # TODO: remove in favor of Hammerspoon?
+        pkgs.nixcasks.freemind
+        pkgs.nixcasks.github
+        pkgs.nixcasks.gotomeeting
+        pkgs.nixcasks.hammerspoon
+        pkgs.nixcasks.handbrake
+        pkgs.nixcasks.imageoptim
+        pkgs.nixcasks.keybase # not available on darwin via Nix
+        pkgs.nixcasks.kiibohd-configurator
+        pkgs.nixcasks.kindle
+        pkgs.nixcasks.lastfm
+        pkgs.nixcasks.marathon
+        pkgs.nixcasks.mendeley
+        pkgs.nixcasks.netnewswire
+        pkgs.nixcasks.omnifocus
+        pkgs.nixcasks.omnigraffle
+        pkgs.nixcasks.omnioutliner
+        pkgs.nixcasks.openoffice
+        pkgs.nixcasks.plex # not available on darwin via Nix
+        pkgs.nixcasks.plex-media-server # not available on darwin via Nix
+        pkgs.nixcasks.processing
+        # pkgs.nixcasks.psi # broken
+        pkgs.nixcasks.quicksilver
+        pkgs.nixcasks.remarkable
+        pkgs.nixcasks.rowmote-helper
+        pkgs.nixcasks.screenflow
+        pkgs.nixcasks.scrivener
+        pkgs.nixcasks.signal # not available on darwin via Nix
+        pkgs.nixcasks.skitch
+        pkgs.nixcasks.skype # doesn't respect appdir
+        pkgs.nixcasks.squeak # not available on darwin via Nix
+        pkgs.nixcasks.stellarium
+        pkgs.nixcasks.tor-browser # not available on darwin via Nix
+        pkgs.nixcasks.tower
+        pkgs.nixcasks.transmission
+        pkgs.nixcasks.ukelele
+        # pkgs.nixcasks.whatsapp # currently subsumed by ferdium # broken
         pkgs.terminal-notifier
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-        pkgs.anki # doesn’t contain darwin GUI
         pkgs.bitcoin # doesn’t contain darwin GUI
-        pkgs.calibre # marked broken on darwin
-        pkgs.dosbox # DOS game emulator # fails to build on darwin
         # pkgs.github-desktop # not supported on darwin # in 23.05, still uses OpenSSL 1.1.1u
         pkgs.hdhomerun-config-gui # not supported on darwin
         pkgs.inotify-tools # needed so Emacs’ TRAMP can connect # not supported on Darwin
-        pkgs.mumble # not supported on darwin
-        pkgs.obs-studio # not supported on darwin
         pkgs.plex # not supported on darwin
         pkgs.plex-media-player # fails to build on darwin
         pkgs.powertop # not supported on darwin
@@ -466,7 +544,7 @@
     };
 
     firefox = {
-      enable = pkgs.system == "x86_64-linux";
+      enable = pkgs.system != "aarch64-linux";
       # Nix really wanted to build the default package from scratch.
       package = pkgs.firefox-bin;
       profiles.default = {
@@ -481,6 +559,7 @@
           rust-search-extension # prefix search bar with `rs ` to search Rust docs
           tree-style-tab
         ];
+        search.default = "DuckDuckGo";
         settings = {
           "browser.contentblocking.category" = "strict";
           "font.default.x-unicode" = "sans-serif";
