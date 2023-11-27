@@ -11,9 +11,9 @@
       };
       to = {
         type = "github";
-        owner = "nixpkgs";
+        owner = "NixOS";
         repo = "nixpkgs";
-        ref = "release-23.05";
+        ref = "release-23.11";
       };
     };
 
@@ -29,6 +29,7 @@
       trusted-users = ["@wheel" "greg"];
       # TODO: Enable globally once NixOS/nix#4119 is fixed.
       sandbox = !pkgs.stdenv.hostPlatform.isDarwin;
+      use-xdg-base-directories = true;
     };
   };
 }

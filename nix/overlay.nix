@@ -73,9 +73,9 @@ in {
         pname = "vc-pijul";
         version = "0.1.0";
 
-        ## TODO: Remove master here once nixpkgs 23.11 is out, or once
+        ## TODO: Remove master here once
         ##       https://github.com/nrabulinski/nixpkgs/commit/080e97c7f970544d5dbb94164b1df3a5a62da864
-        ##       is in unstable.
+        ##       is on another branch..
         src =
           (master.fetchpijul {
             url = "https://ssh.pijul.com/sellout/vc-pijul";
@@ -121,16 +121,8 @@ in {
       });
     });
 
-  ## TODO: Get thee to a template!
-  idris = prev.idrisPackages.with-packages (with final.idrisPackages; [
-    # comonad
-    contrib
-    effects
-    final.gcc # unspecified dependency
-    lightyear
-    prelude
-    pruviloj
-  ]);
+  ## Idris 1 doesn’t build on 23.11
+  idris = final.idris2;
 
   mkalias = mkalias.packages.${final.system}.mkalias;
 

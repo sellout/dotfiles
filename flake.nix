@@ -276,7 +276,7 @@
 
     home-manager = {
       inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:nix-community/home-manager/release-23.05";
+      url = "github:nix-community/home-manager/release-23.11";
     };
 
     ## Avoids the need to give `Finder` access to make aliases on MacOS.
@@ -285,12 +285,9 @@
       url = "github:reckenrode/mkalias";
     };
 
-    nixcasks = {
-      inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:jacekszymanski/nixcasks";
-    };
+    nixcasks.url = "github:jacekszymanski/nixcasks";
 
-    nixpkgs.url = "github:NixOS/nixpkgs/release-23.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
     ## NB: These are very helpful when they’re needed, but otherwise keep them
     ##     commented out, because they’re big and slow.
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";

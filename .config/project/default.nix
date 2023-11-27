@@ -31,7 +31,6 @@
     treefmt.enable = true;
     vale = {
       enable = true;
-      coreSettings.Vocab = "dotfiles";
       excludes = [
         "*.el"
         "*.lisp"
