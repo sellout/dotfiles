@@ -163,7 +163,6 @@
       dotDir = "${config.lib.local.xdg.config.rel}/zsh";
       enable = true;
       enableAutosuggestions = true;
-      enableSyntaxHighlighting = true;
       enableVteIntegration = true;
       history = {
         expireDuplicatesFirst = true;
@@ -173,6 +172,7 @@
       initExtra = ''
         autoload -U colors && colors
       '';
+      syntaxHighlighting.enable = true;
     };
   };
 }
