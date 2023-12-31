@@ -190,7 +190,9 @@
         inherit (inputs) self;
       };
 
-      devShells = inputs.self.projectConfigurations.${system}.devShells;
+      devShells =
+        {default = inputs.flaky.lib.devShells.default system inputs.self [] "";}
+        // inputs.self.projectConfigurations.${system}.devShells;
       checks = inputs.self.projectConfigurations.${system}.checks;
       formatter = inputs.self.projectConfigurations.${system}.formatter;
     });
@@ -244,6 +246,7 @@
     emacs-extended-faces = {
       inputs = {
         flake-utils.follows = "flake-utils";
+        flaky.follows = "flaky";
         nixpkgs.follows = "nixpkgs";
       };
       url = "github:sellout/emacs-extended-faces";
@@ -252,6 +255,7 @@
     epresent = {
       inputs = {
         flake-utils.follows = "flake-utils";
+        flaky.follows = "flaky";
         nixpkgs.follows = "nixpkgs";
       };
       ## TODO: Remove branch after eschulte/epresent#76 is merged.
@@ -269,6 +273,7 @@
       inputs = {
         bash-strict-mode.follows = "bash-strict-mode";
         flake-utils.follows = "flake-utils";
+        home-manager.follows = "home-manager";
         nixpkgs.follows = "nixpkgs";
       };
       url = "github:sellout/flaky";
@@ -276,7 +281,7 @@
 
     home-manager = {
       inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:nix-community/home-manager/release-23.05";
+      url = "github:nix-community/home-manager/release-23.11";
     };
 
     ## Avoids the need to give `Finder` access to make aliases on MacOS.
@@ -290,7 +295,7 @@
       url = "github:jacekszymanski/nixcasks";
     };
 
-    nixpkgs.url = "github:NixOS/nixpkgs/release-23.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
     ## NB: These are very helpful when they’re needed, but otherwise keep them
     ##     commented out, because they’re big and slow.
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";

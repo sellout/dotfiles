@@ -46,13 +46,13 @@
 
   fonts = {
     # Just to have something to fall back on, don’t rely on specific entries.
-    enableDefaultFonts = true;
+    enableDefaultPackages = true;
     fontconfig.defaultFonts = {
       monospace = ["Fira Mono"];
       sansSerif = ["Atkinson Hyperlegible"];
     };
     fontDir.enable = true;
-    fonts = [
+    packages = [
       pkgs.atkinson-hyperlegible # https://brailleinstitute.org/freefont
       pkgs.fira
       pkgs.fira-code

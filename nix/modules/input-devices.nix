@@ -134,7 +134,10 @@
       services = {
         fprintd.enable = true;
         xserver = {
-          layout = "us, dvorak";
+          xkb = {
+            layout = "us,us";
+            variant = ",dvorak";
+          };
           # Enable touchpad support.
           libinput = {
             touchpad = {
