@@ -121,16 +121,8 @@ in {
       });
     });
 
-  ## TODO: Get thee to a template!
-  idris = prev.idrisPackages.with-packages (with final.idrisPackages; [
-    # comonad
-    contrib
-    effects
-    final.gcc # unspecified dependency
-    lightyear
-    prelude
-    pruviloj
-  ]);
+  ## Idris 1 doesn’t build on Nixpkgs 23.11.
+  idris = final.idris2;
 
   mkalias = mkalias.packages.${final.system}.mkalias;
 
