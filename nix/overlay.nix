@@ -114,8 +114,8 @@ in {
             ## Fixes wakatime/wakatime-mode#67 among other changes.
             (final.fetchpatch {
               name = "wakatime-overhaul.patch";
-              url = "https://github.com/sellout/wakatime-mode/commit/0c2e8399f8ed6a3c1126367809608ba5da507e62.patch";
-              sha256 = "sha256-Jw0tsMvKkin1UNLSVSZdYRmhNWsLne7P0gOY7H/US7E=";
+              url = "https://github.com/sellout/wakatime-mode/commit/2afa46537bae42afc134951963198d91a686db02.patch";
+              sha256 = "bj3dFx0XXIv2AREuM7/EbiW0RhI9fmpbXPazOpI2an8=";
             })
           ];
       });
