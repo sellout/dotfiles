@@ -10,10 +10,11 @@
   commonPackages = [
     pkgs.breezy
     pkgs.cvs
-    pkgs.darcs
     pkgs.pijul
     pkgs.subversion
   ];
+
+  darcsPackage = pkgs.darcs;
 
   # not doing `git = super.gitFull` in the overlay, because then everything
   # gets rebuilt, but want it here for email support
@@ -56,6 +57,7 @@ in {
       environment.systemPackages =
         commonPackages
         ++ [
+          darcsPackage
           gitPackage
           mercurialPackage
         ];
@@ -83,6 +85,17 @@ in {
       };
 
       programs = {
+        darcs = {
+          enable = true;
+          package = darcsPackage;
+          author = let
+            account = config.lib.local.primaryEmailAccount;
+          in ["${account.realName} <${account.address}>"];
+          boring = [
+            "(^|/)\.git($|/)"
+            "(^|/)\.DS_Store$"
+          ];
+        };
         git = {
           aliases = {
             ## List contributors ordered by number of commits.
@@ -146,6 +159,7 @@ in {
       environment.systemPackages =
         commonPackages
         ++ [
+          darcsPackage
           mercurialPackage
         ];
       programs.git = {
