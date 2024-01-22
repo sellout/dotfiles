@@ -89,9 +89,6 @@
       # CLISP’s init file (https://clisp.sourceforge.io/impnotes/clisp.html)
       ".clisprc.lisp".source =
         ../../home/${config.lib.local.xdg.config.rel}/common-lisp/init.lisp;
-      # DARCS’ ignore file
-      ".darcs/boring".source =
-        ../../home/${config.lib.local.xdg.config.rel}/darcs/boring;
       # ECL’s init file
       # (https://ecl.common-lisp.dev/static/manual/Invoking-ECL.html#Invoking-ECL)
       ".ecl".source =
