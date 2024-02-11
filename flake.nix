@@ -153,7 +153,7 @@
               ];
             };
           })
-          inputs.flake-utils.lib.defaultSystems);
+          inputs.flaky.lib.defaultSystems);
 
       nixosConfigurations = let
         name = "${pname}-example";
@@ -182,7 +182,7 @@
             inputs.flake-utils.lib.system.x86_64-linux
           ]);
     }
-    // inputs.flake-utils.lib.eachDefaultSystem (system: let
+    // inputs.flake-utils.lib.eachSystem inputs.flaky.lib.defaultSystems (system: let
       pkgs = import inputs.nixpkgs {inherit system;};
     in {
       projectConfigurations = inputs.flaky.lib.projectConfigurations.default {
