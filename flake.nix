@@ -16,12 +16,31 @@
     # sandbox = true;
   };
 
-  outputs = inputs: let
+  outputs = {
+    agenix,
+    agenix-el,
+    bash-strict-mode,
+    bradix,
+    darwin,
+    emacs-color-theme-solarized,
+    emacs-extended-faces,
+    epresent,
+    firefox-darwin,
+    flake-utils,
+    flaky,
+    home-manager,
+    mkalias,
+    nixcasks,
+    nixpkgs,
+    nixpkgs-master,
+    nur,
+    self,
+  }: let
     pname = "dotfiles";
 
     nixpkgsConfig = {
       allowUnfreePredicate = pkg:
-        builtins.elem (inputs.nixpkgs.lib.getName pkg) [
+        builtins.elem (nixpkgs.lib.getName pkg) [
           "1password"
           "1password-cli"
           "eagle"
@@ -37,13 +56,12 @@
   in
     {
       overlays = {
-        darwin = inputs.nixpkgs.lib.composeManyExtensions [
-          inputs.self.overlays.default
+        darwin = nixpkgs.lib.composeManyExtensions [
+          self.overlays.default
         ];
         ## TODO: Split Emacs into its own overlay.
         default = import ./nix/overlay.nix {
           inherit
-            (inputs)
             emacs-color-theme-solarized
             flake-utils
             mkalias
@@ -52,25 +70,25 @@
             ;
           inherit nixpkgsConfig;
         };
-        home = inputs.nixpkgs.lib.composeManyExtensions [
-          inputs.agenix.overlays.default
-          inputs.agenix-el.overlays.default
-          inputs.bash-strict-mode.overlays.default
-          inputs.bradix.overlays.default
-          inputs.emacs-extended-faces.overlays.default
-          inputs.epresent.overlays.default
+        home = nixpkgs.lib.composeManyExtensions [
+          agenix.overlays.default
+          agenix-el.overlays.default
+          bash-strict-mode.overlays.default
+          bradix.overlays.default
+          emacs-extended-faces.overlays.default
+          epresent.overlays.default
           (final: prev:
             if prev.stdenv.hostPlatform.isDarwin
             then
-              inputs.firefox-darwin.overlay final prev
-              // {nixcasks = inputs.nixcasks.legacyPackages.${final.system};}
+              firefox-darwin.overlay final prev
+              // {nixcasks = nixcasks.legacyPackages.${final.system};}
             else {})
-          inputs.nur.overlay
-          inputs.self.overlays.default
+          nur.overlay
+          self.overlays.default
         ];
-        nixos = inputs.nixpkgs.lib.composeManyExtensions [
-          inputs.agenix.overlays.default
-          inputs.self.overlays.default
+        nixos = nixpkgs.lib.composeManyExtensions [
+          agenix.overlays.default
+          self.overlays.default
         ];
       };
 
@@ -99,18 +117,18 @@
         (builtins.map
           (system: {
             name = "${system}-${name}";
-            value = inputs.darwin.lib.darwinSystem {
-              pkgs = import inputs.nixpkgs {
+            value = darwin.lib.darwinSystem {
+              pkgs = import nixpkgs {
                 inherit system;
                 config = nixpkgsConfig;
-                overlays = [inputs.self.overlays.darwin];
+                overlays = [self.overlays.darwin];
               };
-              modules = [inputs.self.darwinModules.darwin];
+              modules = [self.darwinModules.darwin];
             };
           })
           [
-            inputs.flake-utils.lib.system.aarch64-darwin
-            inputs.flake-utils.lib.system.x86_64-darwin
+            flake-utils.lib.system.aarch64-darwin
+            flake-utils.lib.system.x86_64-darwin
           ]);
 
       homeConfigurations = let
@@ -120,14 +138,14 @@
         (builtins.map
           (system: {
             name = "${system}-${name}";
-            value = inputs.home-manager.lib.homeManagerConfiguration {
-              pkgs = import inputs.nixpkgs {
+            value = home-manager.lib.homeManagerConfiguration {
+              pkgs = import nixpkgs {
                 inherit system;
                 config = nixpkgsConfig;
-                overlays = [inputs.self.overlays.home];
+                overlays = [self.overlays.home];
               };
               modules = [
-                inputs.self.homeModules.home
+                self.homeModules.home
                 {
                   ## Attributes that the configuration expects to have set, but
                   ## aren’t set publicly.
@@ -153,7 +171,7 @@
               ];
             };
           })
-          inputs.flaky.lib.defaultSystems);
+          flaky.lib.defaultSystems);
 
       nixosConfigurations = let
         name = "${pname}-example";
@@ -162,15 +180,15 @@
         (builtins.map
           (system: {
             name = "${system}-${name}";
-            value = inputs.nixpkgs.lib.nixosSystem {
-              pkgs = import inputs.nixpkgs {
+            value = nixpkgs.lib.nixosSystem {
+              pkgs = import nixpkgs {
                 inherit system;
                 config = nixpkgsConfig;
-                overlays = [inputs.self.overlays.nixos];
+                overlays = [self.overlays.nixos];
               };
               modules = [
-                inputs.agenix.nixosModules.age
-                inputs.self.nixosModules.nixos
+                agenix.nixosModules.age
+                self.nixosModules.nixos
                 {
                   fileSystems."/".device = "/dev/vba";
                 }
@@ -178,23 +196,21 @@
             };
           })
           [
-            # inputs.flake-utils.lib.system.aarch64-linux
-            inputs.flake-utils.lib.system.x86_64-linux
+            # flake-utils.lib.system.aarch64-linux
+            flake-utils.lib.system.x86_64-linux
           ]);
     }
-    // inputs.flake-utils.lib.eachSystem inputs.flaky.lib.defaultSystems (system: let
-      pkgs = import inputs.nixpkgs {inherit system;};
+    // flake-utils.lib.eachSystem flaky.lib.defaultSystems (system: let
+      pkgs = import nixpkgs {inherit system;};
     in {
-      projectConfigurations = inputs.flaky.lib.projectConfigurations.default {
-        inherit pkgs;
-        inherit (inputs) self;
-      };
+      projectConfigurations =
+        flaky.lib.projectConfigurations.default {inherit pkgs self;};
 
       devShells =
-        {default = inputs.flaky.lib.devShells.default system inputs.self [] "";}
-        // inputs.self.projectConfigurations.${system}.devShells;
-      checks = inputs.self.projectConfigurations.${system}.checks;
-      formatter = inputs.self.projectConfigurations.${system}.formatter;
+        {default = flaky.lib.devShells.default system self [] "";}
+        // self.projectConfigurations.${system}.devShells;
+      checks = self.projectConfigurations.${system}.checks;
+      formatter = self.projectConfigurations.${system}.formatter;
     });
 
   inputs = {
