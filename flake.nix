@@ -38,6 +38,14 @@
   }: let
     pname = "dotfiles";
 
+    ## NB: i686 isn’t well supported, and I don’t currently have any systems
+    ##     using it, so punt on the failures until I need to care.
+    supportedSystems =
+      ## TODO: Uncomment once sellout/flaky#58 is fixed.
+      # nixpkgs.lib.remove
+      # flake-utils.lib.system.i686-linux
+      flaky.lib.defaultSystems;
+
     nixpkgsConfig = {
       allowUnfreePredicate = pkg:
         builtins.elem (nixpkgs.lib.getName pkg) [
@@ -171,7 +179,7 @@
               ];
             };
           })
-          flaky.lib.defaultSystems);
+          supportedSystems);
 
       nixosConfigurations = let
         name = "${pname}-example";
@@ -200,11 +208,12 @@
             flake-utils.lib.system.x86_64-linux
           ]);
     }
-    // flake-utils.lib.eachSystem flaky.lib.defaultSystems (system: let
+    // flake-utils.lib.eachSystem supportedSystems (system: let
       pkgs = import nixpkgs {inherit system;};
     in {
-      projectConfigurations =
-        flaky.lib.projectConfigurations.default {inherit pkgs self;};
+      projectConfigurations = flaky.lib.projectConfigurations.default {
+        inherit pkgs self supportedSystems;
+      };
 
       devShells =
         {default = flaky.lib.devShells.default system self [] "";}
