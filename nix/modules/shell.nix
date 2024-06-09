@@ -170,6 +170,8 @@
         path = "${config.xdg.stateHome}/zsh/history";
       };
       initExtra = ''
+        compinit -d "$XDG_CACHE_HOME"/zsh/zcompdump-"$ZSH_VERSION"
+
         autoload -U colors && colors
       '';
       syntaxHighlighting.enable = true;
