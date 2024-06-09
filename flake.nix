@@ -35,9 +35,7 @@
     nixpkgs-master,
     nur,
     self,
-  }: let
-    pname = "dotfiles";
-
+  } @ inputs: let
     ## NB: i686 isn’t well supported, and I don’t currently have any systems
     ##     using it, so punt on the failures until I need to care.
     supportedSystems =
@@ -118,19 +116,18 @@
         nixos = import ./nix/modules/nixos-configuration.nix;
       };
 
-      darwinConfigurations = let
-        name = "${pname}-example";
-      in
+      darwinConfigurations =
         builtins.listToAttrs
         (builtins.map
           (system: {
-            name = "${system}-${name}";
+            name = "${system}-example";
             value = darwin.lib.darwinSystem {
               pkgs = import nixpkgs {
                 inherit system;
                 config = nixpkgsConfig;
                 overlays = [self.overlays.darwin];
               };
+              specialArgs = {inherit inputs;};
               modules = [self.darwinModules.darwin];
             };
           })
@@ -139,19 +136,18 @@
             flake-utils.lib.system.x86_64-darwin
           ]);
 
-      homeConfigurations = let
-        name = "${pname}-example";
-      in
+      homeConfigurations =
         builtins.listToAttrs
         (builtins.map
           (system: {
-            name = "${system}-${name}";
+            name = "${system}-example";
             value = home-manager.lib.homeManagerConfiguration {
               pkgs = import nixpkgs {
                 inherit system;
                 config = nixpkgsConfig;
                 overlays = [self.overlays.home];
               };
+              extraSpecialArgs = {inherit inputs;};
               modules = [
                 self.homeModules.home
                 {
@@ -161,19 +157,19 @@
                   ## TODO: Maybe have the configuration check if these are set,
                   ##       so it’s more robust.
                   accounts.email.accounts.Example = {
-                    address = "${name}-user@example.com";
+                    address = "example-user@example.com";
                     flavor = "gmail.com";
                     primary = true;
-                    realName = "${name} user";
+                    realName = "example user";
                   };
                   programs.git = {
-                    extraConfig.github.user = "${name}-user";
+                    extraConfig.github.user = "example-user";
                     signing.key = "";
                   };
                   ## These attributes are simply required by home-manager.
                   home = {
-                    homeDirectory = "/tmp/${name}";
-                    username = "${name}-user";
+                    homeDirectory = "/tmp/example";
+                    username = "example-user";
                   };
                 }
               ];
@@ -181,19 +177,18 @@
           })
           supportedSystems);
 
-      nixosConfigurations = let
-        name = "${pname}-example";
-      in
+      nixosConfigurations =
         builtins.listToAttrs
         (builtins.map
           (system: {
-            name = "${system}-${name}";
+            name = "${system}-example";
             value = nixpkgs.lib.nixosSystem {
               pkgs = import nixpkgs {
                 inherit system;
                 config = nixpkgsConfig;
                 overlays = [self.overlays.nixos];
               };
+              specialArgs = {inherit inputs;};
               modules = [
                 agenix.nixosModules.age
                 self.nixosModules.nixos
