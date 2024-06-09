@@ -271,7 +271,7 @@
         pkgs.nixcasks.adium
         pkgs.nixcasks.alfred
         pkgs.nixcasks.arduino
-        pkgs.nixcasks.bartender
+        # pkgs.nixcasks.bartender # currently failing to build
         pkgs.nixcasks.beamer
         # pkgs.nixcasks.bowtie # broken
         pkgs.nixcasks.controlplane
