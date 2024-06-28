@@ -103,6 +103,8 @@
         '(flycheck-sh-posix-bash-executable "${pkgs.bash}/bin/bash")
         '(flycheck-sh-shellcheck-executable "${pkgs.shellcheck}/bin/shellcheck")
         '(flycheck-sh-zsh-executable "${pkgs.zsh}/bin/zsh")
+        ;; flycheck-vale
+        '(flycheck-vale-program "${pkgs.vale}/bin/vale")
         ;; wakatime-mode
         ;; wakatime/wakatime-mode#67
         '(wakatime-cli-path "${pkgs.wakatime}/bin/wakatime-cli"))
@@ -214,7 +216,7 @@
         ;; tramp
         ;; NB: This one should _not_ be upstreamed, because the default is nil.
         '(tramp-auto-save-directory "${emacs-state-home}/tramp/auto-save/")
-        ;; NB: Set here instead of in custom.el because it depends on home-manager.
+        ;; NB: Set here instead of in init.el because it depends on home-manager.
         '(tramp-use-ssh-controlmaster-options
           nil
           nil
@@ -299,17 +301,22 @@
       epkgs.editorconfig
       # epkgs.emacs-elim
       epkgs.eldev
+      epkgs.elfeed # RSS reader
+      epkgs.elfeed-goodies
+      epkgs.elfeed-org
       epkgs.envrc
       epkgs.epresent
       epkgs.extended-faces
       epkgs.floobits
       epkgs.flycheck
       epkgs.flycheck-eldev
+      epkgs.flycheck-vale # linter for English prose
       # Needs git on exec-path
       epkgs.forge
       pkgs.git
       epkgs.ggtags
       epkgs.git-gutter
+      epkgs.git-modes
       epkgs.gitter
       epkgs.graphviz-dot-mode
       epkgs.haskell-mode
@@ -373,11 +380,8 @@
       epkgs.sbt-mode
       epkgs.scala-mode
       epkgs.slack
-      epkgs.tree-sitter # TODO: Remove with Emacs 29.1 (See https://blog.phundrak.com/emacs-29-what-can-we-expect/)
-      epkgs.tree-sitter-langs # TODO: Remove with Emacs 29.1 (See https://blog.phundrak.com/emacs-29-what-can-we-expect/)
       epkgs.twittering-mode
       epkgs.undo-tree
-      epkgs.use-package # TODO: Remove with Emacs 29.1 (See https://blog.phundrak.com/emacs-29-what-can-we-expect/)
       epkgs.vc-darcs
       epkgs.vc-pijul
       epkgs.wakatime-mode

@@ -268,6 +268,19 @@ characters of FACE plus any specified ‘fringe’."
 (use-package eldoc
   :delight "🖹")
 
+(use-package elfeed
+  ;; Binding mnemonic: “Read Rss” (should use similar for “Read Mail” and “Read
+  ;; News”)
+  :bind ("C-c C-r r" . elfeed))
+
+(use-package elfeed-goodies
+  :after elfeed
+  :init (elfeed-goodies/setup))
+
+(use-package elfeed-org
+  :after elfeed
+  :init (elfeed-org))
+
 (use-package elisp-mode
   :bind (:map emacs-lisp-mode-map ("C-M-l" . emacs-lisp-byte-compile-and-load)))
 
@@ -386,6 +399,9 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
 
 (use-package flycheck-eldev
   :custom (flycheck-eldev-unknown-projects 'trust))
+
+(use-package flycheck-vale
+  :init (flycheck-vale-setup))
 
 (use-package flyspell
   :custom
@@ -592,124 +608,129 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
 (use-package locate
   :custom (locate-header-face 'level-1))
 
-(use-package lsp-bash
-  :config
-  (add-to-list 'lsp-language-id-configuration '(bats-mode . "shellscript"))
-  (add-to-list 'lsp-language-id-configuration
-               '(envrc-file-mode . "shellscript"))
-  (lsp-register-client
-   (make-lsp-client
-    :new-connection (lsp-stdio-connection #'lsp-bash--bash-ls-server-command)
-    :priority -1
-    :major-modes '(bats-mode direnv-envrc-mode envrc-file-mode)
-    :environment-fn
-    (lambda ()
-      '(("EXPLAINSHELL_ENDPOINT" . lsp-bash-explainshell-endpoint)
-        ("HIGHLIGHT_PARSING_ERRORS" . lsp-bash-highlight-parsing-errors)
-        ("GLOB_PATTERN" . lsp-bash-glob-pattern)))
-    :server-id 'bash-like-ls
-    :download-server-fn
-    (lambda (_client callback error-callback _update?)
-      (lsp-package-ensure 'bash-language-server callback error-callback))))
-  :custom (lsp-bash-highlight-parsing-errors t)
-  :disabled use-eglot)
+(let ((use-eglot t))
+  (use-package eglot
+    :custom (eglot-menu-string "↹")
+    :disabled (not use-eglot))
 
-(use-package lsp-haskell
-  :config
-  (lsp-register-client
-   (make-lsp-client
-    :new-connection (lsp-tramp-connection #'lsp-haskell--server-command)
-    :remote? t
-    :major-modes '(haskell-mode haskell-literate-mode)
-    :ignore-messages nil
-    :server-id 'hls-remote))
-  :disabled use-eglot)
+  (use-package lsp-bash
+    :config
+    (add-to-list 'lsp-language-id-configuration '(bats-mode . "shellscript"))
+    (add-to-list 'lsp-language-id-configuration
+                 '(envrc-file-mode . "shellscript"))
+    (lsp-register-client
+     (make-lsp-client
+      :new-connection (lsp-stdio-connection #'lsp-bash--bash-ls-server-command)
+      :priority -1
+      :major-modes '(bats-mode direnv-envrc-mode envrc-file-mode)
+      :environment-fn
+      (lambda ()
+        '(("EXPLAINSHELL_ENDPOINT" . lsp-bash-explainshell-endpoint)
+          ("HIGHLIGHT_PARSING_ERRORS" . lsp-bash-highlight-parsing-errors)
+          ("GLOB_PATTERN" . lsp-bash-glob-pattern)))
+      :server-id 'bash-like-ls
+      :download-server-fn
+      (lambda (_client callback error-callback _update?)
+        (lsp-package-ensure 'bash-language-server callback error-callback))))
+    :custom (lsp-bash-highlight-parsing-errors t)
+    :disabled use-eglot)
 
-(use-package lsp-mode
-  :config
-  (lsp-register-client
-   (make-lsp-client
-    :new-connection (lsp-tramp-connection "clangd")
-    :remote? t
-    :major-modes '(c-mode c++-mode)
-    :ignore-messages nil
-    :server-id 'clangd-remote))
-  :custom
-  (lsp-eldoc-render-all t)
-  (lsp-headerline-breadcrumb-enable t)
-  (lsp-headerline-breadcrumb-segments '(project symbols))
-  (lsp-keymap-prefix "s-g")
-  :hook
-  (c-mode . lsp-deferred)
-  (c++-mode . lsp-deferred)
-  (haskell-mode . lsp-deferred)
-  (haskell-literate-mode . lsp-deferred)
-  (lsp-mode . lsp-enable-which-key-integration)
-  (sh-mode . lsp-deferred)
-  :disabled use-eglot)
+  (use-package lsp-haskell
+    :config
+    (lsp-register-client
+     (make-lsp-client
+      :new-connection (lsp-tramp-connection #'lsp-haskell--server-command)
+      :remote? t
+      :major-modes '(haskell-mode haskell-literate-mode)
+      :ignore-messages nil
+      :server-id 'hls-remote))
+    :disabled use-eglot)
 
-(use-package lsp-nix
-  :after nix-mode
-  :config
-  (lsp-register-client
-   (make-lsp-client
-    :new-connection (lsp-tramp-connection (lambda () lsp-nix-nil-server-path))
-    :remote? t
-    :major-modes '(nix-mode)
-    :ignore-messages nil
-    :server-id 'nil-remote))
-  :custom
-  ;; TODO: This should be the default. See oxalica/nil#70 for why it’s not yet.
-  ;;       If formatting is taking too long, switch this to ‘["alejandra"]’.
-  (lsp-nix-nil-formatter ["nix" "fmt" "--" "--"])
-  :disabled use-eglot
-  :hook (nix-mode . lsp-deferred))
+  (use-package lsp-mode
+    :config
+    (lsp-register-client
+     (make-lsp-client
+      :new-connection (lsp-tramp-connection "clangd")
+      :remote? t
+      :major-modes '(c-mode c++-mode)
+      :ignore-messages nil
+      :server-id 'clangd-remote))
+    :custom
+    (lsp-eldoc-render-all t)
+    (lsp-headerline-breadcrumb-enable t)
+    (lsp-headerline-breadcrumb-segments '(project symbols))
+    (lsp-keymap-prefix "s-g")
+    :hook
+    (c-mode . lsp-deferred)
+    (c++-mode . lsp-deferred)
+    (haskell-mode . lsp-deferred)
+    (haskell-literate-mode . lsp-deferred)
+    (lsp-mode . lsp-enable-which-key-integration)
+    (sh-mode . lsp-deferred)
+    :disabled use-eglot)
 
-(use-package lsp-rust
-  :config
-  (lsp-register-client
-   (make-lsp-client
-    :new-connection (lsp-tramp-connection "rust-analyzer")
-    :remote? t
-    :major-modes '(rust-mode rustic-mode)
-    :initialization-options 'lsp-rust-analyzer--make-init-options
-    :notification-handlers (ht<-alist lsp-rust-notification-handlers)
-    :action-handlers (ht ("rust-analyzer.runSingle" #'lsp-rust--analyzer-run-single))
-    :library-folders-fn (lambda (_workspace) lsp-rust-analyzer-library-directories)
-    :after-open-fn (lambda ()
-                     (when lsp-rust-analyzer-server-display-inlay-hints
-                       (lsp-rust-analyzer-inlay-hints-mode)))
-    :ignore-messages nil
-    :server-id 'rust-analyzer-remote))
-  ;; recommended setting for lsp-rust, 4k by default, this is 1M.
-  (setq read-process-output-max (* 1024 1024))
-  :custom
-  (lsp-rust-analyzer-cargo-watch-command
-   "clippy"
-   "TODO: Determine if this is meant to be a subcommand (in which case, update this comment and send doc patch upstream), or if it’s meant to be a path to a command (in which case, move to emacs.nix).")
-  (lsp-rust-analyzer-display-chaining-hints t)
-  (lsp-rust-analyzer-display-closure-return-type-hints t)
-  (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
-  (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names t)
-  (lsp-rust-analyzer-display-parameter-hints t)
-  (lsp-rust-analyzer-display-reborrow-hints t)
-  (lsp-rust-analyzer-server-display-inlay-hints t)
-  :disabled use-eglot)
+  (use-package lsp-nix
+    :after nix-mode
+    :config
+    (lsp-register-client
+     (make-lsp-client
+      :new-connection (lsp-tramp-connection (lambda () lsp-nix-nil-server-path))
+      :remote? t
+      :major-modes '(nix-mode)
+      :ignore-messages nil
+      :server-id 'nil-remote))
+    :custom
+    ;; TODO: This should be the default. See oxalica/nil#70 for why it’s not yet.
+    ;;       If formatting is taking too long, switch this to ‘["alejandra"]’.
+    (lsp-nix-nil-formatter ["nix" "fmt" "--" "--"])
+    :disabled use-eglot
+    :hook (nix-mode . lsp-deferred))
 
-(use-package lsp-ui
-  :after lsp-mode
-  :custom
-  (lsp-ui-doc-delay 1)
-  (lsp-ui-doc-enable t)
-  (lsp-ui-doc-use-webkit nil)
-  (lsp-ui-peek-always-show t)
-  (lsp-ui-sideline-enable nil)
-  (lsp-ui-sideline-show-hover t)
-  ;; TODO: I think this is getting in the way of a lot of stuff, but I don’t
-  ;;       have a specific failure. Just disable it until I can spend some time.
-  :disabled t
-  :hook (lsp-mode . lsp-ui-mode)
-  :disabled use-eglot)
+  (use-package lsp-rust
+    :config
+    (lsp-register-client
+     (make-lsp-client
+      :new-connection (lsp-tramp-connection "rust-analyzer")
+      :remote? t
+      :major-modes '(rust-mode rustic-mode)
+      :initialization-options 'lsp-rust-analyzer--make-init-options
+      :notification-handlers (ht<-alist lsp-rust-notification-handlers)
+      :action-handlers (ht ("rust-analyzer.runSingle" #'lsp-rust--analyzer-run-single))
+      :library-folders-fn (lambda (_workspace) lsp-rust-analyzer-library-directories)
+      :after-open-fn (lambda ()
+                       (when lsp-rust-analyzer-server-display-inlay-hints
+                         (lsp-rust-analyzer-inlay-hints-mode)))
+      :ignore-messages nil
+      :server-id 'rust-analyzer-remote))
+    ;; recommended setting for lsp-rust, 4k by default, this is 1M.
+    (setq read-process-output-max (* 1024 1024))
+    :custom
+    (lsp-rust-analyzer-cargo-watch-command
+     "clippy"
+     "TODO: Determine if this is meant to be a subcommand (in which case, update this comment and send doc patch upstream), or if it’s meant to be a path to a command (in which case, move to emacs.nix).")
+    (lsp-rust-analyzer-display-chaining-hints t)
+    (lsp-rust-analyzer-display-closure-return-type-hints t)
+    (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+    (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names t)
+    (lsp-rust-analyzer-display-parameter-hints t)
+    (lsp-rust-analyzer-display-reborrow-hints t)
+    (lsp-rust-analyzer-server-display-inlay-hints t)
+    :disabled use-eglot)
+
+  (use-package lsp-ui
+    :after lsp-mode
+    :custom
+    (lsp-ui-doc-delay 1)
+    (lsp-ui-doc-enable t)
+    (lsp-ui-doc-use-webkit nil)
+    (lsp-ui-peek-always-show t)
+    (lsp-ui-sideline-enable nil)
+    (lsp-ui-sideline-show-hover t)
+    ;; TODO: I think this is getting in the way of a lot of stuff, but I don’t
+    ;;       have a specific failure. Just disable it until I can spend some time.
+    :disabled t
+    :hook (lsp-mode . lsp-ui-mode)
+    :disabled use-eglot))
 
 ;; TODO: Replace this with a ‘vc-magit’ package to have ‘vc’ pass calls through
 ;;       to ‘magit’ instead of ‘vc-git’.
@@ -806,9 +827,6 @@ Committer: %cN <%cE>
   (add-to-list 'muse-wiki-interwiki-alist
                '("WardsWiki" . "http://c2.com/cgi/wiki?")))
 
-(use-package nix-mode
-  :hook (nix-mode . lsp-deferred))
-
 (use-package org-clock
   :custom
   (org-clock-clocked-in-display 'frame-title)
@@ -816,11 +834,18 @@ Committer: %cN <%cE>
   (org-clock-persist-query-save t)
   :init (org-clock-persistence-insinuate))
 
+(use-package org-duration
+  :custom (org-duration-format 'h:mm))
+
 (use-package org-mode
   :bind
+;;; mnemonic: Org
   ("C-c o a" . org-agenda)
   ("C-c o c" . org-capture)
   ("C-c o l" . org-store-link)
+;;; mnemonic: Org Task
+  ("C-c o t i" . (lambda () (interactive) (org-clock-in-last 1)))
+  ("C-c o t o" . org-clock-out)
   :custom (org-preview-latex-default-process 'imagemagick))
 
 (use-package ormolu
@@ -989,15 +1014,6 @@ See https://debbugs.gnu.org/cgi/bugreport.cgi?bug=60943 for more information."
   :custom
   (transient-mode-line-format
    '("%e" mode-line-front-space mode-line-buffer-identification)))
-
-(use-package tree-sitter
-  :delight "🌳"
-  :hook (tree-sitter-after-on . tree-sitter-hl-mode)
-  :init (global-tree-sitter-mode))
-
-(use-package tree-sitter-langs
-  :after tree-sitter
-  :demand t)
 
 (use-package treemacs
   :custom (treemacs-space-between-root-nodes nil))
@@ -1453,14 +1469,18 @@ be very useful."
     (direnv-mode t)
     (direnv-non-file-modes
      '(compilation-mode eshell-mode dired-mode magit-mode))
+    :defer nil
+    :delight "🗁"
     :disabled use-envrc)
 
   (use-package envrc
     :custom
     (envrc-error-lighter '(:propertize "🗁" face envrc-mode-line-error-face))
-    (envrc-global-mode t)
     (envrc-none-lighter '(:propertize "🗁" face envrc-mode-line-none-face))
     (envrc-on-lighter '(:propertize "🗁" face envrc-mode-line-on-face))
-    :disabled (not use-envrc)))
+    (envrc-remote t)
+    :defer nil
+    :disabled (not use-envrc)
+    :init (envrc-global-mode)))
 
 ;;; init.el ends here

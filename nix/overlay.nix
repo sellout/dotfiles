@@ -3,14 +3,8 @@
   flake-utils,
   mkalias,
   nixpkgs,
-  nixpkgs-master,
   nixpkgsConfig,
 }: final: prev: let
-  master = import nixpkgs-master {
-    inherit (final) system;
-
-    config = nixpkgsConfig;
-  };
   # On aarch64-darwin, this gives us a Rosetta fallback, otherwise, it’s a NOP.
   x86_64 =
     if final.system == flake-utils.lib.system.aarch64-darwin
@@ -27,19 +21,9 @@ in {
   # emacs = prev.emacs.overrideAttrs (old: {
   #   buildInputs = [ final.dbus ] ++ old.buildInputs;
   # });
+  emacs = final.emacs29;
   emacsPackagesFor = emacs:
     (prev.emacsPackagesFor emacs).overrideScope' (efinal: eprev: {
-      ## Version 0.9.2 in nixpkgs/master seems to be broken
-      ## (https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/emacs/elisp-packages/elpa-generated.nix#L1074)
-      detached = eprev.detached.overrideAttrs (old: let
-        version = "0.10.1";
-      in {
-        inherit version;
-        src = final.fetchurl {
-          url = "https://elpa.gnu.org/packages/${old.pname}-${version}.tar";
-          sha256 = "sha256-EZo0b+3Pkko4seMDwsIZmaHg+2bnTFTwNIa90T7szOE=";
-        };
-      });
       ## still waffling between `direnv` and `envrc`. `direnv` has at least an
       ## attempt at TRAMP support, but `envrc` seems generally better.
       direnv = eprev.direnv.overrideAttrs (old: {
@@ -53,6 +37,15 @@ in {
               sha256 = "sha256-j+d6ffFU0d3a9dxPbMAfBPlLvs77tdksdRw2Aal3mSc=";
             })
           ];
+      });
+      envrc = eprev.envrc.overrideAttrs (old: {
+        ## adds TRAMP support (purcell/envrc#29)
+        src = final.fetchFromGitHub {
+          owner = "siddharthverma314";
+          repo = "envrc";
+          rev = "master";
+          sha256 = "yz2B9c8ar9wc13LwAeycsvYkCpzyg8KqouYp4EBgM6A=";
+        };
       });
       floobits = eprev.floobits.overrideAttrs (old: {
         patches =
@@ -73,11 +66,8 @@ in {
         pname = "vc-pijul";
         version = "0.1.0";
 
-        ## TODO: Remove master here once nixpkgs 23.11 is out, or once
-        ##       https://github.com/nrabulinski/nixpkgs/commit/080e97c7f970544d5dbb94164b1df3a5a62da864
-        ##       is in unstable.
         src =
-          (master.fetchpijul {
+          (final.fetchpijul {
             url = "https://ssh.pijul.com/sellout/vc-pijul";
             hash = "sha256-FNZSHYpkvZOdhDP4sD2z+DNkHDIKW1NI52nEs4o3WC8=";
           })
