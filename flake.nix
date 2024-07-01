@@ -38,9 +38,8 @@
     ## NB: i686 isn’t well supported, and I don’t currently have any systems
     ##     using it, so punt on the failures until I need to care.
     supportedSystems =
-      ## TODO: Uncomment once sellout/flaky#58 is fixed.
-      # nixpkgs.lib.remove
-      # flake-utils.lib.system.i686-linux
+      nixpkgs.lib.remove
+      flake-utils.lib.system.i686-linux
       flaky.lib.defaultSystems;
 
     nixpkgsConfig = {

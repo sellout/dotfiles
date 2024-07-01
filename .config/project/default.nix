@@ -52,9 +52,6 @@
       "homeConfigurations.aarch64-darwin-example"
       # TODO: Remove once garnix-io/garnix#285 is fixed.
       "homeConfigurations.x86_64-darwin-example"
-      # TODO: Remove these once sellout/flaky#58 is fixed.
-      "*.i686-linux.*"
-      "homeConfigurations.i686-linux-${config.project.name}-example"
     ];
   };
 
