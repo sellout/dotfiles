@@ -63,6 +63,10 @@
             ${pkgs.nvd}/bin/nvd diff $(ls -d1v ${profiles} | tail -2)
           fi
         '';
+
+      reviewXdgNinja = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        ${pkgs.xdg-ninja}/bin/xdg-ninja --skip-unsupported
+      '';
     };
 
     extraOutputsToInstall = ["devdoc" "doc"];
@@ -96,7 +100,7 @@
       # SBCL’s init file
       # (https://www.sbcl.org/manual/index.html#Initialization-Files)
       ".sbclrc".text = ''
-        (load #p"${config.home.homeDirectory}/${config.xdg.configFile."common-lisp".target}/init.lisp")
+        (load #p"${config.lib.local.addHome config.xdg.configFile."common-lisp".target}/init.lisp")
 
         (defvar asdf::*source-to-target-mappings* '((#p"/usr/local/lib/sbcl/" nil)))
       '';
@@ -104,7 +108,7 @@
       # (https://ccl.clozure.com/docs/ccl.html#the-init-file)
       "ccl-init.lisp".text = ''
         (setf *default-file-character-encoding* :utf-8)
-        (load #p"${config.home.homeDirectory}/${config.xdg.configFile."common-lisp".target}/init.lisp")
+        (load #p"${config.lib.local.addHome config.xdg.configFile."common-lisp".target}/init.lisp")
       '';
       # CMUCL’s init file
       # (https://cmucl.org/docs/cmu-user/html/Command-Line-Options.html#Command-Line-Options)
@@ -254,6 +258,7 @@
         pkgs.tailscale
         pkgs.tikzit
         # pkgs.wire-desktop # currently subsumed by ferdium
+        pkgs.xdg-ninja # home directory complaining
       ]
       ++ map (font: font.package) fonts
       ++ lib.optionals (pkgs.system != "aarch64-linux") [
@@ -266,7 +271,7 @@
         pkgs.nixcasks.adium
         pkgs.nixcasks.alfred
         pkgs.nixcasks.arduino
-        pkgs.nixcasks.bartender
+        # pkgs.nixcasks.bartender # currently failing to build
         pkgs.nixcasks.beamer
         # pkgs.nixcasks.bowtie # broken
         pkgs.nixcasks.controlplane
@@ -344,20 +349,22 @@
 
     sessionVariables = {
       ALTERNATIVE_EDITOR = "${pkgs.emacs}/bin/emacs";
-      CABAL_CONFIG = "${config.home.homeDirectory}/${config.xdg.configFile."cabal/config".target}";
+      CABAL_CONFIG = config.lib.local.addHome config.xdg.configFile."cabal/config".target;
       CABAL_DIR = "${config.xdg.stateHome}/cabal";
       CARGO_HOME = "${config.xdg.cacheHome}/cargo";
       # set by services.emacs on Linux, but not MacOS.
       EDITOR = "${pkgs.emacs}/bin/emacsclient";
-      IRBRC = "${config.home.homeDirectory}/${config.xdg.configFile."irb/irbrc".target}";
-      LW_INIT = "${config.home.homeDirectory}/${config.xdg.configFile."lispworks/init.lisp".target}";
+      IRBRC = config.lib.local.addHome config.xdg.configFile."irb/irbrc".target;
+      LEIN_HOME = "${config.xdg.dataHome}/lein";
+      LW_INIT = "${config.lib.local.addHome config.xdg.configFile."lispworks/init.lisp".target}";
       MAKEFLAGS = "-j$(nproc)";
       NPM_CONFIG_USERCONFIG = "${config.xdg.configHome}/npm/npmrc";
-      OCTAVE_INITFILE = "${config.home.homeDirectory}/${config.xdg.configFile."octave/octaverc".target}";
+      OCTAVE_INITFILE = "${config.lib.local.addHome config.xdg.configFile."octave/octaverc".target}";
+      PGPASSFILE = "$XDG_CONFIG_HOME/pg/pgpass";
       ## TODO: Make emacs-pager better (needs to handle ANSI escapes, like I do
       ##       in compilation buffers).
       # PAGER = "${config.lib.local.xdg.bin.home}/emacs-pager";
-      PSQLRC = "${config.home.homeDirectory}/${config.xdg.configFile."psql/psqlrc".target}";
+      PSQLRC = "${config.lib.local.addHome config.xdg.configFile."psql/psqlrc".target}";
       # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONPYCACHEPREFIX
       PYTHONPYCACHEPREFIX = "${config.xdg.cacheHome}/python";
       # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUSERBASE
@@ -368,6 +375,7 @@
       VISUAL = "${pkgs.emacs}/bin/emacsclient";
       # May be able to remove this after wakatime/wakatime-cli#558 is fixed.
       WAKATIME_HOME = "${config.xdg.configHome}/wakatime";
+      XDG_RUNTIME_DIR = config.lib.local.xdg.runtimeDir;
     };
 
     shellAliases = let
@@ -404,6 +412,10 @@
       nix-default-template = template "default";
       nix-emacs-lisp-template = template "emacs-lisp";
       nix-haskell-template = template "haskell";
+
+      keychain = "keychain --dir ${config.lib.local.xdg.runtimeDir}/keychain --absolute";
+      svn = "svn --config-dir ${config.xdg.configHome}/subversion";
+      wget = "wget --hsts-file=${config.xdg.dataHome}/wget-hsts";
     };
 
     # This value determines the Home Manager release that your
@@ -482,10 +494,10 @@
       };
       state.rel = config.lib.local.removeHome config.xdg.stateHome;
       # Don’t know why this one isn’t in the `xdg` module.
-      runtime = {
-        home = config.lib.local.addHome config.lib.local.xdg.runtime.rel;
-        rel = config.lib.local.xdg.cache.rel;
-      };
+      runtimeDir =
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then config.lib.local.addHome "Library/Caches/Temp/runtime"
+        else "/run/user/$UID";
       userDirs = {
         projects = {
           home =
@@ -614,7 +626,7 @@
       # This moves the default `controlPath`, but also changes %n to %h, so we
       # share the connection even if we typed different hostnames on the
       # command-line.
-      controlPath = "${config.lib.local.xdg.runtime.home}/ssh/master-%r@%h:%p";
+      controlPath = "${config.lib.local.xdg.runtimeDir}/ssh/master-%r@%h:%p";
       enable = true;
       extraConfig = ''
         AddKeysToAgent yes
@@ -876,13 +888,17 @@
       "lispworks/init.lisp".text = ''
         #+lispworks  (mp:initialize-multiprocessing)
 
-        (load #p"${config.home.homeDirectory}/${config.xdg.configFile."common-lisp".target}/init.lisp")
+        (load #p"${config.lib.local.addHome config.xdg.configFile."common-lisp".target}/init.lisp")
 
         (ql:quickload "swank")
         (swank:create-server :port 4005)
       '';
       "npm/npmrc".text = ''
-        cache = "${config.xdg.cacheHome}/npm"
+        cache=${config.xdg.cacheHome}/npm
+        init-module=${config.xdg.cacheHome}/npm/config/npm-init.js
+        prefix=${config.xdg.dataHome}/npm
+        tmp=$XDG_RUNTIME_DIR/npm
+        viewer = browser
       '';
       "octave/octaverc".text = ''
         history_file("${config.xdg.stateHome}/octave/history")
@@ -911,7 +927,7 @@
       enable = pkgs.stdenv.hostPlatform.isLinux;
       videos =
         lib.mkIf pkgs.stdenv.hostPlatform.isDarwin
-        "${config.home.homeDirectory}/Movies";
+        (config.lib.local.addHome "Movies");
       extraConfig = {
         # I used to store these in `$XDG_DOCUMENTS_DIR`, but that directory is
         # often synced (like Dropbox, iCloud, etc.), so this is a parallel

@@ -10,9 +10,10 @@
 (require 'custom-pseudo-theme)
 (require 'xdg)
 
-;; NB: This is defined in Emacs 29 and later, so remove once we upgrade.
-(defun xdg-state-home ()
-  "Return the base directory for user-specific state data.
+;; NB: This is defined in Emacs 29 and later.
+(unless (fboundp 'xdg-state-home)
+  (defun xdg-state-home ()
+    "Return the base directory for user-specific state data.
 
 According to the XDG Base Directory Specification version
 0.8 (8th May 2021):
@@ -26,7 +27,7 @@ According to the XDG Base Directory Specification version
 
   * current state of the application that can be reused on a
     restart (view, layout, open files, undo history, …)\""
-  (xdg--dir-home "XDG_STATE_HOME" "~/.local/state"))
+    (xdg--dir-home "XDG_STATE_HOME" "~/.local/state")))
 
 (defun xl--emacs-path (file xdg-directory)
   ;; NB: Don’t use ‘expand-file-name’. We need to keep “~”, otherwise things
@@ -100,8 +101,12 @@ According to the XDG Base Directory Specification version
     ;; detached
     `(detached-db-directory ,(xl-emacs-state-home "detached"))
     `(detached-session-directory ,(xl-emacs-state-home "detached/sessions"))
+    ;; elfeed
+    `(rmh-elfeed-org-files (list ,(xl-emacs-config-home "elfeed.org")))
     ;; forge
     `(forge-database-file ,(xl-emacs-state-home "forge/database.sqlite"))
+    ;; idris-mode
+    `(idris-repl-history-file ,(xl-emacs-state-home "idris/history.eld"))
     ;; lsp-mode
     `(lsp-clojure-workspace-cache-dir ,(xl-emacs-cache-home "lsp/clojure"))
     `(lsp-clojure-workspace-dir ,(xl-emacs-state-home "lsp/clojure"))
