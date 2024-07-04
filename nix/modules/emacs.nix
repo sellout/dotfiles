@@ -382,6 +382,7 @@
       epkgs.slack
       epkgs.twittering-mode
       epkgs.undo-tree
+      epkgs.unison-ts-mode
       epkgs.vc-darcs
       epkgs.vc-pijul
       epkgs.wakatime-mode
