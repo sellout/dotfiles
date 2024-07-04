@@ -15,7 +15,7 @@
         localSystem = flake-utils.lib.system.x86_64-darwin;
         overlays = [unison.overlays.default];
       }
-    else final;
+    else prev;
 in {
   inherit emacs-color-theme-solarized;
   ## enable this if I play with getting dbus working again
