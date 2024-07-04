@@ -1,6 +1,7 @@
 {
   emacs-color-theme-solarized,
   flake-utils,
+  home-manager,
   mkalias,
   nixpkgs,
   nixpkgsConfig,
@@ -111,6 +112,10 @@ in {
           ];
       });
     });
+
+  ## Use the home-manager from our inputs (but it doesn’t provide an overlay
+  ## itself).
+  home-manager = home-manager.packages.${final.system}.home-manager;
 
   ## Idris 1 doesn’t build on Nixpkgs 23.11.
   idris = final.idris2;

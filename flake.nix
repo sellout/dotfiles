@@ -69,6 +69,7 @@
           inherit
             emacs-color-theme-solarized
             flake-utils
+            home-manager
             mkalias
             nixpkgs
             unison

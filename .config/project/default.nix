@@ -1,4 +1,4 @@
-{config, lib, ...}: {
+{config, lib, pkgs, ...}: {
   project = {
     name = "dotfiles";
     summary = "Sellout’s general configuration";
@@ -6,6 +6,8 @@
     ## contributable-to by non-Nix users. However, Nix-specific projects can
     ## lean into Project Manager and avoid committing extra files.
     commit-by-default = lib.mkForce false;
+
+    devPackages = [pkgs.home-manager];
   };
 
   ## dependency management
