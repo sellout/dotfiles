@@ -257,12 +257,12 @@
         pkgs.synergy
         pkgs.tailscale
         pkgs.tikzit
-        pkgs.unison-ucm # Unison dev tooling
         # pkgs.wire-desktop # currently subsumed by ferdium
         pkgs.xdg-ninja # home directory complaining
       ]
       ++ map (font: font.package) fonts
       ++ lib.optionals (pkgs.system != "aarch64-linux") [
+        pkgs.unison-ucm # Unison dev tooling
         pkgs.zoom-us
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
