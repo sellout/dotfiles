@@ -610,6 +610,9 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
 
 (let ((use-eglot t))
   (use-package eglot
+    :config
+    (add-to-list 'eglot-server-programs
+                 '((unison-ts-mode unisonlang-mode) "127.0.0.1" 5757))
     :custom (eglot-menu-string "↹")
     :disabled (not use-eglot))
 
@@ -1022,6 +1025,9 @@ See https://debbugs.gnu.org/cgi/bugreport.cgi?bug=60943 for more information."
   :custom
   (uniquify-buffer-name-style 'post-forward)
   (uniquify-separator "→"))
+
+(use-package unison-ts-mode
+  :hook (unison-ts-mode . eglot-ensure))
 
 (use-package vc-pijul
   :init (add-to-list 'vc-handled-backends 'Pijul))

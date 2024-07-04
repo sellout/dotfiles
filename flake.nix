@@ -34,6 +34,7 @@
     nixpkgs,
     nur,
     self,
+    unison,
   } @ inputs: let
     ## NB: i686 isn’t well supported, and I don’t currently have any systems
     ##     using it, so punt on the failures until I need to care.
@@ -70,6 +71,7 @@
             flake-utils
             mkalias
             nixpkgs
+            unison
             ;
           inherit nixpkgsConfig;
         };
@@ -87,6 +89,7 @@
               // {nixcasks = nixcasks.legacyPackages.${final.system};}
             else {})
           nur.overlay
+          unison.overlays.default
           self.overlays.default
         ];
         nixos = nixpkgs.lib.composeManyExtensions [
@@ -319,5 +322,14 @@
     # nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     nur.url = "github:nix-community/nur";
+
+    unison = {
+      inputs = {
+        flake-utils.follows = "flake-utils";
+        home-manager.follows = "home-manager";
+        nixpkgs.follows = "nixpkgs";
+      };
+      url = "github:ceedubs/unison-nix";
+    };
   };
 }
