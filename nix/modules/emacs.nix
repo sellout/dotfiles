@@ -278,6 +278,7 @@
       # epkgs.agda2-mode # fails while linking Agda-2.6.2.2
       epkgs.agenix
       epkgs.applescript-mode
+      epkgs.auto-dark
       epkgs.auto-dim-other-buffers
       epkgs.bats-mode
       epkgs.bradix
