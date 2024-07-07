@@ -86,6 +86,11 @@
 
 (use-package agenix)
 
+(use-package auto-dark
+  :after custom
+  :defer nil
+  :init (auto-dark-mode))
+
 (use-package autorevert
   :custom (auto-revert-mode-text "↩"))
 

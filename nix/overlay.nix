@@ -26,6 +26,15 @@ in {
   emacs = final.emacs29;
   emacsPackagesFor = emacs:
     (prev.emacsPackagesFor emacs).overrideScope' (efinal: eprev: {
+      auto-dark = eprev.auto-dark.overrideAttrs (old: {
+        ## adds `frame-background-mode` support (LionyxML/auto-dark-emacs#57)
+        src = final.fetchFromGitHub {
+          owner = "sellout";
+          repo = "auto-dark-emacs";
+          rev = "default-to-custom-enabled-themes";
+          sha256 = "D+bXR9zVDLDnsuOn6NT3mboeciyQiPIGLAHmokY15nI=";
+        };
+      });
       ## still waffling between `direnv` and `envrc`. `direnv` has at least an
       ## attempt at TRAMP support, but `envrc` seems generally better.
       direnv = eprev.direnv.overrideAttrs (old: {
