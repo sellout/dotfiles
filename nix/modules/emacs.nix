@@ -55,7 +55,7 @@
 
     ## NB: Bound so we can reference it in the the Emacs setup for `tex-mode`.
     texlive-combined = pkgs.texlive.combine {
-      inherit (pkgs.texlive) braids dvipng pgf scheme-small tikz-cd ulem xcolor;
+      inherit (pkgs.texlive) braids dvipng pgf scheme-basic tikz-cd ulem xcolor;
     };
   in {
     enable = true;
