@@ -9,10 +9,10 @@
       pkgs.mosh # SSH client replacement
       pkgs.pinentry.tty
       pkgs.tree
-      pkgs.viddy
+      pkgs.viddy # `watch` replacement
       pkgs.wget
     ];
-    shellAliases.watch = "viddy";
+    shellAliases.watch = "${pkgs.viddy}/bin/viddy";
   };
 
   programs = {
