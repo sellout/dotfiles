@@ -1,34 +1,36 @@
 {
+  config,
+  inputs,
   lib,
   pkgs,
   ...
 }: {
   nix = {
-    registry.nixpkgs = {
-      from = {
-        id = "nixpkgs";
-        type = "indirect";
-      };
-      to = {
-        type = "github";
-        owner = "nixpkgs";
-        repo = "nixpkgs";
-        ref = "release-23.05";
-      };
-    };
+    ## Set the registry’s Nixpkgs to match this flake’s.
+    registry.nixpkgs.flake = inputs.nixpkgs;
 
     settings = {
-      ## This is generally superseded by `programs.starship`, but in some subshells,
-      ## remote machines, etc. that’s not there, so this gives us _something_.
+      ## This is generally superseded by `config.programs.starship`, but in some
+      ## subshells, remote machines, etc. that’s not there, so this gives us
+      ## _something_.
       bash-prompt-prefix = "❄️";
-      extra-experimental-features = ["flakes" "nix-command" "recursive-nix"];
+      extra-experimental-features = [
+        "flakes"
+        "nix-command"
+        "repl-flake" # provides a `:lf` (load flake) command in `nix repl`
+      ];
       extra-substituters = ["https://cache.garnix.io"];
       extra-trusted-public-keys = [
         "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
       ];
+      ## NIX_PATH is still used by many useful tools, so we set it to the same
+      ## value as the one used by this flake. For more information, see
+      ## https://nixos-and-flakes.thiscute.world/best-practices/nix-path-and-flake-registry
+      nix-path = lib.mkForce "nixpkgs=${inputs.nixpkgs}";
       trusted-users = ["@wheel" "greg"];
-      # TODO: Enable globally once NixOS/nix#4119 is fixed.
+      ## TODO: Enable globally once NixOS/nix#4119 is fixed.
       sandbox = !pkgs.stdenv.hostPlatform.isDarwin;
+      use-xdg-base-directories = true;
     };
   };
 }
