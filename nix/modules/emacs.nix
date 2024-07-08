@@ -55,7 +55,17 @@
 
     ## NB: Bound so we can reference it in the the Emacs setup for `tex-mode`.
     texlive-combined = pkgs.texlive.combine {
-      inherit (pkgs.texlive) braids dvipng pgf scheme-basic tikz-cd ulem xcolor;
+      inherit
+        (pkgs.texlive)
+        braids
+        dvipng
+        latex
+        pgf
+        scheme-minimal
+        tikz-cd
+        ulem
+        xcolor
+        ;
     };
   in {
     enable = true;
@@ -158,14 +168,14 @@
           (helm-rg-ripgrep-executable "${pkgs.ripgrep}/bin/ripgrep"))
         '(idris-mode
           (idris-interpreter-path "${pkgs.idris}/bin/idris"))
-        '(lsp-nix
-          (lsp-nix-nil-server-path "${pkgs.nil}/bin/nil"))
-        '(lsp-pylsp
-          (lsp-pylsp-server-command
-           '("${pkgs.pythonPackages.python-lsp-server}/bin/pylsp")))
-        '(lsp-rust
-          (lsp-rust-analyzer-server-command
-           '("${pkgs.rust-analyzer}/bin/rust-analyzer")))
+        ;; '(lsp-nix
+        ;;   (lsp-nix-nil-server-path "${pkgs.nil}/bin/nil"))
+        ;; '(lsp-pylsp
+        ;;   (lsp-pylsp-server-command
+        ;;    '("${pkgs.pythonPackages.python-lsp-server}/bin/pylsp")))
+        ;; '(lsp-rust
+        ;;   (lsp-rust-analyzer-server-command
+        ;;    '("${pkgs.rust-analyzer}/bin/rust-analyzer")))
         '(magit
           (magit-git-executable "${pkgs.git}/bin/git"))
         '(markdown-mode
@@ -297,8 +307,8 @@
       epkgs.detached
       epkgs.dhall-mode
       epkgs.diminish
-      epkgs.direnv
-      pkgs.direnv # needed by `epkgs.direnv` (but not by `epkgs.envrc`)
+      # epkgs.direnv
+      # pkgs.direnv # needed by `epkgs.direnv` (but not by `epkgs.envrc`)
       epkgs.editorconfig
       # epkgs.emacs-elim
       epkgs.eldev
@@ -318,7 +328,7 @@
       epkgs.ggtags
       epkgs.git-gutter
       epkgs.git-modes
-      epkgs.gitter
+      # epkgs.gitter
       epkgs.graphviz-dot-mode
       epkgs.haskell-mode
       epkgs.helm
@@ -330,7 +340,7 @@
       epkgs.helm-idris
       epkgs.helm-itunes
       epkgs.helm-ls-git
-      epkgs.helm-lsp
+      # epkgs.helm-lsp
       epkgs.helm-nixos-options
       epkgs.helm-org-rifle
       epkgs.helm-projectile
@@ -344,12 +354,12 @@
       # the Emacs mode is contained in the program’s package.
       # FIXME: installs but doesn't run on darwin
       pkgs.lilypond
-      epkgs.lsp-haskell
-      epkgs.lsp-mode
-      # Nix doesn’t recognize that python is a runtime dep of lsp-treemacs
-      epkgs.lsp-treemacs
-      pkgs.python
-      epkgs.lsp-ui
+      # epkgs.lsp-haskell
+      # epkgs.lsp-mode
+      # # Nix doesn’t recognize that python is a runtime dep of lsp-treemacs
+      # epkgs.lsp-treemacs
+      # pkgs.python
+      # epkgs.lsp-ui
       epkgs.magit
       epkgs.magit-popup
       epkgs.markdown-mode
@@ -361,7 +371,7 @@
       epkgs.nixos-options
       epkgs.ormolu
       epkgs.ox-gfm
-      epkgs.ox-slack
+      # epkgs.ox-slack
       epkgs.page-break-lines
       epkgs.paredit
       epkgs.paredit-everywhere
@@ -381,7 +391,7 @@
       epkgs.sbt-mode
       epkgs.scala-mode
       epkgs.slack
-      epkgs.twittering-mode
+      # epkgs.twittering-mode
       epkgs.undo-tree
       epkgs.unison-ts-mode
       epkgs.vc-darcs
