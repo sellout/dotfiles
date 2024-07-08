@@ -1,0 +1,26 @@
+#!/usr/bin/env strict-bash
+
+## When a build is failing with
+##
+## > sandbox-exec: pattern serialization length 70814 exceeds maximum (65535)
+##
+## This script can help get things working again.
+##
+## Run `nix --debug build {{some-derivation}} &> debug.sb` and then call this
+## script, passing it `debug.sb`. It’ll tell you the most common package
+## prefixes, which you can then use to try to trim your pattern serialization.
+##
+## This script is adapted from
+## https://github.com/NixOS/nix/issues/4119#issuecomment-2118901319
+
+
+## This should be the path to a file containing output from a
+## `nix build --debug` run.
+debug_output="${1}"
+
+awk -F'"' '/subpath/ { print $2 }' "${debug_output}" \
+  | awk -F- '{ for (i=2;i<=NF;i++) { print $i }}' \
+  | grep --invert-match --regexp='^[0-9.]\+$' --regexp='rev=' \
+  | sort \
+  | uniq --count \
+  | sort --reverse --sort=numeric

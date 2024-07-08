@@ -10,10 +10,7 @@
     ];
     ## Isolate the build.
     registries = false;
-    ## Enable once NixOS/nix#4119 is fixed. This is commented out rather than
-    ## set to `false` because the default is `true` on some systems, and we want
-    ## to maintain that.
-    # sandbox = true;
+    sandbox = "relaxed";
   };
 
   outputs = {
