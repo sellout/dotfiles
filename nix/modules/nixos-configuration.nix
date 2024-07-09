@@ -93,6 +93,8 @@
   };
 
   nix = {
+    ## Remove old-style tools & configs, preferring flakes.
+    channel.enable = false;
     gc = {
       automatic = true;
       options = "--delete-older-than 30d";
