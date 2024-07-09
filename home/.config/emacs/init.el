@@ -847,13 +847,14 @@ Committer: %cN <%cE>
 
 (use-package org-mode
   :bind
-;;; mnemonic: Org
+  ;; mnemonic: Org
   ("C-c o a" . org-agenda)
   ("C-c o c" . org-capture)
   ("C-c o l" . org-store-link)
-;;; mnemonic: Org Task
+  ;; mnemonic: Org Task
   ("C-c o t i" . (lambda () (interactive) (org-clock-in-last 1)))
   ("C-c o t o" . org-clock-out)
+  :config (add-to-list 'org-export-backends 'md)
   :custom (org-preview-latex-default-process 'imagemagick))
 
 (use-package ormolu
