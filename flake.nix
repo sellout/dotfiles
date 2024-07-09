@@ -105,7 +105,7 @@
       };
 
       homeModules = {
-        emacs = import ./nix/modules/emacs.nix;
+        emacs = import ./nix/modules/emacs;
         home = import ./nix/modules/home-configuration.nix;
         i3 = import ./nix/modules/i3.nix;
         nix-configuration = import ./nix/modules/nix-configuration.nix;

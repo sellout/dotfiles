@@ -5,7 +5,7 @@
   ...
 }: {
   imports = [
-    ./emacs.nix
+    ./emacs
     ./i3.nix
     ./input-devices.nix
     ./nix-configuration.nix
