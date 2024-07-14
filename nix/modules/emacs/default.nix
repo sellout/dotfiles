@@ -23,10 +23,65 @@
 ### in perpetuity.
 {
   config,
+  inputs,
   lib,
   pkgs,
   ...
 }: {
+  home = {
+    ## Some packages, even if only used by Emacs, need to be installed outside
+    ## `programs.emacs.extraPackages`. This is due to a few reasons:
+    ##
+    ## • we need TRAMP to be able to use the program _on a remote host_ (e.g.,
+    ##   encryption needs to run on the host that the keys live on, so
+    ##  `pkgs.age` should be everywhere; but Flyspell should always use
+    ##  `pkgs.ispell` from the local host, which means it can be restricted to
+    ##   Emacs); or
+    ## • the Emacs package(s) that depends on it, looks it up in a way that
+    ##  `exec-path` doesn’t satisfy.
+    ##
+    ## Neither case is not ideal. It would be fantastic if a TRAMP connection
+    ## could somehow wind up with the `PATH`, etc. that Emacs on that host would
+    ## see; and if it could also see the project-specific `PATH` set up by
+    ## direnv on that host. We could still embed packages that we want to have
+    ## available outside of projects, but project-specific versions should be
+    ## able to override that and we should also be happy for a binary to not
+    ## exist when we’re not in an appropriate project.
+    ##
+    ## It would also be good to report issues when packages lookup executables
+    ## in a way that can’t be supported by `programs.emacs.extraPackages`.
+    ##
+    ## TODO: Many of the packages that should be in this list are still in
+    ##       ../home-configuration.nix because it’s not clear that they are tied
+    ##       to Emacs.
+    packages =
+      [
+        pkgs.dtach
+      ]
+      ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+        pkgs.inotify-tools # TRAMP can connect # not supported on Darwin
+      ];
+
+    sessionVariables = {
+      ALTERNATIVE_EDITOR = "${config.programs.emacs.package}/bin/emacs";
+      # set by services.emacs on Linux, but not MacOS.
+      EDITOR = "${config.programs.emacs.package}/bin/emacsclient";
+      VISUAL = "${config.programs.emacs.package}/bin/emacsclient";
+    };
+  };
+
+  launchd.agents = {
+    # derived from https://www.emacswiki.org/emacs/EmacsAsDaemon#h5o-8
+    "gnu.emacs.daemon" = {
+      config = {
+        Label = "gnu.emacs.daemon";
+        ProgramArguments = ["emacs" "--daemon"];
+        RunAtLoad = true;
+      };
+      enable = true;
+    };
+  };
+
   programs.emacs = let
     ## Many packages already put their configs under `user-emacs-directory`, which
     ## Emacs will initialize to `"$XDG_CONFIG_HOME/emacs/"` if the user is
@@ -59,6 +114,11 @@
     };
   in {
     enable = true;
+    ## enable this if I play with getting dbus working again
+    #  = pkgs.emacs.overrideAttrs (old: {
+    #   buildInputs = [ pkgs.dbus ] ++ old.buildInputs;
+    # });
+    package = pkgs.emacs29;
     extraConfig = ''
       ;;; -*- lexical-binding: t; -*-
 
@@ -73,18 +133,18 @@
           config.home.sessionVariables)}
 
       ;; TODO: Add these via a flake input … but need it to be in git or hg.
-      (add-to-list 'load-path "${pkgs.emacs-color-theme-solarized}")
+      (add-to-list 'load-path "${inputs.emacs-color-theme-solarized}")
 
       ;;; This contains settings we want to customize with Nix-dependent values,
       ;;; organized by package.
 
       ;;; The setup for paths is split into two groups – the first is global
-      ;;; settings, generally where we expect to always use the Emacs-side binary
-      ;;; for things. The second is local settings, where we only want to use the
-      ;;; Emacs-side binary for local buffers. However, there is another use case
-      ;;; – we can also set values we want used for remote instances in the first
-      ;;; group, then use the second group to override them for local instances.
-      ;;; We should comment in both places when this is done.
+      ;;; settings, generally where we expect to always use the Emacs-side
+      ;;; binary for things. The second is local settings, where we only want to
+      ;;; use the Emacs-side binary for local buffers. However, there is another
+      ;;; use case – we can also set values we want used for remote instances in
+      ;;; the first group, then use the second group to override them for local
+      ;;; instances. We should comment in both places when this is done.
 
       (custom-pseudo-theme-set-variables 'sellout-system-configurations-nix-path
         ;; Emacs packages
@@ -392,5 +452,132 @@
       epkgs.yaml-mode
       epkgs.yasnippet
     ];
+    overrides = final: prev: {
+      auto-dark = prev.auto-dark.overrideAttrs (old: {
+        ## adds `frame-background-mode` support (LionyxML/auto-dark-emacs#57)
+        src = pkgs.fetchFromGitHub {
+          owner = "sellout";
+          repo = "auto-dark-emacs";
+          rev = "default-to-custom-enabled-themes";
+          sha256 = "D+bXR9zVDLDnsuOn6NT3mboeciyQiPIGLAHmokY15nI=";
+        };
+      });
+      ## still waffling between `direnv` and `envrc`. `direnv` has at least an
+      ## attempt at TRAMP support, but `envrc` seems generally better.
+      direnv = prev.direnv.overrideAttrs (old: {
+        patches =
+          (old.patches or [])
+          ++ [
+            ## adds TRAMP support (wbolster/emacs-direnv#68)
+            (pkgs.fetchpatch {
+              name = "direnv-tramp.patch";
+              url = "https://patch-diff.githubusercontent.com/raw/wbolster/emacs-direnv/pull/68.patch";
+              sha256 = "sha256-j+d6ffFU0d3a9dxPbMAfBPlLvs77tdksdRw2Aal3mSc=";
+            })
+          ];
+      });
+      envrc = prev.envrc.overrideAttrs (old: {
+        ## adds TRAMP support (purcell/envrc#29)
+        src = pkgs.fetchFromGitHub {
+          owner = "siddharthverma314";
+          repo = "envrc";
+          rev = "master";
+          sha256 = "yz2B9c8ar9wc13LwAeycsvYkCpzyg8KqouYp4EBgM6A=";
+        };
+      });
+      floobits = prev.floobits.overrideAttrs (old: {
+        patches =
+          (old.patches or [])
+          ++ [
+            ## Fixes warnings.
+            (pkgs.fetchpatch {
+              name = "floobits-warnings.patch";
+              url = "https://patch-diff.githubusercontent.com/raw/Floobits/floobits-emacs/pull/103.patch";
+              sha256 = "sha256-/XhrSIKDqaitV3Kk+JkOgflgl3821m/8gLrP0yHENP0=";
+            })
+          ];
+      });
+      ## NB: This should be a flake input, as it’s my own library, but there
+      ##     isn’t currently flake support for Pijul, so it needs to be fetched
+      ##     traditionally.
+      vc-pijul = final.trivialBuild {
+        pname = "vc-pijul";
+        version = "0.1.0";
+
+        src =
+          (pkgs.fetchpijul {
+            url = "https://ssh.pijul.com/sellout/vc-pijul";
+            hash = "sha256-FNZSHYpkvZOdhDP4sD2z+DNkHDIKW1NI52nEs4o3WC8=";
+          })
+          .overrideAttrs (old: {
+            ## FIXME: `pijul clone` is complaining about a bad certificate, so we
+            ##        add the `-k` flag to ignore certificates, which is not good.
+            installPhase = ''
+              set -x
+              runHook preInstall
+
+              pijul clone \
+                ''${change:+--change "$change"} \
+                -k \
+                ''${state:+--state "$state"} \
+                --channel "$channel" \
+                "$url" \
+                "$out"
+
+              runHook postInstall
+            '';
+          });
+
+        meta = {
+          homepage = "https://nest.pijul.com/sellout/vc-pijul";
+          description = "Pijul integration for Emacs’ VC library";
+          license = lib.licenses.gpl3Plus;
+          maintainers = [lib.maintainers.sellout];
+        };
+      };
+      wakatime-mode = prev.wakatime-mode.overrideAttrs (old: {
+        patches =
+          (old.patches or [])
+          ++ [
+            ## Fixes wakatime/wakatime-mode#67 among other changes.
+            (pkgs.fetchpatch {
+              name = "wakatime-overhaul.patch";
+              url = "https://github.com/sellout/wakatime-mode/commit/2afa46537bae42afc134951963198d91a686db02.patch";
+              sha256 = "bj3dFx0XXIv2AREuM7/EbiW0RhI9fmpbXPazOpI2an8=";
+            })
+          ];
+      });
+    };
+  };
+
+  services = {
+    emacs = {
+      defaultEditor = true;
+      # FIXME: Triggers infinite recursion on Linux
+      enable = false; # pkgs.stdenv.hostPlatform.isLinux; # because it relies on systemd
+    };
+
+    gpg-agent.extraConfig = ''
+      ## See magit/magit#4076 for the struggles re: getting Magit/TRAMP/GPG
+      ## working.
+      allow-emacs-pinentry
+    '';
+  };
+
+  xdg.configFile = {
+    "emacs" = {
+      # Because there are unmanaged files like elpa and custom.el as well as
+      # generated managed files.
+      recursive = true;
+      source = ./user-directory;
+    };
+    "emacs/gnus/.gnus.el".text = ''
+      (setq gnus-select-method
+            '(nnimap "${config.lib.local.primaryEmailAccount.imap.host}")
+            message-send-mail-function 'smtpmail-send-it
+            send-mail-function 'smtpmail-send-it
+            smtpmail-smtp-server
+            "${config.lib.local.primaryEmailAccount.smtp.host}")
+    '';
   };
 }
