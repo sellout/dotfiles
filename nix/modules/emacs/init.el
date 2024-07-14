@@ -28,17 +28,6 @@
 
 ;;; Code:
 
-;; TODO: We force default.el to load before init.el because it’s set up via Nix,
-;;       and provides useful values for the rest of the initialization.
-;;       Longer-term, this might not be necessary, once we move most of the
-;;       Nix-based configuration to overlays that are then included in
-;;       site-start.el. The remaining config in default will _probably_ make
-;;       sense to load after this file. (And `inhibit-default-init' should also
-;;       be un-customized at that point.) See
-;;       https://www.gnu.org/software/emacs/manual/html_node/elisp/Startup-Summary.html
-;;       for details about what happens when during startup.
-(load "default")
-
 (defun require-config (feature)
   "Like ‘require’, but first look for FEATURE in ‘user-emacs-directory’."
   (let ((load-path (cons user-emacs-directory load-path)))
@@ -47,7 +36,6 @@
 (require-config 'xdg-locations)
 
 (custom-set-variables
- '(inhibit-default-init t nil () "We force loading it _before_ init.el.")
  ;; NB: If this isn’t set in _this_ file, Emacs will ignore it by design.
  '(inhibit-startup-screen t nil () "Explicitly set in `user-init-file`."))
 
