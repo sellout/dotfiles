@@ -124,10 +124,7 @@
               modules = [self.darwinModules.darwin];
             };
           })
-          [
-            flake-utils.lib.system.aarch64-darwin
-            flake-utils.lib.system.x86_64-darwin
-          ]);
+          (builtins.filter (nixpkgs.lib.hasSuffix "darwin") supportedSystems));
 
       homeConfigurations =
         builtins.listToAttrs
@@ -191,10 +188,7 @@
               ];
             };
           })
-          [
-            # flake-utils.lib.system.aarch64-linux
-            flake-utils.lib.system.x86_64-linux
-          ]);
+          (builtins.filter (nixpkgs.lib.hasSuffix "linux") supportedSystems));
     }
     // flake-utils.lib.eachSystem supportedSystems (system: let
       pkgs = import nixpkgs {inherit system;};
