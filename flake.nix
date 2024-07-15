@@ -66,15 +66,7 @@
         ];
         ## TODO: Split Emacs into its own overlay.
         default = import ./nix/overlay.nix {
-          inherit
-            emacs-color-theme-solarized
-            flake-utils
-            home-manager
-            mkalias
-            nixpkgs
-            unison
-            ;
-          inherit nixpkgsConfig;
+          inherit flake-utils home-manager mkalias nixpkgs nixpkgsConfig unison;
         };
         home = nixpkgs.lib.composeManyExtensions [
           agenix.overlays.default
@@ -105,7 +97,7 @@
       };
 
       homeModules = {
-        emacs = import ./nix/modules/emacs.nix;
+        emacs = import ./nix/modules/emacs;
         home = import ./nix/modules/home-configuration.nix;
         i3 = import ./nix/modules/i3.nix;
         nix-configuration = import ./nix/modules/nix-configuration.nix;

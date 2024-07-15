@@ -5,7 +5,7 @@
   ...
 }: {
   imports = [
-    ./emacs.nix
+    ./emacs
     ./i3.nix
     ./input-devices.nix
     ./nix-configuration.nix
@@ -149,30 +149,16 @@
     ## useful outside of a project, and those get installed more broadly (see
     ## ./darwin-configuration.nix#homebrew for where to install various
     ## packages, including here). Between those two extremes, there is
-    ## ./emacs.nix, which is where most packages are managed, behind a Emacs
-    ## interface (`config.programs.emacs.extraPackages`), but there are
-    ## exceptions for a few reasons: (inexhaustive)
+    ## ./emacs/, which is where most packages are managed, behind an Emacs
+    ## interface, but there are exceptions for a few reasons: (inexhaustive)
     ##
     ## • the package contains something that needs to run as a service or
     ##   otherwise be available outside of the Emacs process;
     ## • there are reasons to have the package even when Emacs is not working,
     ##   etc. for some reason (e.g., we want to have Nix itself and VCSes
     ##   available so we can pull new versions and build things when we need
-    ##   to);
-    ## • the package has its own GUI that we prefer over any Emacs interface; or
-    ## • we need TRAMP to be able to use the program _on a remote host_ (e.g.,
-    ##   encryption needs to run on the host that the keys live on, so
-    ##  `pkgs.age` should be everywhere; but Flyspell should always use
-    ##  `pkgs.ispell` from the local host, which means it can be restricted to
-    ##   Emacs).
-    ##
-    ## The last case is not ideal. It would be fantastic if a TRAMP connection
-    ## could somehow wind up with the `PATH`, etc. that Emacs on that host would
-    ## see; and if it could also see the project-specific `PATH` set up by
-    ## direnv on that host. We could still embed packages that we want to have
-    ## available outside of projects, but project-specific versions should be
-    ## able to override that and we should also be happy for a binary to not
-    ## exist when we’re not in an appropriate project.
+    ##   to); or
+    ## • the package has its own GUI that we prefer over any Emacs interface.
     packages = let
       fonts = [
         # https://brailleinstitute.org/freefont
@@ -224,7 +210,6 @@
           then pkgs.nixcasks.dosbox
           else pkgs.dosbox
         )
-        pkgs.dtach
         # pkgs.discord # currently subsumed by ferdium
         # pkgs.element-desktop # currently subsumed by ferdium
         pkgs.ghostscript
@@ -326,7 +311,6 @@
         pkgs.bitcoin # doesn’t contain darwin GUI
         # pkgs.github-desktop # not supported on darwin # in 23.05, still uses OpenSSL 1.1.1u
         pkgs.hdhomerun-config-gui # not supported on darwin
-        pkgs.inotify-tools # needed so Emacs’ TRAMP can connect # not supported on Darwin
         pkgs.plex # not supported on darwin
         pkgs.plex-media-player # fails to build on darwin
         pkgs.powertop # not supported on darwin
@@ -349,12 +333,9 @@
     ];
 
     sessionVariables = {
-      ALTERNATIVE_EDITOR = "${pkgs.emacs}/bin/emacs";
       CABAL_CONFIG = config.lib.local.addHome config.xdg.configFile."cabal/config".target;
       CABAL_DIR = "${config.xdg.stateHome}/cabal";
       CARGO_HOME = "${config.xdg.cacheHome}/cargo";
-      # set by services.emacs on Linux, but not MacOS.
-      EDITOR = "${pkgs.emacs}/bin/emacsclient";
       IRBRC = config.lib.local.addHome config.xdg.configFile."irb/irbrc".target;
       LEIN_HOME = "${config.xdg.dataHome}/lein";
       LW_INIT = "${config.lib.local.addHome config.xdg.configFile."lispworks/init.lisp".target}";
@@ -373,7 +354,6 @@
       R_ENVIRON_USER = "${config.xdg.configHome}/r/environ";
       RUSTUP_HOME = "${config.xdg.stateHome}/rustup";
       STACK_XDG = "1";
-      VISUAL = "${pkgs.emacs}/bin/emacsclient";
       # May be able to remove this after wakatime/wakatime-cli#558 is fixed.
       WAKATIME_HOME = "${config.xdg.configHome}/wakatime";
       XDG_RUNTIME_DIR = config.lib.local.xdg.runtimeDir;
@@ -428,18 +408,6 @@
     # the Home Manager release notes for a list of state version
     # changes in each release.
     stateVersion = "23.05";
-  };
-
-  launchd.agents = {
-    # derived from https://www.emacswiki.org/emacs/EmacsAsDaemon#h5o-8
-    "gnu.emacs.daemon" = {
-      config = {
-        Label = "gnu.emacs.daemon";
-        ProgramArguments = ["emacs" "--daemon"];
-        RunAtLoad = true;
-      };
-      enable = true;
-    };
   };
 
   lib.local = {
@@ -690,19 +658,8 @@
   };
 
   services = {
-    emacs = {
-      defaultEditor = true;
-      # FIXME: Triggers infinite recursion on Linux
-      enable = false; # pkgs.stdenv.hostPlatform.isLinux; # because it relies on systemd
-    };
-
     gpg-agent = {
       enable = pkgs.stdenv.hostPlatform.isLinux;
-      extraConfig = ''
-        ## See magit/magit#4076 for the struggles
-        ## re: getting Magit/TRAMP/GPG working.
-        allow-emacs-pinentry
-      '';
       pinentryFlavor = "tty";
     };
 
@@ -867,20 +824,6 @@
       ##     in one place.
       "common-lisp".source =
         ../../home/${config.lib.local.xdg.config.rel}/common-lisp;
-      "emacs" = {
-        # Because there are unmanaged files like elpa and custom.el as well as
-        # generated managed files.
-        recursive = true;
-        source = ../../home/${config.lib.local.xdg.config.rel}/emacs;
-      };
-      "emacs/gnus/.gnus.el".text = ''
-        (setq gnus-select-method
-              '(nnimap "${config.lib.local.primaryEmailAccount.imap.host}")
-              message-send-mail-function 'smtpmail-send-it
-              send-mail-function 'smtpmail-send-it
-              smtpmail-smtp-server
-              "${config.lib.local.primaryEmailAccount.smtp.host}")
-      '';
       "gdb/gdbinit".text = ''
         set history filename ${config.xdg.stateHome}/gdb/history
         set history save on

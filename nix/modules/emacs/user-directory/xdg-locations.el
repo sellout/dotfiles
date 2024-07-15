@@ -39,6 +39,7 @@ According to the XDG Base Directory Specification version
 (defun xl-emacs-config-home (file)
   (cl-assert (equal (expand-file-name user-emacs-directory)
                     (expand-file-name "emacs/" (xdg-config-home)))
+             nil
              "‘user-emacs-directory’ (%s) does not agree with ‘xdg-config-home’ (%s)."
              user-emacs-directory
              (xdg-config-home))
