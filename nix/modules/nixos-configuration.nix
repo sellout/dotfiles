@@ -64,6 +64,9 @@
 
   hardware = {
     bluetooth.enable = true;
+    ## `programs.steam.enable` sets this to `true`, but it only works on
+    ## x86_64-linux (despite its claim that it works on any 64-bit system).
+    opengl.driSupport32Bit = lib.mkForce (pkgs.system == "x86_64-linux");
     pulseaudio.enable = false;
   };
 
@@ -116,7 +119,7 @@
     mosh.enable = true;
     # mtr.enable = true;
     steam = {
-      enable = true;
+      enable = pkgs.system != "aarch64-linux";
       remotePlay.openFirewall = true;
       dedicatedServer.openFirewall = true;
     };
