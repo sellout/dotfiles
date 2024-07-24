@@ -1481,6 +1481,6 @@ be very useful."
     (envrc-remote t)
     :defer nil
     :disabled (not use-envrc)
-    :init (envrc-global-mode)))
+    :hook (after-init . envrc-global-mode)))
 
 ;;; init.el ends here
