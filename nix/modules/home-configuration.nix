@@ -493,6 +493,7 @@
 
   nix = {
     package = pkgs.nix;
+    registry.sys.flake = inputs.self;
     settings = {
       ## TODO: was required for Nix on Mac at some point -- review
       allow-symlinked-store = pkgs.stdenv.hostPlatform.isDarwin;
@@ -500,6 +501,7 @@
       keep-failed = true;
       keep-outputs = true;
       log-lines = 50;
+      warn-dirty = false;
     };
   };
 

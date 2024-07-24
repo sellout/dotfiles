@@ -27,7 +27,6 @@
       ## value as the one used by this flake. For more information, see
       ## https://nixos-and-flakes.thiscute.world/best-practices/nix-path-and-flake-registry
       nix-path = lib.mkForce "nixpkgs=${inputs.nixpkgs}";
-      trusted-users = ["@wheel" "greg"];
       ## TODO: Enable globally once NixOS/nix#4119 is fixed.
       sandbox = !pkgs.stdenv.hostPlatform.isDarwin;
       use-xdg-base-directories = true;
