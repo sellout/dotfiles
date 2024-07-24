@@ -317,11 +317,11 @@
         "project-manager": "project-manager"
       },
       "locked": {
-        "lastModified": 1720301249,
-        "narHash": "sha256-b5vy7jBDXzwE/fD0E9f1dlNAGJDFe+qjXDzrEbEKnLU=",
+        "lastModified": 1721325678,
+        "narHash": "sha256-RfpsYtEUxj00M1SkHJjUCJolAXxM/q/iA9k/jz4Hmbw=",
         "owner": "sellout",
         "repo": "flaky",
-        "rev": "07a176e22be3e5de4ac8821fccdcb012c3f78e31",
+        "rev": "f634490cc8e72c847a05fb0f4dc37c3068c9fa01",
         "type": "github"
       },
       "original": {

@@ -2,6 +2,7 @@
 ## configurations
 {
   config,
+  inputs,
   lib,
   options,
   pkgs,
@@ -50,10 +51,9 @@
       # https://en.wikipedia.org/wiki/AppleSingle_and_AppleDouble_formats#Usage
       "._*"
     ];
-in {
-  config =
-    if options ? homebrew
-    then {
+in
+  inputs.flaky.lib.multiConfig options {
+    darwinConfig = {
       environment.systemPackages =
         commonPackages
         ++ [
@@ -61,9 +61,8 @@ in {
           gitPackage
           mercurialPackage
         ];
-    }
-    else if options ? home
-    then {
+    };
+    homeConfig = {
       home = {
         file = builtins.listToAttrs (map (command:
           lib.nameValuePair
@@ -154,8 +153,8 @@ in {
         recursive = true;
         source = ../../home/${config.lib.local.xdg.config.rel}/git/template;
       };
-    }
-    else {
+    };
+    nixosConfig = {
       environment.systemPackages =
         commonPackages
         ++ [
@@ -167,4 +166,4 @@ in {
         package = gitPackage;
       };
     };
-}
+  }
