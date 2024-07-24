@@ -184,6 +184,20 @@
           nerdfont = "OpenDyslexic";
         }
       ];
+
+      ## For packages that should be gotten from nixcask on darwin. The second
+      ## argument may be null, but if the nixcast package name differs from the
+      ## Nixpkgs name, then it needs to be set.
+      maybeNixcask = pkg: nixcastPkg:
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then let
+          realNixcastPkg =
+            if nixcastPkg == null
+            then pkg
+            else nixcastPkg;
+        in
+          pkgs.nixcasks.${realNixcastPkg}
+        else pkgs.${pkg};
     in
       [
         pkgs._1password # This is the CLI, needed by VSCode 1Password extension
@@ -191,25 +205,13 @@
         pkgs.age
         pkgs.agenix
         ## doesn’t contain darwin GUI
-        (
-          if pkgs.stdenv.hostPlatform.isDarwin
-          then pkgs.nixcasks.anki
-          else pkgs.anki
-        )
+        (maybeNixcask "anki" null)
         pkgs.awscli
         pkgs.bash-strict-mode
         ## marked broken on darwin
-        (
-          if pkgs.stdenv.hostPlatform.isDarwin
-          then pkgs.nixcasks.calibre
-          else pkgs.calibre
-        )
+        (maybeNixcask "calibre" null)
         ## DOS game emulator # fails to build on darwin # x86 game emulator
-        (
-          if pkgs.stdenv.hostPlatform.isDarwin
-          then pkgs.nixcasks.dosbox
-          else pkgs.dosbox
-        )
+        (maybeNixcask "dosbox" null)
         # pkgs.discord # currently subsumed by ferdium
         # pkgs.element-desktop # currently subsumed by ferdium
         pkgs.ghostscript
@@ -218,11 +220,7 @@
         pkgs.jekyll
         pkgs.magic-wormhole
         ## not available on darwin via Nix
-        (
-          if pkgs.stdenv.hostPlatform.isDarwin
-          then pkgs.nixcasks.mumble
-          else pkgs.mumble
-        )
+        (maybeNixcask "mumble" null)
         (pkgs.nerdfonts.override {
           fonts =
             lib.concatMap
@@ -233,11 +231,7 @@
             fonts;
         })
         ## not available on darwin via Nix
-        (
-          if pkgs.stdenv.hostPlatform.isDarwin
-          then pkgs.nixcasks.obs
-          else pkgs.obs-studio
-        )
+        (maybeNixcask "obs-studio" "obs")
         # pkgs.slack # currently subsumed by ferdium
         pkgs.synergy
         pkgs.tailscale
