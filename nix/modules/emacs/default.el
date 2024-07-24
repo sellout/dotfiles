@@ -28,16 +28,12 @@
 
 ;;; Code:
 
-(defun require-config (feature)
+(defun require-config (feature &optional filename noerror)
   "Like ‘require’, but first look for FEATURE in ‘user-emacs-directory’."
   (let ((load-path (cons user-emacs-directory load-path)))
-    (require feature)))
+    (require feature filename noerror)))
 
 (require-config 'xdg-locations)
-
-(custom-set-variables
- ;; NB: If this isn’t set in _this_ file, Emacs will ignore it by design.
- '(inhibit-startup-screen t nil () "Explicitly set in `user-init-file`."))
 
 (xdg-locations-custom-paths)
 
@@ -61,6 +57,10 @@
 ;; NB: Need these ones first, because use-package uses them in other clauses.
 (use-package bind-key)
 (use-package delight)
+
+;; This is a escape hatch for loading non-Nix-managed configuration local to the
+;; user account. See the contents of ‘user-init-file’ for more information.
+(require-config 'local nil nil)
 
 (use-package abbrev
   :delight "…")
