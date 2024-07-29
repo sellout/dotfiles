@@ -288,7 +288,7 @@
 
     home-manager = {
       inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:nix-community/home-manager/release-23.11";
+      url = "github:nix-community/home-manager/release-24.05";
     };
 
     ## Avoids the need to give `Finder` access to make aliases on MacOS.
