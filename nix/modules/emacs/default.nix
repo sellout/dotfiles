@@ -235,7 +235,7 @@
             (nix-build-executable "${pkgs.nix}/bin/nix-build")
             (nix-executable "${pkgs.nix}/bin/nix")
             (nix-instantiate-executable "${pkgs.nix}/bin/nix-instantiate")
-            (nix-nixfmt-bin "${pkgs.nixfmt}/bin/nixfmt")
+            (nix-nixfmt-bin "${pkgs.nixfmt-classic}/bin/nixfmt")
             (nix-shell-executable "${pkgs.nix}/bin/nix-shell")
             (nix-store-executable "${pkgs.nix}/bin/nix-store"))
           ;; NB: This (and probably plenty of other settings currently in here) is
@@ -362,8 +362,6 @@
       epkgs.detached
       epkgs.dhall-mode
       epkgs.diminish
-      epkgs.direnv
-      pkgs.direnv # needed by `epkgs.direnv` (but not by `epkgs.envrc`)
       epkgs.editorconfig
       # epkgs.emacs-elim
       epkgs.eldev
@@ -467,20 +465,6 @@
           sha256 = "D+bXR9zVDLDnsuOn6NT3mboeciyQiPIGLAHmokY15nI=";
         };
       });
-      ## still waffling between `direnv` and `envrc`. `direnv` has at least an
-      ## attempt at TRAMP support, but `envrc` seems generally better.
-      direnv = prev.direnv.overrideAttrs (old: {
-        patches =
-          (old.patches or [])
-          ++ [
-            ## adds TRAMP support (wbolster/emacs-direnv#68)
-            (pkgs.fetchpatch {
-              name = "direnv-tramp.patch";
-              url = "https://patch-diff.githubusercontent.com/raw/wbolster/emacs-direnv/pull/68.patch";
-              sha256 = "sha256-j+d6ffFU0d3a9dxPbMAfBPlLvs77tdksdRw2Aal3mSc=";
-            })
-          ];
-      });
       envrc = prev.envrc.overrideAttrs (old: {
         ## adds TRAMP support (purcell/envrc#29)
         src = pkgs.fetchFromGitHub {
@@ -547,8 +531,8 @@
             ## Fixes wakatime/wakatime-mode#67 among other changes.
             (pkgs.fetchpatch {
               name = "wakatime-overhaul.patch";
-              url = "https://github.com/sellout/wakatime-mode/commit/2afa46537bae42afc134951963198d91a686db02.patch";
-              sha256 = "bj3dFx0XXIv2AREuM7/EbiW0RhI9fmpbXPazOpI2an8=";
+              url = "https://github.com/sellout/wakatime-mode/commit/9e11f217c0a524c229063b64a5b6a32daf2c804b.patch";
+              sha256 = "7+0EH9jadVj7Ac3fxaYUbayzLR7aY9KStkIZIb6tj5I=";
             })
           ];
       });

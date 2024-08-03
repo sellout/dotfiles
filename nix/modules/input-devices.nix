@@ -2,6 +2,7 @@
   config,
   inputs,
   lib,
+  options,
   pkgs,
   ...
 }:
@@ -131,20 +132,17 @@ inputs.flaky.lib.multiConfig options {
     console.useXkbConfig = true;
     services = {
       fprintd.enable = true;
-      xserver = {
-        xkb = {
-          layout = "us,us";
-          variant = ",dvorak";
-        };
-        # Enable touchpad support.
-        libinput = {
-          touchpad = {
-            clickMethod = "clickfinger"; # don't right-click on right side of touchpad
-            naturalScrolling = true;
-            tapping = false; # disable tap-to-click
-          };
-        };
-        xkbOptions = "ctrl:nocaps";
+      # Enable touchpad support.
+      libinput.touchpad = {
+        # don't right-click on right side of touchpad
+        clickMethod = "clickfinger";
+        naturalScrolling = true;
+        tapping = false; # disable tap-to-click
+      };
+      xserver.xkb = {
+        layout = "us,us";
+        options = "ctrl:nocaps";
+        variant = ",dvorak";
       };
     };
   };

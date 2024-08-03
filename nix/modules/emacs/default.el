@@ -1457,30 +1457,15 @@ be very useful."
 
 ;;; END EXPERIMENTS
 
-;; NB: Keep these at the end of the file, per
+;; NB: Keep this at the end of the file, per
 ;;     https://github.com/purcell/envrc/blob/master/README.md#usage
-
-;; TODO: I like envrc better than direnv, but it currently doesn’t work over
-;;       TRAMP (see purcell/envrc#29). However, direnv seems to cause a lot of
-;;       trouble (at least on remote machines), so back to envrc for now.
-(let ((use-envrc t))
-  (use-package direnv
-    :custom
-    (direnv-mode t)
-    (direnv-non-file-modes
-     '(compilation-mode eshell-mode dired-mode magit-mode))
-    :defer nil
-    :delight "🗁"
-    :disabled use-envrc)
-
-  (use-package envrc
-    :custom
-    (envrc-error-lighter '(:propertize "🗁" face envrc-mode-line-error-face))
-    (envrc-none-lighter '(:propertize "🗁" face envrc-mode-line-none-face))
-    (envrc-on-lighter '(:propertize "🗁" face envrc-mode-line-on-face))
-    (envrc-remote t)
-    :defer nil
-    :disabled (not use-envrc)
-    :hook (after-init . envrc-global-mode)))
+(use-package envrc
+  :custom
+  (envrc-error-lighter '(:propertize "🗁" face envrc-mode-line-error-face))
+  (envrc-none-lighter '(:propertize "🗁" face envrc-mode-line-none-face))
+  (envrc-on-lighter '(:propertize "🗁" face envrc-mode-line-on-face))
+  (envrc-remote t)
+  :defer nil
+  :hook (after-init . envrc-global-mode))
 
 ;;; init.el ends here
