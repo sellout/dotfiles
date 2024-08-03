@@ -162,7 +162,7 @@
     zsh = {
       dotDir = "${config.lib.local.xdg.config.rel}/zsh";
       enable = true;
-      enableAutosuggestions = true;
+      autosuggestion.enable = true;
       enableVteIntegration = true;
       history = {
         expireDuplicatesFirst = true;

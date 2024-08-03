@@ -205,6 +205,14 @@
     });
 
   inputs = {
+    ## Flaky should generally be the source of truth for its inputs.
+    flaky.url = "github:sellout/flaky";
+
+    bash-strict-mode.follows = "flaky/bash-strict-mode";
+    flake-utils.follows = "flaky/flake-utils";
+    home-manager.follows = "flaky/home-manager";
+    nixpkgs.follows = "flaky/nixpkgs";
+
     agenix = {
       inputs = {
         darwin.follows = "darwin";
@@ -217,26 +225,15 @@
     agenix-el = {
       inputs = {
         bash-strict-mode.follows = "bash-strict-mode";
+        home-manager.follows = "home-manager";
         nixpkgs.follows = "nixpkgs";
       };
-      url = "github:t4ccer/agenix.el";
-    };
-
-    bash-strict-mode = {
-      inputs = {
-        flake-utils.follows = "flake-utils";
-        flaky.follows = "flaky";
-        nixpkgs.follows = "nixpkgs";
-      };
-      url = "github:sellout/bash-strict-mode";
+      ## TODO: Switch back to upstream once t4ccer/agenix.el#13 is merged.
+      url = "github:sellout/agenix.el/nixpkgs-24.05";
     };
 
     bradix = {
-      inputs = {
-        flake-utils.follows = "flake-utils";
-        flaky.follows = "flaky";
-        nixpkgs.follows = "nixpkgs";
-      };
+      inputs.flaky.follows = "flaky";
       url = "github:sellout/bradix";
     };
 
@@ -251,20 +248,12 @@
     };
 
     emacs-extended-faces = {
-      inputs = {
-        flake-utils.follows = "flake-utils";
-        flaky.follows = "flaky";
-        nixpkgs.follows = "nixpkgs";
-      };
+      inputs.flaky.follows = "flaky";
       url = "github:sellout/emacs-extended-faces";
     };
 
     epresent = {
-      inputs = {
-        flake-utils.follows = "flake-utils";
-        flaky.follows = "flaky";
-        nixpkgs.follows = "nixpkgs";
-      };
+      inputs.flaky.follows = "flaky";
       ## TODO: Remove branch after eschulte/epresent#76 is merged.
       url = "github:sellout/epresent/nix-build";
     };
@@ -272,23 +261,6 @@
     firefox-darwin = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:bandithedoge/nixpkgs-firefox-darwin";
-    };
-
-    flake-utils.url = "github:numtide/flake-utils";
-
-    flaky = {
-      inputs = {
-        bash-strict-mode.follows = "bash-strict-mode";
-        flake-utils.follows = "flake-utils";
-        home-manager.follows = "home-manager";
-        nixpkgs.follows = "nixpkgs";
-      };
-      url = "github:sellout/flaky";
-    };
-
-    home-manager = {
-      inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:nix-community/home-manager/release-23.11";
     };
 
     ## Avoids the need to give `Finder` access to make aliases on MacOS.
@@ -302,7 +274,6 @@
       url = "github:jacekszymanski/nixcasks";
     };
 
-    nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
     ## NB: These are very helpful when they’re needed, but otherwise keep them
     ##     commented out, because they’re big and slow.
     # nixpkgs-master.url = "github:NixOS/nixpkgs/master";
