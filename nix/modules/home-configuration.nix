@@ -660,7 +660,12 @@
   services = {
     gpg-agent = {
       enable = pkgs.stdenv.hostPlatform.isLinux;
-      pinentryFlavor = "tty";
+      extraConfig = ''
+        ## See magit/magit#4076 for the struggles re: getting Magit/TRAMP/GPG
+        ## working.
+        allow-emacs-pinentry
+      '';
+      pinentryPackage = pkgs.pinentry-tty;
     };
 
     home-manager.autoUpgrade = {
