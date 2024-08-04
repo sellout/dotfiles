@@ -36,13 +36,10 @@
     ];
   };
 
-  fonts = {
-    fontDir.enable = false; # enabling this trashes manually-installed fonts
-    fonts = [
-      pkgs.atkinson-hyperlegible # https://brailleinstitute.org/freefont
-      pkgs.inconsolata
-    ];
-  };
+  fonts.packages = [
+    pkgs.atkinson-hyperlegible # https://brailleinstitute.org/freefont
+    pkgs.inconsolata
+  ];
 
   # The preferred location of applications is, in order:
   # 1. home.nix#home.packages (~/Applications/Home Manager Apps)
