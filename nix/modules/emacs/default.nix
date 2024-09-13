@@ -107,11 +107,6 @@
     ## the expansion of `$HOME` is.
     emacs-cache-home = "~/${config.lib.local.xdg.cache.rel}/emacs";
     emacs-state-home = "~/${config.lib.local.xdg.state.rel}/emacs";
-
-    ## NB: Bound so we can reference it in the the Emacs setup for `tex-mode`.
-    texlive-combined = pkgs.texlive.combine {
-      inherit (pkgs.texlive) braids dvipng pgf scheme-small tikz-cd ulem xcolor;
-    };
   in {
     enable = true;
     ## enable this if I play with getting dbus working again
@@ -178,12 +173,10 @@
           '(octave
             (inferior-octave-program "${pkgs.octave}/bin/octave"))
           '(tex-mode
-            ;; TODO: These can’t go upstream like this – how to depend on the
-            ;;       individual binaries correctly?
-            (latex-run-command "${texlive-combined}/bin/latex")
+            (latex-run-command "${config.programs.texlive.package}/bin/latex")
             (slitex-run-command nil nil () "I can’t find this command anywhere")
-            (tex-bibtex-command "${texlive-combined}/bin/bibtex")
-            (tex-run-command "${texlive-combined}/bin/tex"))
+            (tex-bibtex-command "${config.programs.texlive.package}/bin/bibtex")
+            (tex-run-command "${config.programs.texlive.package}/bin/tex"))
           '(vc-darcs
             (vc-darcs-program-name "${pkgs.darcs}/bin/darcs"))
 

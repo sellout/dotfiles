@@ -102,6 +102,8 @@
         i3 = import ./nix/modules/i3.nix;
         nix-configuration = import ./nix/modules/nix-configuration.nix;
         shell = import ./nix/modules/shell.nix;
+        tex = import ./nix/modules/tex.nix;
+        vcs = import ./nix/modules/vcs.nix;
       };
 
       nixosModules = {

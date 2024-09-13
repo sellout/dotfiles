@@ -11,6 +11,7 @@
     ./input-devices.nix
     ./nix-configuration.nix
     ./shell.nix
+    ./tex.nix
     ./vcs.nix
   ];
 
