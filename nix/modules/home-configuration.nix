@@ -662,13 +662,14 @@
 
   services = {
     gpg-agent = {
+      ## NB: Despite having a launchd configuration, this module also has a
+      ##     linux-only assertion.
       enable = pkgs.stdenv.hostPlatform.isLinux;
-      extraConfig = ''
-        ## See magit/magit#4076 for the struggles re: getting Magit/TRAMP/GPG
-        ## working.
-        allow-emacs-pinentry
-      '';
       pinentryPackage = pkgs.pinentry-tty;
+      ## TODO: These values are just copied from my manual config. Figure out if
+      ##       they’re actually good.
+      defaultCacheTtl = 600;
+      maxCacheTtl = 7200;
     };
 
     home-manager.autoUpgrade = {
@@ -836,6 +837,28 @@
         set history filename ${config.xdg.stateHome}/gdb/history
         set history save on
       '';
+      ## TODO: This is stolen from the Home Manager module, because that only
+      ##       works for Linux. Extract this to a local module with the linux
+      ##       config next to it or, even better, fix the upstream module.
+      "gnupg/gpg-agent.conf".text = let
+        cfg = config.services.gpg-agent;
+        optional = lib.optional;
+      in
+        lib.concatStringsSep "\n"
+        (optional (cfg.enableSshSupport) "enable-ssh-support"
+          ++ optional cfg.grabKeyboardAndMouse "grab"
+          ++ optional (!cfg.enableScDaemon) "disable-scdaemon"
+          ++ optional (cfg.defaultCacheTtl != null)
+          "default-cache-ttl ${toString cfg.defaultCacheTtl}"
+          ++ optional (cfg.defaultCacheTtlSsh != null)
+          "default-cache-ttl-ssh ${toString cfg.defaultCacheTtlSsh}"
+          ++ optional (cfg.maxCacheTtl != null)
+          "max-cache-ttl ${toString cfg.maxCacheTtl}"
+          ++ optional (cfg.maxCacheTtlSsh != null)
+          "max-cache-ttl-ssh ${toString cfg.maxCacheTtlSsh}"
+          ++ optional (cfg.pinentryPackage != null)
+          "pinentry-program ${lib.getExe cfg.pinentryPackage}"
+          ++ [cfg.extraConfig]);
       "irb/irbrc".text = ''
         IRB.conf[:EVAL_HISTORY] = 200
         IRB.conf[:HISTORY_FILE] = "${config.xdg.stateHome}/irb/history"
