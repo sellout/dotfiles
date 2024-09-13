@@ -850,13 +850,7 @@
         (ql:quickload "swank")
         (swank:create-server :port 4005)
       '';
-      "npm/npmrc".text = ''
-        cache=${config.xdg.cacheHome}/npm
-        init-module=${config.xdg.cacheHome}/npm/config/npm-init.js
-        prefix=${config.xdg.dataHome}/npm
-        tmp=$XDG_RUNTIME_DIR/npm
-        viewer = browser
-      '';
+      "npm/npmrc".source = ../../home/${config.lib.local.xdg.config.rel}/npm/npmrc;
       "octave/octaverc".text = ''
         history_file("${config.xdg.stateHome}/octave/history")
       '';
