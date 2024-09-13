@@ -83,7 +83,9 @@
     ## 2. use the application’s preferred config file name (we don’t care if it
     ##    has a leading `.` or not, since we use `ls -A`, etc to make dotfiles
     ##    visible whenever possible.
-    file = {
+    file = let
+      toml = pkgs.formats.toml {};
+    in {
       # ABCL’s init file (https://abcl.org/)
       ".abclrc".source =
         ../../home/${config.lib.local.xdg.config.rel}/common-lisp/init.lisp;
@@ -119,8 +121,11 @@
       #     stuff in `$CARGO_HOME` is cached data. However, this means that the
       #     Cargo config can be erased (until the next `home-manager switch`) if
       #     the cache is cleared.
-      "${config.lib.local.removeHome config.home.sessionVariables.CARGO_HOME}/config.toml".text = lib.generators.toINI {} {
-        build.target-dir = "${config.lib.local.xdg.state.rel}/cargo";
+      "${config.lib.local.removeHome config.home.sessionVariables.CARGO_HOME}/config.toml".source = toml.generate "Cargo config.toml" {
+        ## NB: Relative paths aren’t relative to the workspace, as one would
+        ##     hope. See rust-lang/cargo#7843.
+        build.target-dir = "${config.xdg.stateHome}/cargo";
+        ## Cargo writes executables to the bin/ subdir of this path.
         install.root = config.lib.local.xdg.local.home;
       };
       # There’s no $XDG_BIN_HOME in the spec for some reason, so these files
