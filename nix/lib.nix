@@ -7,6 +7,7 @@
   nixpkgs,
   org-invoice-table,
   self,
+  system-manager,
 }: let
   ## Recursively merges a list of values.
   ##
@@ -61,6 +62,21 @@ in {
   homeManagerConfiguration = attrs:
     home-manager.lib.homeManagerConfiguration (recursiveMerge [
       {inherit extraSpecialArgs;}
+      attrs
+    ]);
+
+  makeSystemConfig = attrs:
+    system-manager.lib.makeSystemConfig (recursiveMerge [
+      {
+        modules = [
+          home-manager.nixosModules.default
+          {home-manager = {inherit extraSpecialArgs;};}
+        ];
+        extraSpecialArgs = {
+          inherit agenix flaky nixpkgs;
+          dotfiles = self;
+        };
+      }
       attrs
     ]);
 
