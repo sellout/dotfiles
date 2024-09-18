@@ -81,6 +81,7 @@ in
             pkgs.git-revise # unfortunately not supported by magit
           ];
         sessionVariables.BRZ_LOG = "${config.xdg.stateHome}/breezy/log";
+        shellAliases.svn = "svn --config-dir '${config.xdg.configHome}/subversion'";
       };
 
       programs = {
@@ -132,8 +133,8 @@ in
           };
           ignores = ignores;
           lfs.enable = true;
-          # not doing `git = super.gitFull` in the overlay, because then everything
-          # gets rebuilt, but want it here for email support
+          # NB: not doing `git = super.gitFull` in the overlay, because then
+          #     everything gets rebuilt, but want it here for email support.
           package = gitPackage;
           signing.signByDefault = true;
           userEmail = config.lib.local.primaryEmailAccount.address;

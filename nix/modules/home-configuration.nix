@@ -354,12 +354,13 @@
       PYTHONPYCACHEPREFIX = "${config.xdg.cacheHome}/python";
       # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUSERBASE
       PYTHONUSERBASE = "${config.xdg.stateHome}/python";
+      RANDFILE = "${config.xdg.stateHome}/openssl/rnd";
       R_ENVIRON_USER = "${config.xdg.configHome}/r/environ";
       RUSTUP_HOME = "${config.xdg.stateHome}/rustup";
       STACK_XDG = "1";
       # May be able to remove this after wakatime/wakatime-cli#558 is fixed.
       WAKATIME_HOME = "${config.xdg.configHome}/wakatime";
-      XDG_RUNTIME_DIR = config.lib.local.xdg.runtimeDir;
+      XAUTHORITY = "${config.lib.local.xdg.runtimeDir}/Xauthority";
     };
 
     shellAliases = let
@@ -397,8 +398,8 @@
       nix-emacs-lisp-template = template "emacs-lisp";
       nix-haskell-template = template "haskell";
 
+      ## Set paths to XDG-compatible places
       keychain = "keychain --dir ${config.lib.local.xdg.runtimeDir}/keychain --absolute";
-      svn = "svn --config-dir ${config.xdg.configHome}/subversion";
       wget = "wget --hsts-file=${config.xdg.dataHome}/wget-hsts";
     };
 
@@ -466,10 +467,7 @@
       };
       state.rel = config.lib.local.removeHome config.xdg.stateHome;
       # Don’t know why this one isn’t in the `xdg` module.
-      runtimeDir =
-        if pkgs.stdenv.hostPlatform.isDarwin
-        then config.lib.local.addHome "Library/Caches/Temp/runtime"
-        else "/run/user/$UID";
+      runtimeDir = config.home.sessionVariables.XDG_RUNTIME_DIR;
       userDirs = {
         projects = {
           home =
@@ -664,6 +662,14 @@
     };
   };
 
+  ## FIXME: SSH doesn’t create the directory for the `ControlPath`, so if this
+  ##        isn’t done, SSH doesn’t work on new machines. It seems like a bug
+  ##        in SSH to me. Or, at least, SSH should give a better error message
+  ##        when this occurs.
+  home.activation.sshControlPath = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    mkdir -p '${config.lib.local.xdg.runtimeDir}/ssh'
+  '';
+
   services = {
     gpg-agent = {
       ## NB: Despite having a launchd configuration, this module also has a
@@ -806,6 +812,7 @@
         closeViewScrollWheelToggle = true;
         reduceTransparency = true;
       };
+      "org.hammerspoon.Hammerspoon".MJConfigFile = "${config.xdg.configHome}/hammerspoon/init.lua";
     };
     search = "DuckDuckGo";
   };
