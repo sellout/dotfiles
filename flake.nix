@@ -22,7 +22,6 @@
     bash-strict-mode,
     bradix,
     darwin,
-    emacs-color-theme-solarized,
     emacs-extended-faces,
     epresent,
     firefox-darwin,
@@ -34,14 +33,11 @@
     nixpkgs,
     nur,
     self,
-    unison,
+    systems,
+    unison-nix,
+    ...
   } @ inputs: let
-    ## NB: i686 isn’t well supported, and I don’t currently have any systems
-    ##     using it, so punt on the failures until I need to care.
-    supportedSystems =
-      nixpkgs.lib.remove
-      flake-utils.lib.system.i686-linux
-      flaky.lib.defaultSystems;
+    supportedSystems = import systems;
 
     nixpkgsConfig = {
       allowUnfreePredicate = pkg:
@@ -66,7 +62,14 @@
         ];
         ## TODO: Split Emacs into its own overlay.
         default = import ./nix/overlay.nix {
-          inherit flake-utils home-manager mkalias nixpkgs nixpkgsConfig unison;
+          inherit
+            flake-utils
+            home-manager
+            mkalias
+            nixpkgs
+            nixpkgsConfig
+            unison-nix
+            ;
         };
         home = nixpkgs.lib.composeManyExtensions [
           agenix.overlays.default
@@ -79,10 +82,15 @@
             if prev.stdenv.hostPlatform.isDarwin
             then
               firefox-darwin.overlay final prev
-              // {nixcasks = nixcasks.legacyPackages.${final.system};}
+              // {
+                nixcasks =
+                  (nixcasks.output {osVersion = "sonoma";})
+                  .packages
+                  .${final.system};
+              }
             else {})
           nur.overlay
-          unison.overlays.default
+          unison-nix.overlays.default
           self.overlays.default
         ];
         nixos = nixpkgs.lib.composeManyExtensions [
@@ -214,6 +222,9 @@
     flake-utils.follows = "flaky/flake-utils";
     home-manager.follows = "flaky/home-manager";
     nixpkgs.follows = "flaky/nixpkgs";
+    ## NB: i686 isn’t well supported, and I don’t currently have any systems
+    ##     using it, so punt on the failures until I need to care.
+    systems.url = "github:nix-systems/default";
 
     agenix = {
       inputs = {
@@ -230,8 +241,7 @@
         home-manager.follows = "home-manager";
         nixpkgs.follows = "nixpkgs";
       };
-      ## TODO: Switch back to upstream once t4ccer/agenix.el#13 is merged.
-      url = "github:sellout/agenix.el/nixpkgs-24.05";
+      url = "github:t4ccer/agenix.el";
     };
 
     bradix = {
@@ -283,7 +293,12 @@
 
     nur.url = "github:nix-community/nur";
 
-    unison = {
+    org-invoice-table = {
+      flake = false;
+      url = "git+https://git.sr.ht/~trevdev/org-invoice-table";
+    };
+
+    unison-nix = {
       inputs = {
         flake-utils.follows = "flake-utils";
         home-manager.follows = "home-manager";

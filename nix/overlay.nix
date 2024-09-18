@@ -4,7 +4,7 @@
   mkalias,
   nixpkgs,
   nixpkgsConfig,
-  unison,
+  unison-nix,
 }: final: prev: let
   # On aarch64-darwin, this gives us a Rosetta fallback, otherwise, it’s a NOP.
   x86_64 =
@@ -13,7 +13,7 @@
       import nixpkgs {
         config = nixpkgsConfig;
         localSystem = flake-utils.lib.system.x86_64-darwin;
-        overlays = [unison.overlays.default];
+        overlays = [unison-nix.overlays.default];
       }
     else prev;
 in {
