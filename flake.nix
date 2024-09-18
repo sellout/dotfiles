@@ -9,7 +9,7 @@
       "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
     ];
     ## Isolate the build.
-    registries = false;
+    use-registries = false;
     ## Enable once NixOS/nix#4119 is fixed. This is commented out rather than
     ## set to `false` because the default is `true` on some systems, and we want
     ## to maintain that.
@@ -119,7 +119,7 @@
             };
           };
         })
-        (builtins.filter (nixpkgs.lib.hasSuffix "darwin") supportedSystems));
+        (builtins.filter (nixpkgs.lib.hasSuffix "-darwin") supportedSystems));
 
       homeConfigurations = builtins.listToAttrs (map (system: {
           name = "${system}-example";
@@ -183,7 +183,7 @@
             };
           };
         })
-        (builtins.filter (nixpkgs.lib.hasSuffix "linux") supportedSystems));
+        (builtins.filter (nixpkgs.lib.hasSuffix "-linux") supportedSystems));
     }
     // flake-utils.lib.eachSystem supportedSystems (system: let
       pkgs = import nixpkgs {inherit system;};
@@ -236,7 +236,8 @@
 
     darwin = {
       inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:lnl7/nix-darwin";
+      ## TODO: Remove the pinned commit once LnL7/nix-darwin#1082 is resolved.
+      url = "github:emilazy/nix-darwin/push-zovpmlzlzvvm";
     };
 
     emacs-color-theme-solarized = {

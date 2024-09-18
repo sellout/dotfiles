@@ -29,6 +29,7 @@
       nix-path = lib.mkForce "nixpkgs=${nixpkgs}";
       ## TODO: Enable globally once NixOS/nix#4119 is fixed.
       sandbox = !pkgs.stdenv.hostPlatform.isDarwin;
+      show-trace = true;
       use-xdg-base-directories = true;
     };
   };
