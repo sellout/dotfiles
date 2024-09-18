@@ -9,7 +9,7 @@
       "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
     ];
     ## Isolate the build.
-    registries = false;
+    use-registries = false;
     ## Enable once NixOS/nix#4119 is fixed. This is commented out rather than
     ## set to `false` because the default is `true` on some systems, and we want
     ## to maintain that.
@@ -33,31 +33,12 @@
     nixcasks,
     nixpkgs,
     nur,
+    org-invoice-table,
     self,
-    unison,
-  } @ inputs: let
-    ## NB: i686 isn’t well supported, and I don’t currently have any systems
-    ##     using it, so punt on the failures until I need to care.
-    supportedSystems =
-      nixpkgs.lib.remove
-      flake-utils.lib.system.i686-linux
-      flaky.lib.defaultSystems;
-
-    nixpkgsConfig = {
-      allowUnfreePredicate = pkg:
-        builtins.elem (nixpkgs.lib.getName pkg) [
-          "1password"
-          "1password-cli"
-          "eagle"
-          "onepassword-password-manager"
-          "plexmediaserver"
-          "steam"
-          "steam-original"
-          "steam-run"
-          "vscode-extension-ms-vsliveshare-vsliveshare"
-          "zoom"
-        ];
-    };
+    systems,
+    unison-nix,
+  }: let
+    supportedSystems = import systems;
   in
     {
       overlays = {
@@ -66,7 +47,13 @@
         ];
         ## TODO: Split Emacs into its own overlay.
         default = import ./nix/overlay.nix {
-          inherit flake-utils home-manager mkalias nixpkgs nixpkgsConfig unison;
+          inherit
+            flake-utils
+            home-manager
+            mkalias
+            nixpkgs
+            unison-nix
+            ;
         };
         home = nixpkgs.lib.composeManyExtensions [
           agenix.overlays.default
@@ -79,10 +66,15 @@
             if prev.stdenv.hostPlatform.isDarwin
             then
               firefox-darwin.overlay final prev
-              // {nixcasks = nixcasks.legacyPackages.${final.system};}
+              // {
+                nixcasks =
+                  (nixcasks.output {osVersion = "sonoma";})
+                  .packages
+                  .${final.system};
+              }
             else {})
           nur.overlay
-          unison.overlays.default
+          unison-nix.overlays.default
           self.overlays.default
         ];
         nixos = nixpkgs.lib.composeManyExtensions [
@@ -94,6 +86,7 @@
       darwinModules = {
         darwin = import ./nix/modules/darwin-configuration.nix;
         nix-configuration = import ./nix/modules/nix-configuration.nix;
+        nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
       };
 
       homeModules = {
@@ -101,94 +94,96 @@
         home = import ./nix/modules/home-configuration.nix;
         i3 = import ./nix/modules/i3.nix;
         nix-configuration = import ./nix/modules/nix-configuration.nix;
+        nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
         shell = import ./nix/modules/shell.nix;
+        tex = import ./nix/modules/tex.nix;
+        vcs = import ./nix/modules/vcs.nix;
       };
 
       nixosModules = {
         nix-configuration = import ./nix/modules/nix-configuration.nix;
         nixos = import ./nix/modules/nixos-configuration.nix;
+        nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
       };
 
-      darwinConfigurations =
-        builtins.listToAttrs
-        (builtins.map
-          (system: {
-            name = "${system}-example";
-            value = darwin.lib.darwinSystem {
-              pkgs = import nixpkgs {
-                inherit system;
-                config = nixpkgsConfig;
-                overlays = [self.overlays.darwin];
-              };
-              specialArgs = {inherit inputs;};
-              modules = [self.darwinModules.darwin];
+      darwinConfigurations = builtins.listToAttrs (map (hostPlatform: {
+          name = "${hostPlatform}-example";
+          value = darwin.lib.darwinSystem {
+            modules = [
+              self.darwinModules.darwin
+              {nixpkgs = {inherit hostPlatform;};}
+            ];
+            specialArgs = {
+              inherit flaky nixpkgs;
+              dotfiles = self;
             };
-          })
-          (builtins.filter (nixpkgs.lib.hasSuffix "darwin") supportedSystems));
+          };
+        })
+        (builtins.filter (nixpkgs.lib.hasSuffix "-darwin") supportedSystems));
 
-      homeConfigurations =
-        builtins.listToAttrs
-        (builtins.map
-          (system: {
-            name = "${system}-example";
-            value = home-manager.lib.homeManagerConfiguration {
-              pkgs = import nixpkgs {
-                inherit system;
-                config = nixpkgsConfig;
-                overlays = [self.overlays.home];
-              };
-              extraSpecialArgs = {inherit inputs;};
-              modules = [
-                self.homeModules.home
-                {
-                  ## Attributes that the configuration expects to have set, but
-                  ## aren’t set publicly.
-                  ##
-                  ## TODO: Maybe have the configuration check if these are set,
-                  ##       so it’s more robust.
-                  accounts.email.accounts.Example = {
-                    address = "example-user@example.com";
-                    flavor = "gmail.com";
-                    primary = true;
-                    realName = "example user";
-                  };
-                  programs.git = {
-                    extraConfig.github.user = "example-user";
-                    signing.key = "";
-                  };
-                  ## These attributes are simply required by home-manager.
-                  home = {
-                    homeDirectory = "/tmp/example";
-                    username = "example-user";
-                  };
-                }
-              ];
+      homeConfigurations = builtins.listToAttrs (map (system: {
+          name = "${system}-example";
+          value = home-manager.lib.homeManagerConfiguration {
+            extraSpecialArgs = {
+              inherit
+                emacs-color-theme-solarized
+                flaky
+                nixpkgs
+                org-invoice-table
+                self
+                ;
+              dotfiles = self;
             };
-          })
-          supportedSystems);
+            modules = [
+              agenix.homeManagerModules.age
+              self.homeModules.home
+              {
+                ## Attributes that the configuration expects to have set, but
+                ## aren’t set publicly.
+                ##
+                ## TODO: Maybe have the configuration check if these are set,
+                ##       so it’s more robust.
+                accounts.email.accounts.Example = {
+                  address = "example-user@example.com";
+                  flavor = "gmail.com";
+                  primary = true; # This is the important value.
+                  realName = "example user";
+                };
+                home.sessionVariables.XDG_RUNTIME_DIR = "/tmp/example/runtime";
+                programs.git = {
+                  extraConfig.github.user = "example-user";
+                  signing.key = "";
+                };
+                ## These attributes are simply required by home-manager.
+                home = {
+                  homeDirectory = "/tmp/example";
+                  username = "example-user";
+                };
+              }
+            ];
+            pkgs = import nixpkgs {inherit system;};
+          };
+        })
+        supportedSystems);
 
-      nixosConfigurations =
-        builtins.listToAttrs
-        (builtins.map
-          (system: {
-            name = "${system}-example";
-            value = nixpkgs.lib.nixosSystem {
-              pkgs = import nixpkgs {
-                inherit system;
-                config = nixpkgsConfig;
-                overlays = [self.overlays.nixos];
-              };
-              specialArgs = {inherit inputs;};
-              modules = [
-                agenix.nixosModules.age
-                self.nixosModules.nixos
-                {
-                  fileSystems."/".device = "/dev/vba";
-                }
-              ];
+      nixosConfigurations = builtins.listToAttrs (map (hostPlatform: {
+          name = "${hostPlatform}-example";
+          value = nixpkgs.lib.nixosSystem {
+            modules = [
+              agenix.nixosModules.age
+              self.nixosModules.nixos
+              {
+                fileSystems."/".device = "/dev/vba";
+                nixpkgs = {inherit hostPlatform;};
+              }
+            ];
+            specialArgs = {
+              inherit flaky nixpkgs;
+              dotfiles = self;
             };
-          })
-          (builtins.filter (nixpkgs.lib.hasSuffix "linux") supportedSystems));
+          };
+        })
+        (builtins.filter (nixpkgs.lib.hasSuffix "-linux") supportedSystems));
     }
     // flake-utils.lib.eachSystem supportedSystems (system: let
       pkgs = import nixpkgs {inherit system;};
@@ -212,6 +207,9 @@
     flake-utils.follows = "flaky/flake-utils";
     home-manager.follows = "flaky/home-manager";
     nixpkgs.follows = "flaky/nixpkgs";
+    ## NB: i686 isn’t well supported, and I don’t currently have any systems
+    ##     using it, so punt on the failures until I need to care.
+    systems.url = "github:nix-systems/default";
 
     agenix = {
       inputs = {
@@ -228,8 +226,7 @@
         home-manager.follows = "home-manager";
         nixpkgs.follows = "nixpkgs";
       };
-      ## TODO: Switch back to upstream once t4ccer/agenix.el#13 is merged.
-      url = "github:sellout/agenix.el/nixpkgs-24.05";
+      url = "github:t4ccer/agenix.el";
     };
 
     bradix = {
@@ -239,7 +236,8 @@
 
     darwin = {
       inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:lnl7/nix-darwin";
+      ## TODO: Remove the pinned commit once LnL7/nix-darwin#1082 is resolved.
+      url = "github:emilazy/nix-darwin/push-zovpmlzlzvvm";
     };
 
     emacs-color-theme-solarized = {
@@ -281,7 +279,12 @@
 
     nur.url = "github:nix-community/nur";
 
-    unison = {
+    org-invoice-table = {
+      flake = false;
+      url = "git+https://git.sr.ht/~trevdev/org-invoice-table";
+    };
+
+    unison-nix = {
       inputs = {
         flake-utils.follows = "flake-utils";
         home-manager.follows = "home-manager";

@@ -12,6 +12,7 @@
       pkgs.viddy # `watch` replacement
       pkgs.wget
     ];
+    sessionVariables.LESSHISTFILE = "${config.xdg.stateHome}/less/history";
     shellAliases.watch = "${pkgs.viddy}/bin/viddy";
   };
 

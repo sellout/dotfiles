@@ -47,7 +47,7 @@
  "PATH"
  (string-trim-right
   (shell-command-to-string
-   "source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh && echo $PATH")))
+   "source ${XDG_STATE_HOME:-$HOME/.local/state}/etc/profile.d/hm-session-vars.sh && echo $PATH")))
 
 (eval-when-compile
   ;; See jwiegley/use-package#880
@@ -73,6 +73,9 @@
   (aw-display-mode-overlay nil))
 
 (use-package agenix)
+
+(use-package ansi-color
+  :hook (compilation-filter . ansi-color-compilation-filter))
 
 (use-package auto-dark
   :after custom
@@ -1091,21 +1094,6 @@ See https://debbugs.gnu.org/cgi/bugreport.cgi?bug=60943 for more information."
   :delight (yas-minor-mode "✂️")
   :init (yas-global-mode))
 
-;;; Stolen from
-;;; https://emacs.stackexchange.com/questions/24698/ansi-escape-sequences-in-compilation-mode
-
-;; Stolen from
-;; http://endlessparentheses.com/ansi-colors-in-the-compilation-buffer-output.html
-(require 'ansi-color)
-(defun endless/colorize-compilation ()
-  "Colorize from `compilation-filter-start' to `point'."
-  (let ((inhibit-read-only t))
-    (ansi-color-apply-on-region
-     compilation-filter-start (point))))
-
-(add-hook 'compilation-filter-hook
-          #'endless/colorize-compilation)
-
 ;; Stolen from (https://oleksandrmanzyuk.wordpress.com/2011/11/05/better-emacs-shell-part-i/)
 (defun regexp-alternatives (regexps)
   "Return the alternation of a list of REGEXPS."
@@ -1466,6 +1454,6 @@ be very useful."
   (envrc-on-lighter '(:propertize "🗁" face envrc-mode-line-on-face))
   (envrc-remote t)
   :defer nil
-  :init (envrc-global-mode))
+  :hook (after-init . envrc-global-mode))
 
 ;;; init.el ends here

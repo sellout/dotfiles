@@ -1,13 +1,13 @@
 {
   config,
-  inputs,
   lib,
+  nixpkgs,
   pkgs,
   ...
 }: {
   nix = {
     ## Set the registry’s Nixpkgs to match this flake’s.
-    registry.nixpkgs.flake = inputs.nixpkgs;
+    registry.nixpkgs.flake = nixpkgs;
 
     settings = {
       ## This is generally superseded by `config.programs.starship`, but in some
@@ -26,10 +26,10 @@
       ## NIX_PATH is still used by many useful tools, so we set it to the same
       ## value as the one used by this flake. For more information, see
       ## https://nixos-and-flakes.thiscute.world/best-practices/nix-path-and-flake-registry
-      nix-path = lib.mkForce "nixpkgs=${inputs.nixpkgs}";
-      trusted-users = ["@wheel" "greg"];
+      nix-path = lib.mkForce "nixpkgs=${nixpkgs}";
       ## TODO: Enable globally once NixOS/nix#4119 is fixed.
       sandbox = !pkgs.stdenv.hostPlatform.isDarwin;
+      show-trace = true;
       use-xdg-base-directories = true;
     };
   };

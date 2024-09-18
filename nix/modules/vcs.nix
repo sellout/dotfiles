@@ -2,6 +2,7 @@
 ## configurations
 {
   config,
+  flaky,
   lib,
   options,
   pkgs,
@@ -50,10 +51,9 @@
       # https://en.wikipedia.org/wiki/AppleSingle_and_AppleDouble_formats#Usage
       "._*"
     ];
-in {
-  config =
-    if options ? homebrew
-    then {
+in
+  flaky.lib.multiConfig options {
+    darwinConfig = {
       environment.systemPackages =
         commonPackages
         ++ [
@@ -61,9 +61,8 @@ in {
           gitPackage
           mercurialPackage
         ];
-    }
-    else if options ? home
-    then {
+    };
+    homeConfig = {
       home = {
         file = builtins.listToAttrs (map (command:
           lib.nameValuePair
@@ -82,6 +81,7 @@ in {
             pkgs.git-revise # unfortunately not supported by magit
           ];
         sessionVariables.BRZ_LOG = "${config.xdg.stateHome}/breezy/log";
+        shellAliases.svn = "svn --config-dir '${config.xdg.configHome}/subversion'";
       };
 
       programs = {
@@ -133,8 +133,8 @@ in {
           };
           ignores = ignores;
           lfs.enable = true;
-          # not doing `git = super.gitFull` in the overlay, because then everything
-          # gets rebuilt, but want it here for email support
+          # NB: not doing `git = super.gitFull` in the overlay, because then
+          #     everything gets rebuilt, but want it here for email support.
           package = gitPackage;
           signing.signByDefault = true;
           userEmail = config.lib.local.primaryEmailAccount.address;
@@ -154,8 +154,8 @@ in {
         recursive = true;
         source = ../../home/${config.lib.local.xdg.config.rel}/git/template;
       };
-    }
-    else {
+    };
+    nixosConfig = {
       environment.systemPackages =
         commonPackages
         ++ [
@@ -167,4 +167,4 @@ in {
         package = gitPackage;
       };
     };
-}
+  }

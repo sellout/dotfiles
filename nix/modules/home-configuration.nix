@@ -1,7 +1,9 @@
 {
   config,
+  dotfiles,
   lib,
   pkgs,
+  self,
   ...
 }: {
   imports = [
@@ -9,7 +11,9 @@
     ./i3.nix
     ./input-devices.nix
     ./nix-configuration.nix
+    ./nixpkgs-configuration.nix
     ./shell.nix
+    ./tex.nix
     ./vcs.nix
   ];
 
@@ -65,7 +69,7 @@
         '';
 
       reviewXdgNinja = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        ${pkgs.xdg-ninja}/bin/xdg-ninja --skip-unsupported
+        ${pkgs.xdg-ninja}/bin/xdg-ninja --skip-unsupported || true
       '';
     };
 
@@ -82,7 +86,9 @@
     ## 2. use the application’s preferred config file name (we don’t care if it
     ##    has a leading `.` or not, since we use `ls -A`, etc to make dotfiles
     ##    visible whenever possible.
-    file = {
+    file = let
+      toml = pkgs.formats.toml {};
+    in {
       # ABCL’s init file (https://abcl.org/)
       ".abclrc".source =
         ../../home/${config.lib.local.xdg.config.rel}/common-lisp/init.lisp;
@@ -118,8 +124,11 @@
       #     stuff in `$CARGO_HOME` is cached data. However, this means that the
       #     Cargo config can be erased (until the next `home-manager switch`) if
       #     the cache is cleared.
-      "${config.lib.local.removeHome config.home.sessionVariables.CARGO_HOME}/config.toml".text = lib.generators.toINI {} {
-        build.target-dir = "${config.lib.local.xdg.state.rel}/cargo";
+      "${config.lib.local.removeHome config.home.sessionVariables.CARGO_HOME}/config.toml".source = toml.generate "Cargo config.toml" {
+        ## NB: Relative paths aren’t relative to the workspace, as one would
+        ##     hope. See rust-lang/cargo#7843.
+        build.target-dir = "${config.xdg.stateHome}/cargo";
+        ## Cargo writes executables to the bin/ subdir of this path.
         install.root = config.lib.local.xdg.local.home;
       };
       # There’s no $XDG_BIN_HOME in the spec for some reason, so these files
@@ -184,6 +193,20 @@
           nerdfont = "OpenDyslexic";
         }
       ];
+
+      ## For packages that should be gotten from nixcask on darwin. The second
+      ## argument may be null, but if the nixcast package name differs from the
+      ## Nixpkgs name, then it needs to be set.
+      maybeNixcask = pkg: nixcastPkg:
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then let
+          realNixcastPkg =
+            if nixcastPkg == null
+            then pkg
+            else nixcastPkg;
+        in
+          pkgs.nixcasks.${realNixcastPkg}
+        else pkgs.${pkg};
     in
       [
         pkgs._1password # This is the CLI, needed by VSCode 1Password extension
@@ -191,25 +214,13 @@
         pkgs.age
         pkgs.agenix
         ## doesn’t contain darwin GUI
-        (
-          if pkgs.stdenv.hostPlatform.isDarwin
-          then pkgs.nixcasks.anki
-          else pkgs.anki
-        )
+        (maybeNixcask "anki" null)
         pkgs.awscli
         pkgs.bash-strict-mode
         ## marked broken on darwin
-        (
-          if pkgs.stdenv.hostPlatform.isDarwin
-          then pkgs.nixcasks.calibre
-          else pkgs.calibre
-        )
+        (maybeNixcask "calibre" null)
         ## DOS game emulator # fails to build on darwin # x86 game emulator
-        (
-          if pkgs.stdenv.hostPlatform.isDarwin
-          then pkgs.nixcasks.dosbox
-          else pkgs.dosbox
-        )
+        (maybeNixcask "dosbox" null)
         # pkgs.discord # currently subsumed by ferdium
         # pkgs.element-desktop # currently subsumed by ferdium
         pkgs.ghostscript
@@ -218,11 +229,7 @@
         pkgs.jekyll
         pkgs.magic-wormhole
         ## not available on darwin via Nix
-        (
-          if pkgs.stdenv.hostPlatform.isDarwin
-          then pkgs.nixcasks.mumble
-          else pkgs.mumble
-        )
+        (maybeNixcask "mumble" null)
         (pkgs.nerdfonts.override {
           fonts =
             lib.concatMap
@@ -233,11 +240,7 @@
             fonts;
         })
         ## not available on darwin via Nix
-        (
-          if pkgs.stdenv.hostPlatform.isDarwin
-          then pkgs.nixcasks.obs
-          else pkgs.obs-studio
-        )
+        (maybeNixcask "obs-studio" "obs")
         # pkgs.slack # currently subsumed by ferdium
         pkgs.synergy
         pkgs.tailscale
@@ -351,12 +354,13 @@
       PYTHONPYCACHEPREFIX = "${config.xdg.cacheHome}/python";
       # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUSERBASE
       PYTHONUSERBASE = "${config.xdg.stateHome}/python";
+      RANDFILE = "${config.xdg.stateHome}/openssl/rnd";
       R_ENVIRON_USER = "${config.xdg.configHome}/r/environ";
       RUSTUP_HOME = "${config.xdg.stateHome}/rustup";
       STACK_XDG = "1";
       # May be able to remove this after wakatime/wakatime-cli#558 is fixed.
       WAKATIME_HOME = "${config.xdg.configHome}/wakatime";
-      XDG_RUNTIME_DIR = config.lib.local.xdg.runtimeDir;
+      XAUTHORITY = "${config.lib.local.xdg.runtimeDir}/Xauthority";
     };
 
     shellAliases = let
@@ -394,8 +398,8 @@
       nix-emacs-lisp-template = template "emacs-lisp";
       nix-haskell-template = template "haskell";
 
+      ## Set paths to XDG-compatible places
       keychain = "keychain --dir ${config.lib.local.xdg.runtimeDir}/keychain --absolute";
-      svn = "svn --config-dir ${config.xdg.configHome}/subversion";
       wget = "wget --hsts-file=${config.xdg.dataHome}/wget-hsts";
     };
 
@@ -463,10 +467,7 @@
       };
       state.rel = config.lib.local.removeHome config.xdg.stateHome;
       # Don’t know why this one isn’t in the `xdg` module.
-      runtimeDir =
-        if pkgs.stdenv.hostPlatform.isDarwin
-        then config.lib.local.addHome "Library/Caches/Temp/runtime"
-        else "/run/user/$UID";
+      runtimeDir = config.home.sessionVariables.XDG_RUNTIME_DIR;
       userDirs = {
         projects = {
           home =
@@ -499,6 +500,7 @@
 
   nix = {
     package = pkgs.nix;
+    registry.sys.flake = self;
     settings = {
       ## TODO: was required for Nix on Mac at some point -- review
       allow-symlinked-store = pkgs.stdenv.hostPlatform.isDarwin;
@@ -506,8 +508,11 @@
       keep-failed = true;
       keep-outputs = true;
       log-lines = 50;
+      warn-dirty = false;
     };
   };
+
+  nixpkgs.overlays = [dotfiles.overlays.home];
 
   programs = {
     direnv = {
@@ -657,15 +662,24 @@
     };
   };
 
+  ## FIXME: SSH doesn’t create the directory for the `ControlPath`, so if this
+  ##        isn’t done, SSH doesn’t work on new machines. It seems like a bug
+  ##        in SSH to me. Or, at least, SSH should give a better error message
+  ##        when this occurs.
+  home.activation.sshControlPath = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    mkdir -p '${config.lib.local.xdg.runtimeDir}/ssh'
+  '';
+
   services = {
     gpg-agent = {
+      ## NB: Despite having a launchd configuration, this module also has a
+      ##     linux-only assertion.
       enable = pkgs.stdenv.hostPlatform.isLinux;
-      extraConfig = ''
-        ## See magit/magit#4076 for the struggles re: getting Magit/TRAMP/GPG
-        ## working.
-        allow-emacs-pinentry
-      '';
       pinentryPackage = pkgs.pinentry-tty;
+      ## TODO: These values are just copied from my manual config. Figure out if
+      ##       they’re actually good.
+      defaultCacheTtl = 600;
+      maxCacheTtl = 7200;
     };
 
     home-manager.autoUpgrade = {
@@ -798,6 +812,7 @@
         closeViewScrollWheelToggle = true;
         reduceTransparency = true;
       };
+      "org.hammerspoon.Hammerspoon".MJConfigFile = "${config.xdg.configHome}/hammerspoon/init.lua";
     };
     search = "DuckDuckGo";
   };
@@ -812,7 +827,8 @@
       # TODO: I don’t know how to relocate `$HOME/.cabal/setup-exe-cache` and
       #       `$HOME/.cabal/store`. Hopefully they use `CABAL_DIR`.
       "cabal/config".text = ''
-        remote-repo: hackage.haskell.org:http://hackage.haskell.org/packages/archive
+        repository hackage.haskell.org
+          url: http://hackage.haskell.org/packages/archive
         remote-repo-cache: ${config.xdg.cacheHome}/cabal/packages
         world-file: ${config.xdg.stateHome}/cabal/world
         extra-prog-path: ${config.xdg.dataHome}/cabal/bin
@@ -833,6 +849,28 @@
         set history filename ${config.xdg.stateHome}/gdb/history
         set history save on
       '';
+      ## TODO: This is stolen from the Home Manager module, because that only
+      ##       works for Linux. Extract this to a local module with the linux
+      ##       config next to it or, even better, fix the upstream module.
+      "gnupg/gpg-agent.conf".text = let
+        cfg = config.services.gpg-agent;
+        optional = lib.optional;
+      in
+        lib.concatStringsSep "\n"
+        (optional (cfg.enableSshSupport) "enable-ssh-support"
+          ++ optional cfg.grabKeyboardAndMouse "grab"
+          ++ optional (!cfg.enableScDaemon) "disable-scdaemon"
+          ++ optional (cfg.defaultCacheTtl != null)
+          "default-cache-ttl ${toString cfg.defaultCacheTtl}"
+          ++ optional (cfg.defaultCacheTtlSsh != null)
+          "default-cache-ttl-ssh ${toString cfg.defaultCacheTtlSsh}"
+          ++ optional (cfg.maxCacheTtl != null)
+          "max-cache-ttl ${toString cfg.maxCacheTtl}"
+          ++ optional (cfg.maxCacheTtlSsh != null)
+          "max-cache-ttl-ssh ${toString cfg.maxCacheTtlSsh}"
+          ++ optional (cfg.pinentryPackage != null)
+          "pinentry-program ${lib.getExe cfg.pinentryPackage}"
+          ++ [cfg.extraConfig]);
       "irb/irbrc".text = ''
         IRB.conf[:EVAL_HISTORY] = 200
         IRB.conf[:HISTORY_FILE] = "${config.xdg.stateHome}/irb/history"
@@ -848,13 +886,7 @@
         (ql:quickload "swank")
         (swank:create-server :port 4005)
       '';
-      "npm/npmrc".text = ''
-        cache=${config.xdg.cacheHome}/npm
-        init-module=${config.xdg.cacheHome}/npm/config/npm-init.js
-        prefix=${config.xdg.dataHome}/npm
-        tmp=$XDG_RUNTIME_DIR/npm
-        viewer = browser
-      '';
+      "npm/npmrc".source = ../../home/${config.lib.local.xdg.config.rel}/npm/npmrc;
       "octave/octaverc".text = ''
         history_file("${config.xdg.stateHome}/octave/history")
       '';

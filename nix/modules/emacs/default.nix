@@ -23,8 +23,9 @@
 ### in perpetuity.
 {
   config,
-  inputs,
+  emacs-color-theme-solarized,
   lib,
+  org-invoice-table,
   pkgs,
   ...
 }: {
@@ -107,11 +108,6 @@
     ## the expansion of `$HOME` is.
     emacs-cache-home = "~/${config.lib.local.xdg.cache.rel}/emacs";
     emacs-state-home = "~/${config.lib.local.xdg.state.rel}/emacs";
-
-    ## NB: Bound so we can reference it in the the Emacs setup for `tex-mode`.
-    texlive-combined = pkgs.texlive.combine {
-      inherit (pkgs.texlive) braids dvipng pgf scheme-small tikz-cd ulem xcolor;
-    };
   in {
     enable = true;
     ## enable this if I play with getting dbus working again
@@ -134,7 +130,8 @@
             config.home.sessionVariables)}
 
         ;; TODO: Add these via a flake input … but need it to be in git or hg.
-        (add-to-list 'load-path "${inputs.emacs-color-theme-solarized}")
+        (add-to-list 'load-path "${emacs-color-theme-solarized}")
+        (add-to-list 'load-path "${org-invoice-table}")
 
         ;;; This contains settings we want to customize with Nix-dependent values,
         ;;; organized by package.
@@ -178,12 +175,10 @@
           '(octave
             (inferior-octave-program "${pkgs.octave}/bin/octave"))
           '(tex-mode
-            ;; TODO: These can’t go upstream like this – how to depend on the
-            ;;       individual binaries correctly?
-            (latex-run-command "${texlive-combined}/bin/latex")
+            (latex-run-command "${config.programs.texlive.package}/bin/latex")
             (slitex-run-command nil nil () "I can’t find this command anywhere")
-            (tex-bibtex-command "${texlive-combined}/bin/bibtex")
-            (tex-run-command "${texlive-combined}/bin/tex"))
+            (tex-bibtex-command "${config.programs.texlive.package}/bin/bibtex")
+            (tex-run-command "${config.programs.texlive.package}/bin/tex"))
           '(vc-darcs
             (vc-darcs-program-name "${pkgs.darcs}/bin/darcs"))
 

@@ -53,6 +53,7 @@
       # TODO: Remove once NixOS/nix#4119 is fixed.
       "homeConfigurations.aarch64-darwin-example"
       # TODO: Remove once garnix-io/garnix#285 is fixed.
+      "darwinConfigurations.x86_64-darwin-example"
       "homeConfigurations.x86_64-darwin-example"
     ];
   };
