@@ -827,7 +827,8 @@
       # TODO: I don’t know how to relocate `$HOME/.cabal/setup-exe-cache` and
       #       `$HOME/.cabal/store`. Hopefully they use `CABAL_DIR`.
       "cabal/config".text = ''
-        remote-repo: hackage.haskell.org:http://hackage.haskell.org/packages/archive
+        repository hackage.haskell.org
+          url: http://hackage.haskell.org/packages/archive
         remote-repo-cache: ${config.xdg.cacheHome}/cabal/packages
         world-file: ${config.xdg.stateHome}/cabal/world
         extra-prog-path: ${config.xdg.dataHome}/cabal/bin
