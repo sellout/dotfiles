@@ -18,6 +18,11 @@
     etc.hosts.source = ../../root/etc/hosts;
     extraOutputsToInstall = ["devdoc" "doc"];
     pathsToLink = ["/share/fonts"];
+    ## TODO: This is a workaround for LnL7/nix-darwin#947.
+    profiles = lib.mkOrder 801 [
+      "$XDG_STATE_HOME/nix/profile"
+      "$HOME/.local/state/nix/profile"
+    ];
     systemPackages = [
       ## remote connections
       pkgs.mosh

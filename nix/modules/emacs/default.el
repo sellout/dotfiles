@@ -47,7 +47,7 @@
  "PATH"
  (string-trim-right
   (shell-command-to-string
-   "source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh && echo $PATH")))
+   "source ${XDG_STATE_HOME:-$HOME/.local/state}/etc/profile.d/hm-session-vars.sh && echo $PATH")))
 
 (eval-when-compile
   ;; See jwiegley/use-package#880
