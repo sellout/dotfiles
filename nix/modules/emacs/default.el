@@ -74,6 +74,9 @@
 
 (use-package agenix)
 
+(use-package ansi-color
+  :hook (compilation-filter . ansi-color-compilation-filter))
+
 (use-package auto-dark
   :after custom
   :defer nil
@@ -1090,21 +1093,6 @@ See https://debbugs.gnu.org/cgi/bugreport.cgi?bug=60943 for more information."
 (use-package yasnippet
   :delight (yas-minor-mode "✂️")
   :init (yas-global-mode))
-
-;;; Stolen from
-;;; https://emacs.stackexchange.com/questions/24698/ansi-escape-sequences-in-compilation-mode
-
-;; Stolen from
-;; http://endlessparentheses.com/ansi-colors-in-the-compilation-buffer-output.html
-(require 'ansi-color)
-(defun endless/colorize-compilation ()
-  "Colorize from `compilation-filter-start' to `point'."
-  (let ((inhibit-read-only t))
-    (ansi-color-apply-on-region
-     compilation-filter-start (point))))
-
-(add-hook 'compilation-filter-hook
-          #'endless/colorize-compilation)
 
 ;; Stolen from (https://oleksandrmanzyuk.wordpress.com/2011/11/05/better-emacs-shell-part-i/)
 (defun regexp-alternatives (regexps)
