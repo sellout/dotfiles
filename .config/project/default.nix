@@ -1,4 +1,9 @@
-{config, lib, pkgs, ...}: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   project = {
     name = "dotfiles";
     summary = "Sellout’s general configuration";
@@ -7,7 +12,9 @@
     ## lean into Project Manager and avoid committing extra files.
     commit-by-default = lib.mkForce false;
 
-    devPackages = [pkgs.home-manager];
+    devPackages =
+      [pkgs.home-manager]
+      ++ lib.optional pkgs.stdenv.hostPlatform.isLinux pkgs.system-manager;
   };
 
   ## dependency management

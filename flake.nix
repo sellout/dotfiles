@@ -35,6 +35,7 @@
     nur,
     org-invoice-table,
     self,
+    system-manager,
     systems,
     unison-nix,
   }: let
@@ -184,9 +185,37 @@
           };
         })
         (builtins.filter (nixpkgs.lib.hasSuffix "-linux") supportedSystems));
+
+      systemConfigs = builtins.listToAttrs (map (hostPlatform: {
+          name = "${hostPlatform}-example";
+          value = system-manager.lib.makeSystemConfig {
+            modules = [
+              agenix.nixosModules.age
+              self.nixosModules.nixos
+              {
+                nixpkgs = {inherit hostPlatform;};
+              }
+            ];
+            specialArgs = {
+              inherit flaky nixpkgs;
+              dotfiles = self;
+            };
+          };
+        })
+        (builtins.filter (nixpkgs.lib.hasSuffix "-linux") supportedSystems));
     }
     // flake-utils.lib.eachSystem supportedSystems (system: let
-      pkgs = import nixpkgs {inherit system;};
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [
+          self.overlays.darwin
+          self.overlays.home
+          self.overlays.nixos
+          (final: prev: {
+            system-manager = system-manager.packages.${system}.default;
+          })
+        ];
+      };
     in {
       projectConfigurations = flaky.lib.projectConfigurations.default {
         inherit pkgs self supportedSystems;
@@ -282,6 +311,14 @@
     org-invoice-table = {
       flake = false;
       url = "git+https://git.sr.ht/~trevdev/org-invoice-table";
+    };
+
+    system-manager = {
+      inputs = {
+        flake-utils.follows = "flake-utils";
+        nixpkgs.follows = "nixpkgs";
+      };
+      url = "github:numtide/system-manager";
     };
 
     unison-nix = {
