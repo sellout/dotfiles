@@ -35,6 +35,7 @@
     nur,
     org-invoice-table,
     self,
+    system-manager,
     systems,
     unison-nix,
   }: let
@@ -78,6 +79,7 @@
           nixpkgs
           org-invoice-table
           self
+          system-manager
           ;
       };
 
@@ -228,10 +230,38 @@
           };
         })
         (builtins.filter (nixpkgs.lib.hasSuffix "-linux") supportedSystems));
+
+      systemConfigs = builtins.listToAttrs (map (hostPlatform: {
+          name = "${hostPlatform}-example";
+          value = self.lib.makeSystemConfig {
+            modules = [
+              {
+                home-manager.users.example-user = exampleHomeConfiguration;
+                nixpkgs = {inherit hostPlatform;};
+                system.stateVersion = "24.05";
+                users = {
+                  groups.example-user = {};
+                  users.example-user = {
+                    group = "example-user";
+                    home = "/tmp/example";
+                    isNormalUser = true;
+                  };
+                };
+              }
+            ];
+          };
+        })
+        (builtins.filter (nixpkgs.lib.hasSuffix "-linux") supportedSystems));
     }
     // flake-utils.lib.eachSystem supportedSystems (system: let
       pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
         flaky.overlays.default
+        self.overlays.darwin
+        self.overlays.home
+        self.overlays.nixos
+        (final: prev: {
+          system-manager = system-manager.packages.${system}.default;
+        })
       ];
     in {
       projectConfigurations = flaky.lib.projectConfigurations.nix {
@@ -251,7 +281,10 @@
 
   inputs = {
     ## Flaky should generally be the source of truth for its inputs.
-    flaky.url = "github:sellout/flaky";
+    flaky = {
+      inputs.systems.follows = "systems";
+      url = "github:sellout/flaky";
+    };
 
     bash-strict-mode.follows = "flaky/bash-strict-mode";
     flake-utils.follows = "flaky/flake-utils";
@@ -266,6 +299,7 @@
         darwin.follows = "darwin";
         home-manager.follows = "home-manager";
         nixpkgs.follows = "nixpkgs";
+        systems.follows = "systems";
       };
       url = "github:ryantm/agenix";
     };
@@ -327,11 +361,20 @@
     # nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     # nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-    nur.url = "github:nix-community/nur";
+    nur = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-community/nur";
+    };
 
     org-invoice-table = {
       flake = false;
       url = "git+https://git.sr.ht/~trevdev/org-invoice-table";
+    };
+
+    system-manager = {
+      ## Restore this after numtide/system-manager#173 is dealt with.
+      # inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:numtide/system-manager";
     };
 
     unison-nix = {

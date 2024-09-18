@@ -8,7 +8,9 @@
     name = "dotfiles";
     summary = "Sellout’s general configuration";
 
-    devPackages = [pkgs.home-manager];
+    devPackages =
+      [pkgs.home-manager]
+      ++ lib.optional pkgs.stdenv.hostPlatform.isLinux pkgs.system-manager;
   };
 
   ## dependency management
