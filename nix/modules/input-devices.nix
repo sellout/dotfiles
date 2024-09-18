@@ -1,12 +1,12 @@
 {
   config,
-  inputs,
+  flaky,
   lib,
   options,
   pkgs,
   ...
 }:
-inputs.flaky.lib.multiConfig options {
+flaky.lib.multiConfig options {
   darwinConfig = {
     homebrew.casks = [
       # Atreus keyboard customizer

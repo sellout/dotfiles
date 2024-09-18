@@ -22,6 +22,7 @@
     bash-strict-mode,
     bradix,
     darwin,
+    emacs-color-theme-solarized,
     emacs-extended-faces,
     epresent,
     firefox-darwin,
@@ -32,28 +33,12 @@
     nixcasks,
     nixpkgs,
     nur,
+    org-invoice-table,
     self,
     systems,
     unison-nix,
-    ...
-  } @ inputs: let
+  }: let
     supportedSystems = import systems;
-
-    nixpkgsConfig = {
-      allowUnfreePredicate = pkg:
-        builtins.elem (nixpkgs.lib.getName pkg) [
-          "1password"
-          "1password-cli"
-          "eagle"
-          "onepassword-password-manager"
-          "plexmediaserver"
-          "steam"
-          "steam-original"
-          "steam-run"
-          "vscode-extension-ms-vsliveshare-vsliveshare"
-          "zoom"
-        ];
-    };
   in
     {
       overlays = {
@@ -67,7 +52,6 @@
             home-manager
             mkalias
             nixpkgs
-            nixpkgsConfig
             unison-nix
             ;
         };
@@ -102,6 +86,7 @@
       darwinModules = {
         darwin = import ./nix/modules/darwin-configuration.nix;
         nix-configuration = import ./nix/modules/nix-configuration.nix;
+        nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
       };
 
       homeModules = {
@@ -109,6 +94,7 @@
         home = import ./nix/modules/home-configuration.nix;
         i3 = import ./nix/modules/i3.nix;
         nix-configuration = import ./nix/modules/nix-configuration.nix;
+        nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
         shell = import ./nix/modules/shell.nix;
         tex = import ./nix/modules/tex.nix;
         vcs = import ./nix/modules/vcs.nix;
@@ -117,88 +103,87 @@
       nixosModules = {
         nix-configuration = import ./nix/modules/nix-configuration.nix;
         nixos = import ./nix/modules/nixos-configuration.nix;
+        nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
       };
 
-      darwinConfigurations =
-        builtins.listToAttrs
-        (builtins.map
-          (system: {
-            name = "${system}-example";
-            value = darwin.lib.darwinSystem {
-              pkgs = import nixpkgs {
-                inherit system;
-                config = nixpkgsConfig;
-                overlays = [self.overlays.darwin];
-              };
-              specialArgs = {inherit inputs;};
-              modules = [self.darwinModules.darwin];
+      darwinConfigurations = builtins.listToAttrs (map (hostPlatform: {
+          name = "${hostPlatform}-example";
+          value = darwin.lib.darwinSystem {
+            modules = [
+              self.darwinModules.darwin
+              {nixpkgs = {inherit hostPlatform;};}
+            ];
+            specialArgs = {
+              inherit flaky nixpkgs;
+              dotfiles = self;
             };
-          })
-          (builtins.filter (nixpkgs.lib.hasSuffix "darwin") supportedSystems));
+          };
+        })
+        (builtins.filter (nixpkgs.lib.hasSuffix "darwin") supportedSystems));
 
-      homeConfigurations =
-        builtins.listToAttrs
-        (builtins.map
-          (system: {
-            name = "${system}-example";
-            value = home-manager.lib.homeManagerConfiguration {
-              pkgs = import nixpkgs {
-                inherit system;
-                config = nixpkgsConfig;
-                overlays = [self.overlays.home];
-              };
-              extraSpecialArgs = {inherit inputs;};
-              modules = [
-                self.homeModules.home
-                {
-                  ## Attributes that the configuration expects to have set, but
-                  ## aren’t set publicly.
-                  ##
-                  ## TODO: Maybe have the configuration check if these are set,
-                  ##       so it’s more robust.
-                  accounts.email.accounts.Example = {
-                    address = "example-user@example.com";
-                    flavor = "gmail.com";
-                    primary = true;
-                    realName = "example user";
-                  };
-                  programs.git = {
-                    extraConfig.github.user = "example-user";
-                    signing.key = "";
-                  };
-                  ## These attributes are simply required by home-manager.
-                  home = {
-                    homeDirectory = "/tmp/example";
-                    username = "example-user";
-                  };
-                }
-              ];
+      homeConfigurations = builtins.listToAttrs (map (system: {
+          name = "${system}-example";
+          value = home-manager.lib.homeManagerConfiguration {
+            extraSpecialArgs = {
+              inherit
+                emacs-color-theme-solarized
+                flaky
+                nixpkgs
+                org-invoice-table
+                self
+                ;
+              dotfiles = self;
             };
-          })
-          supportedSystems);
+            modules = [
+              agenix.homeManagerModules.age
+              self.homeModules.home
+              {
+                ## Attributes that the configuration expects to have set, but
+                ## aren’t set publicly.
+                ##
+                ## TODO: Maybe have the configuration check if these are set,
+                ##       so it’s more robust.
+                accounts.email.accounts.Example = {
+                  address = "example-user@example.com";
+                  flavor = "gmail.com";
+                  primary = true; # This is the important value.
+                  realName = "example user";
+                };
+                home.sessionVariables.XDG_RUNTIME_DIR = "/tmp/example/runtime";
+                programs.git = {
+                  extraConfig.github.user = "example-user";
+                  signing.key = "";
+                };
+                ## These attributes are simply required by home-manager.
+                home = {
+                  homeDirectory = "/tmp/example";
+                  username = "example-user";
+                };
+              }
+            ];
+            pkgs = import nixpkgs {inherit system;};
+          };
+        })
+        supportedSystems);
 
-      nixosConfigurations =
-        builtins.listToAttrs
-        (builtins.map
-          (system: {
-            name = "${system}-example";
-            value = nixpkgs.lib.nixosSystem {
-              pkgs = import nixpkgs {
-                inherit system;
-                config = nixpkgsConfig;
-                overlays = [self.overlays.nixos];
-              };
-              specialArgs = {inherit inputs;};
-              modules = [
-                agenix.nixosModules.age
-                self.nixosModules.nixos
-                {
-                  fileSystems."/".device = "/dev/vba";
-                }
-              ];
+      nixosConfigurations = builtins.listToAttrs (map (hostPlatform: {
+          name = "${hostPlatform}-example";
+          value = nixpkgs.lib.nixosSystem {
+            modules = [
+              agenix.nixosModules.age
+              self.nixosModules.nixos
+              {
+                fileSystems."/".device = "/dev/vba";
+                nixpkgs = {inherit hostPlatform;};
+              }
+            ];
+            specialArgs = {
+              inherit flaky nixpkgs;
+              dotfiles = self;
             };
-          })
-          (builtins.filter (nixpkgs.lib.hasSuffix "linux") supportedSystems));
+          };
+        })
+        (builtins.filter (nixpkgs.lib.hasSuffix "linux") supportedSystems));
     }
     // flake-utils.lib.eachSystem supportedSystems (system: let
       pkgs = import nixpkgs {inherit system;};

@@ -1,8 +1,9 @@
 {
   config,
-  inputs,
+  dotfiles,
   lib,
   pkgs,
+  self,
   ...
 }: {
   imports = [
@@ -10,6 +11,7 @@
     ./i3.nix
     ./input-devices.nix
     ./nix-configuration.nix
+    ./nixpkgs-configuration.nix
     ./shell.nix
     ./tex.nix
     ./vcs.nix
@@ -500,7 +502,7 @@
 
   nix = {
     package = pkgs.nix;
-    registry.sys.flake = inputs.self;
+    registry.sys.flake = self;
     settings = {
       ## TODO: was required for Nix on Mac at some point -- review
       allow-symlinked-store = pkgs.stdenv.hostPlatform.isDarwin;
@@ -511,6 +513,8 @@
       warn-dirty = false;
     };
   };
+
+  nixpkgs.overlays = [dotfiles.overlays.home];
 
   programs = {
     direnv = {

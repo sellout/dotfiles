@@ -2,6 +2,7 @@
 ### contains things that are provided globally for some reason.
 {
   config,
+  dotfiles,
   lib,
   pkgs,
   ...
@@ -9,6 +10,7 @@
   imports = [
     ./input-devices.nix
     ./nix-configuration.nix
+    ./nixpkgs-configuration.nix
     ./vcs.nix
   ];
 
@@ -149,6 +151,8 @@
     # TODO: Enable once NixOS/nix#7273 is fixed.
     settings.auto-optimise-store = false; # true;
   };
+
+  nixpkgs.overlays = [dotfiles.overlays.darwin];
 
   programs = {
     bash = {

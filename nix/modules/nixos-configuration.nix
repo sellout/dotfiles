@@ -1,5 +1,6 @@
 {
   config,
+  dotfiles,
   lib,
   pkgs,
   ...
@@ -7,6 +8,7 @@
   imports = [
     ./input-devices.nix
     ./nix-configuration.nix
+    ./nixpkgs-configuration.nix
     ./vcs.nix
   ];
 
@@ -104,6 +106,8 @@
     };
     optimise.automatic = true;
   };
+
+  nixpkgs.overlays = [dotfiles.overlays.nixos];
 
   powerManagement = {
     # cpuFreqGovernor = "ondemand";

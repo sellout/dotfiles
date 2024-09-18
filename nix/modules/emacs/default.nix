@@ -23,8 +23,9 @@
 ### in perpetuity.
 {
   config,
-  inputs,
+  emacs-color-theme-solarized,
   lib,
+  org-invoice-table,
   pkgs,
   ...
 }: {
@@ -129,8 +130,8 @@
             config.home.sessionVariables)}
 
         ;; TODO: Add these via a flake input … but need it to be in git or hg.
-        (add-to-list 'load-path "${inputs.emacs-color-theme-solarized}")
-        (add-to-list 'load-path "${inputs.org-invoice-table}")
+        (add-to-list 'load-path "${emacs-color-theme-solarized}")
+        (add-to-list 'load-path "${org-invoice-table}")
 
         ;;; This contains settings we want to customize with Nix-dependent values,
         ;;; organized by package.

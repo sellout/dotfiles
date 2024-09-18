@@ -2,7 +2,7 @@
 ## configurations
 {
   config,
-  inputs,
+  flaky,
   lib,
   options,
   pkgs,
@@ -52,7 +52,7 @@
       "._*"
     ];
 in
-  inputs.flaky.lib.multiConfig options {
+  flaky.lib.multiConfig options {
     darwinConfig = {
       environment.systemPackages =
         commonPackages
