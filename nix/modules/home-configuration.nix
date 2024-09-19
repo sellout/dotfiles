@@ -507,7 +507,10 @@
   news.display = "show";
 
   nix = {
-    package = pkgs.nix;
+    ## TODO: `nix.package` must be set in a configuration, but it gets
+    ##       overridden when Home Manager is used as a module. This is a
+    ##       workaround until nix-community/home-manager#5870 is resolved.
+    package = lib.mkDefault pkgs.nix;
     registry.sys.flake = self;
     settings = {
       ## TODO: was required for Nix on Mac at some point -- review
