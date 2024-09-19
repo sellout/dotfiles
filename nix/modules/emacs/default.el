@@ -1,4 +1,4 @@
-;;; init.el --- Sellout’s Emacs init  -*- lexical-binding: t -*-
+;;; default.el --- Sellout’s Emacs configuration  -*- lexical-binding: t -*-
 
 ;;; Commentary:
 
@@ -28,8 +28,24 @@
 
 ;;; Code:
 
+(defgroup sellout nil
+  "My personal configuration."
+  :group 'local)
+
+(defcustom sellout-describe-key-package 'helm-descbinds
+  "‘helm-descbinds’ and ‘which-key’ are mutually incompatible.
+‘helm-descbinds’ seems better for a few reasons, but I’m having trouble getting
+ it to work. If this is nil, no package will be used."
+  :type '(choice (const helm-descbinds) (const which-key)))
+
+(defcustom sellout-lsp-package 'eglot
+  "‘eglot’ and ‘lsp-mode’ both offer LSP integration.
+‘lsp-mode’ is much richer, but also much more complicated and flaky."
+  :type '(choice (const eglot) (const lsp-mode)))
+
 (defun require-config (feature &optional filename noerror)
-  "Like ‘require’, but first look for FEATURE in ‘user-emacs-directory’."
+  "Like ‘require’, but first look for FEATURE in ‘user-emacs-directory’.
+FILENAME and NOERROR behave the same as for ‘require‘."
   (let ((load-path (cons user-emacs-directory load-path)))
     (require feature filename noerror)))
 
@@ -360,34 +376,36 @@ characters of FACE plus any specified ‘fringe’."
 (defun sellout--mode-line-status-indicator (prefix status)
   (list prefix `(:propertize ,status face mode-line-state)))
 
-;; Overridden to match my general format for this stuff
-;; > prefix[err warn info]
-;; with faces to match.
-;; TODO: Generalize this
-(defun sellout--flycheck-mode-line-status-text (&optional status)
-  "Get a text describing STATUS for use in the mode line.
-STATUS defaults to `flycheck-last-status-change' if omitted or nil."
-  (let ((text (pcase (or status flycheck-last-status-change)
-                ('not-checked '("   "))
-                ('no-checker '((:propertize " - " face warning)))
-                ('running '(" * "))
-                ('errored '((:propertize " ! " face error)))
-                ('finished
-                 (let-alist (flycheck-count-errors flycheck-current-errors)
-                   (if (or .error .warning)
-                       (list (if .error
-                                 `(:propertize ,(number-to-string .error) face error)
-                               "0")
-                             " "
-                             (if .warning
-                                 `(:propertize ,(number-to-string .warning) face warning)
-                               "0"))
-                     '((:propertize " ✓ " face success)))))
-                ('interrupted '((:propertize " . " face warning)))
-                ('suspicious '((:propertize " ? " face warning))))))
-    (sellout--mode-line-status-indicator flycheck-mode-line-prefix text)))
-
 (use-package flycheck
+  :config
+  ;; Overridden to match my general format for this stuff
+  ;; > prefix[err warn info]
+  ;; with faces to match.
+  ;; TODO: Generalize this
+  (defun sellout--flycheck-mode-line-status-text (&optional status)
+    "Get a text describing STATUS for use in the mode line.
+STATUS defaults to `flycheck-last-status-change' if omitted or nil."
+    (let ((text (pcase (or status flycheck-last-status-change)
+                  ('not-checked '("   "))
+                  ('no-checker '((:propertize " - " face warning)))
+                  ('running '(" * "))
+                  ('errored '((:propertize " ! " face error)))
+                  ('finished
+                   (let-alist (flycheck-count-errors flycheck-current-errors)
+                     (if (or .error .warning)
+                         (list (if .error
+                                   `(:propertize ,(number-to-string .error)
+                                                 face error)
+                                 "0")
+                               " "
+                               (if .warning
+                                   `(:propertize ,(number-to-string .warning)
+                                                 face warning)
+                                 "0"))
+                       '((:propertize " ✓ " face success)))))
+                  ('interrupted '((:propertize " . " face warning)))
+                  ('suspicious '((:propertize " ? " face warning))))))
+      (sellout--mode-line-status-indicator flycheck-mode-line-prefix text)))
   :custom
   (flycheck-mode-line '(:eval (sellout--flycheck-mode-line-status-text)))
   (flycheck-mode-line-prefix "✓")
@@ -481,7 +499,8 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
   :init (helm-mode))
 
 (use-package helm-descbinds
-  :custom (helm-descbinds-mode t))
+  :disabled (not (eq sellout-describe-key-package 'helm-descbinds))
+  :init (helm-descbinds-mode))
 
 (use-package helm-ls-git
   :after magit
@@ -604,132 +623,136 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
 (use-package locate
   :custom (locate-header-face 'level-1))
 
-(let ((use-eglot t))
-  (use-package eglot
-    :config
-    (add-to-list 'eglot-server-programs
-                 '((unison-ts-mode unisonlang-mode) "127.0.0.1" 5757))
-    :custom (eglot-menu-string "↹")
-    :disabled (not use-eglot))
+(use-package eglot
+  :config
+  (mapc (lambda (server) (add-to-list 'eglot-server-programs server))
+        '((nix-mode "nil")
+          (rust-mode "rust-analyzer"
+                     :initializationOptions ( :cargo (:buildScripts (:enable t))
+                                              :procMacro (:enable t)))
+          ((unison-ts-mode unisonlang-mode) "127.0.0.1" 5757)))
+  :custom
+  (eglot-autoshutdown t)
+  (eglot-menu-string "↹")
+  :disabled (not (eq sellout-lsp-package 'eglot))
+  :hook
+  ((nix-mode haskell-mode rust-mode rustic-mode unison-ts-mode unisonlang-mode)
+   . eglot-ensure))
 
-  (use-package lsp-bash
-    :config
-    (add-to-list 'lsp-language-id-configuration '(bats-mode . "shellscript"))
-    (add-to-list 'lsp-language-id-configuration
-                 '(envrc-file-mode . "shellscript"))
-    (lsp-register-client
-     (make-lsp-client
-      :new-connection (lsp-stdio-connection #'lsp-bash--bash-ls-server-command)
-      :priority -1
-      :major-modes '(bats-mode direnv-envrc-mode envrc-file-mode)
-      :environment-fn
-      (lambda ()
-        '(("EXPLAINSHELL_ENDPOINT" . lsp-bash-explainshell-endpoint)
-          ("HIGHLIGHT_PARSING_ERRORS" . lsp-bash-highlight-parsing-errors)
-          ("GLOB_PATTERN" . lsp-bash-glob-pattern)))
-      :server-id 'bash-like-ls
-      :download-server-fn
-      (lambda (_client callback error-callback _update?)
-        (lsp-package-ensure 'bash-language-server callback error-callback))))
-    :custom (lsp-bash-highlight-parsing-errors t)
-    :disabled use-eglot)
+(use-package lsp-bash
+  :config
+  (add-to-list 'lsp-language-id-configuration '(bats-mode . "shellscript"))
+  (add-to-list 'lsp-language-id-configuration
+               '(envrc-file-mode . "shellscript"))
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection #'lsp-bash--bash-ls-server-command)
+    :priority -1
+    :major-modes '(bats-mode direnv-envrc-mode envrc-file-mode)
+    :environment-fn
+    (lambda ()
+      '(("EXPLAINSHELL_ENDPOINT" . lsp-bash-explainshell-endpoint)
+        ("HIGHLIGHT_PARSING_ERRORS" . lsp-bash-highlight-parsing-errors)
+        ("GLOB_PATTERN" . lsp-bash-glob-pattern)))
+    :server-id 'bash-like-ls
+    :download-server-fn
+    (lambda (_client callback error-callback _update?)
+      (lsp-package-ensure 'bash-language-server callback error-callback))))
+  :custom (lsp-bash-highlight-parsing-errors t)
+  :disabled (not (eq sellout-lsp-package 'lsp-mode)))
 
-  (use-package lsp-haskell
-    :config
-    (lsp-register-client
-     (make-lsp-client
-      :new-connection (lsp-tramp-connection #'lsp-haskell--server-command)
-      :remote? t
-      :major-modes '(haskell-mode haskell-literate-mode)
-      :ignore-messages nil
-      :server-id 'hls-remote))
-    :disabled use-eglot)
+(use-package lsp-haskell
+  :config
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-tramp-connection #'lsp-haskell--server-command)
+    :remote? t
+    :major-modes '(haskell-mode haskell-literate-mode)
+    :ignore-messages nil
+    :server-id 'hls-remote))
+  :disabled (not (eq sellout-lsp-package 'lsp-mode)))
 
-  (use-package lsp-mode
-    :config
-    (lsp-register-client
-     (make-lsp-client
-      :new-connection (lsp-tramp-connection "clangd")
-      :remote? t
-      :major-modes '(c-mode c++-mode)
-      :ignore-messages nil
-      :server-id 'clangd-remote))
-    :custom
-    (lsp-eldoc-render-all t)
-    (lsp-headerline-breadcrumb-enable t)
-    (lsp-headerline-breadcrumb-segments '(project symbols))
-    (lsp-keymap-prefix "s-g")
-    :hook
-    (c-mode . lsp-deferred)
-    (c++-mode . lsp-deferred)
-    (haskell-mode . lsp-deferred)
-    (haskell-literate-mode . lsp-deferred)
-    (lsp-mode . lsp-enable-which-key-integration)
-    (sh-mode . lsp-deferred)
-    :disabled use-eglot)
+(use-package lsp-mode
+  :config
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-tramp-connection "clangd")
+    :remote? t
+    :major-modes '(c-mode c++-mode)
+    :ignore-messages nil
+    :server-id 'clangd-remote))
+  :custom
+  (lsp-eldoc-render-all t)
+  (lsp-headerline-breadcrumb-enable t)
+  (lsp-headerline-breadcrumb-segments '(project symbols))
+  (lsp-keymap-prefix "s-g")
+  :hook
+  ((c-mode c++-mode haskell-mode haskell-literate-mode python-mode sh-mode)
+   . lsp-deferred)
+  (lsp-mode . lsp-enable-which-key-integration)
+  :disabled (not (eq sellout-lsp-package 'lsp-mode)))
 
-  (use-package lsp-nix
-    :after nix-mode
-    :config
-    (lsp-register-client
-     (make-lsp-client
-      :new-connection (lsp-tramp-connection (lambda () lsp-nix-nil-server-path))
-      :remote? t
-      :major-modes '(nix-mode)
-      :ignore-messages nil
-      :server-id 'nil-remote))
-    :custom
-    ;; TODO: This should be the default. See oxalica/nil#70 for why it’s not yet.
-    ;;       If formatting is taking too long, switch this to ‘["alejandra"]’.
-    (lsp-nix-nil-formatter ["nix" "fmt" "--" "--"])
-    :disabled use-eglot
-    :hook (nix-mode . lsp-deferred))
+(use-package lsp-nix
+  :after nix-mode
+  :config
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-tramp-connection (lambda () lsp-nix-nil-server-path))
+    :remote? t
+    :major-modes '(nix-mode)
+    :ignore-messages nil
+    :server-id 'nil-remote))
+  :custom
+  ;; TODO: This should be the default. See oxalica/nil#70 for why it’s not yet.
+  ;;       If formatting is taking too long, switch this to ‘["alejandra"]’.
+  (lsp-nix-nil-formatter ["nix" "fmt" "--" "--"])
+  :disabled (not (eq sellout-lsp-package 'lsp-mode))
+  :hook (nix-mode . lsp-deferred))
 
-  (use-package lsp-rust
-    :config
-    (lsp-register-client
-     (make-lsp-client
-      :new-connection (lsp-tramp-connection "rust-analyzer")
-      :remote? t
-      :major-modes '(rust-mode rustic-mode)
-      :initialization-options 'lsp-rust-analyzer--make-init-options
-      :notification-handlers (ht<-alist lsp-rust-notification-handlers)
-      :action-handlers (ht ("rust-analyzer.runSingle" #'lsp-rust--analyzer-run-single))
-      :library-folders-fn (lambda (_workspace) lsp-rust-analyzer-library-directories)
-      :after-open-fn (lambda ()
-                       (when lsp-rust-analyzer-server-display-inlay-hints
-                         (lsp-rust-analyzer-inlay-hints-mode)))
-      :ignore-messages nil
-      :server-id 'rust-analyzer-remote))
-    ;; recommended setting for lsp-rust, 4k by default, this is 1M.
-    (setq read-process-output-max (* 1024 1024))
-    :custom
-    (lsp-rust-analyzer-cargo-watch-command
-     "clippy"
-     "TODO: Determine if this is meant to be a subcommand (in which case, update this comment and send doc patch upstream), or if it’s meant to be a path to a command (in which case, move to emacs.nix).")
-    (lsp-rust-analyzer-display-chaining-hints t)
-    (lsp-rust-analyzer-display-closure-return-type-hints t)
-    (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
-    (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names t)
-    (lsp-rust-analyzer-display-parameter-hints t)
-    (lsp-rust-analyzer-display-reborrow-hints t)
-    (lsp-rust-analyzer-server-display-inlay-hints t)
-    :disabled use-eglot)
+(use-package lsp-rust
+  :config
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-tramp-connection "rust-analyzer")
+    :remote? t
+    :major-modes '(rust-mode rustic-mode)
+    :initialization-options 'lsp-rust-analyzer--make-init-options
+    :notification-handlers (ht<-alist lsp-rust-notification-handlers)
+    :action-handlers (ht ("rust-analyzer.runSingle" #'lsp-rust--analyzer-run-single))
+    :library-folders-fn (lambda (_workspace) lsp-rust-analyzer-library-directories)
+    :after-open-fn (lambda ()
+                     (when lsp-rust-analyzer-server-display-inlay-hints
+                       (lsp-rust-analyzer-inlay-hints-mode)))
+    :ignore-messages nil
+    :server-id 'rust-analyzer-remote))
+  ;; recommended setting for lsp-rust, 4k by default, this is 1M.
+  (setq read-process-output-max (* 1024 1024))
+  :custom
+  (lsp-rust-analyzer-cargo-watch-command
+   "clippy"
+   "TODO: Determine if this is meant to be a subcommand (in which case, update this comment and send doc patch upstream), or if it’s meant to be a path to a command (in which case, move to emacs.nix).")
+  (lsp-rust-analyzer-display-chaining-hints t)
+  (lsp-rust-analyzer-display-closure-return-type-hints t)
+  (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+  (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names t)
+  (lsp-rust-analyzer-display-parameter-hints t)
+  (lsp-rust-analyzer-display-reborrow-hints t)
+  (lsp-rust-analyzer-server-display-inlay-hints t)
+  :disabled (not (eq sellout-lsp-package 'lsp-mode)))
 
-  (use-package lsp-ui
-    :after lsp-mode
-    :custom
-    (lsp-ui-doc-delay 1)
-    (lsp-ui-doc-enable t)
-    (lsp-ui-doc-use-webkit nil)
-    (lsp-ui-peek-always-show t)
-    (lsp-ui-sideline-enable nil)
-    (lsp-ui-sideline-show-hover t)
-    ;; TODO: I think this is getting in the way of a lot of stuff, but I don’t
-    ;;       have a specific failure. Just disable it until I can spend some time.
-    :disabled t
-    :hook (lsp-mode . lsp-ui-mode)
-    :disabled use-eglot))
+(use-package lsp-ui
+  :after lsp-mode
+  :custom
+  (lsp-ui-doc-delay 1)
+  (lsp-ui-doc-enable t)
+  (lsp-ui-doc-use-webkit nil)
+  (lsp-ui-peek-always-show t)
+  (lsp-ui-sideline-enable nil)
+  (lsp-ui-sideline-show-hover t)
+  ;; TODO: I think this is getting in the way of a lot of stuff, but I don’t
+  ;;       have a specific failure. Just disable it until I can spend some time.
+  :disabled t ; (not (eq sellout-lsp-package 'lsp-mode))
+  :hook (lsp-mode . lsp-ui-mode))
 
 ;; TODO: Replace this with a ‘vc-magit’ package to have ‘vc’ pass calls through
 ;;       to ‘magit’ instead of ‘vc-git’.
@@ -755,6 +778,15 @@ FIXME: ARGS is currently ignored when ‘magit-blame’ is used."
     'magit-rebase
     "-A"
     '("-x" "Exec command" "--exec=" read-shell-command))
+  (transient-insert-suffix
+    'magit-stash-push
+    "-u"
+    '("-S" "Only save staged changes" "--staged"))
+  ;; TODO: Have Magit ask for a message regardless of this option.
+  (transient-append-suffix
+    'magit-stash-push
+    "-K"
+    '("-m" "Edit the message" "--message="))
   ;; TODO: Remove once there’s some resolution to magit/magit#4861
   (defun magit-insert-revision-gravatar (beg rev email regexp)
     (save-excursion
@@ -770,7 +802,7 @@ FIXME: ARGS is currently ignored when ‘magit-blame’ is used."
                               (ceiling (/ size (aref font-obj 7) 1.0))
                               1))
                  (gravatar-size (- size 2)))
-            (ignore-errors                ; service may be unreachable
+            (ignore-errors              ; service may be unreachable
               (gravatar-retrieve email #'magit-insert-revision-gravatar-cb
                                  (list gravatar-size rev
                                        (point-marker)
@@ -884,17 +916,24 @@ Committer: %cN <%cE>
   :hook (special-mode . (lambda () (show-paren-local-mode -1))))
 
 (use-package perspective
+  :config
   ;; See nex3/perspective-el#192
-  :config (setq frame-title-format '((:eval (persp-mode-line)) " %b"))
+  (defun sellout-persp-frame-title ()
+    (let ((open (nth 0 persp-modestring-dividers))
+          (close (nth 1 persp-modestring-dividers)))
+      (concat open (persp-current-name) close)))
+  (setq frame-title-format '((:eval (sellout-persp-frame-title)) " %b"))
   :custom
-  (persp-mode-prefix-key "P")
-  (persp-show-modestring t)
-  ;; See nex3/perspective-el#179
-  ;; :init (persp-mode)
-  )
+  (persp-mode-prefix-key "C-c x")
+  (persp-modestring-short t)
+  ;; NB: Make this non-nil if we get “No such live buffer” errors. See
+  ;;     nex3/perspective-el#179. If we do run into it again, try loading
+  ;;     this package _after_ helm.
+  :disabled nil
+  :init (persp-mode))
 
 (use-package persp-projectile
-  :bind ([remap projectile-swich-project] . projectile-persp-switch-project))
+  :bind ([remap projectile-switch-project] . projectile-persp-switch-project))
 
 ;; GunPG pinentry support
 (use-package pinentry
@@ -909,10 +948,14 @@ Committer: %cN <%cE>
   (require-config 'sellout-projectile)
   (add-to-list 'projectile-project-root-files-bottom-up ".floo") ; for floobits
   :custom
-  (projectile-ignored-project-function '(lambda (path) (string-prefix-p "/nix/store" path)))
+  (projectile-ignored-project-function
+   '(lambda (path) (string-prefix-p "/nix/store" path)))
   (projectile-mode t nil (projectile))
   (projectile-mode-line-prefix "🚀")
   (projectile-per-project-compilation-buffer t)
+  (projectile-project-name-function
+   (lambda (project-root)
+     (intercalate (-take-last 2 (file-name-split (directory-file-name project-root)))  "/")))
   (projectile-use-git-grep t)
   ;; TODO: This should be set by ‘projectile-mode-line-prefix’, but sometimes
   ;; it’s not, so this handles that case. However, this might trample
@@ -924,8 +967,7 @@ Committer: %cN <%cE>
   :delight "🐍"
   :hook
   (python-mode . dap-mode)
-  (python-mode . dap-ui-mode)
-  (python-mode . lsp))
+  (python-mode . dap-ui-mode))
 
 (use-package reveal-in-osx-finder
   :bind ("C-c z" . reveal-in-osx-finder))
@@ -942,6 +984,7 @@ Committer: %cN <%cE>
         ("C-c C-c q" . lsp-workspace-restart)
         ("C-c C-c Q" . lsp-workspace-shutdown)
         ("C-c C-c s" . lsp-rust-analyzer-status))
+  :custom (rustic-lsp-client sellout-lsp-package)
   :delight "🦀")
 
 (use-package scala-mode2
@@ -1044,9 +1087,10 @@ See https://debbugs.gnu.org/cgi/bugreport.cgi?bug=60943 for more information."
 (use-package which-key
   :custom
   (which-key-lighter "🔑")
-  (which-key-mode t)
   (which-key-preserve-window-configuration t)
-  (which-key-unicode-correction 5))
+  (which-key-unicode-correction 5)
+  :disabled (not (eq sellout-describe-key-package 'which-key))
+  :init (which-key-mode))
 
 (use-package whitespace
   :custom
@@ -1186,7 +1230,7 @@ E.g., when pair programming, but you’re driving.")
   "Insert ITEM between each element of LIST."
   (if (or (null list) (null (cdr list)))
       list
-    (list* (car list) item (intersperse (cdr list) item))))
+    (cl-list* (car list) item (intersperse (cdr list) item))))
 
 (defun intercalate (sequences inter-seq)
   "Insert INTER-SEQ between each element of SEQUENCES, then flatten."
@@ -1456,4 +1500,4 @@ be very useful."
   :defer nil
   :hook (after-init . envrc-global-mode))
 
-;;; init.el ends here
+;;; default.el ends here

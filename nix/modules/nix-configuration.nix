@@ -10,6 +10,8 @@
     registry.nixpkgs.flake = nixpkgs;
 
     settings = {
+      ## This causes builds to optimize after themselves, incrementally.
+      auto-optimise-store = true;
       ## This is generally superseded by `config.programs.starship`, but in some
       ## subshells, remote machines, etc. that’s not there, so this gives us
       ## _something_.

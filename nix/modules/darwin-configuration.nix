@@ -139,6 +139,7 @@
       Pages = 409201541;
       "Picture Window" = 507262984;
       "Prime Video" = 545519333;
+      "Remote Mouse" = 403195710;
       Robotek = 462238382;
       SoundCloud = 412754595;
       # Twitter = 409789998; # currently subsumed by ferdium
@@ -153,8 +154,10 @@
       automatic = true;
       options = "--delete-older-than 30d";
     };
-    # TODO: Enable once NixOS/nix#7273 is fixed.
-    settings.auto-optimise-store = false; # true;
+    ## Runs `nix-store --optimise` on a timer.
+    optimise.automatic = true;
+    ## TODO: Remove this once NixOS/nix#7273 is fixed.
+    settings.auto-optimise-store = lib.mkForce false;
   };
 
   nixpkgs.overlays = [dotfiles.overlays.darwin];
