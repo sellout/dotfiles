@@ -613,7 +613,9 @@
       extraConfig = ''
         AddKeysToAgent yes
       '';
-      forwardAgent = true;
+      ## See https://heipei.github.io/2015/02/26/SSH-Agent-Forwarding-considered-harmful/
+      forwardAgent = false;
+      package = pkgs.openssh;
       userKnownHostsFile = "${config.xdg.stateHome}/ssh/known_hosts";
     };
 
