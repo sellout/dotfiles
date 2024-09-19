@@ -51,8 +51,8 @@
       # https://en.wikipedia.org/wiki/AppleSingle_and_AppleDouble_formats#Usage
       "._*"
     ];
-in
-  flaky.lib.multiConfig options {
+in {
+  config = flaky.lib.multiConfig options {
     darwinConfig = {
       environment.systemPackages =
         commonPackages
@@ -167,4 +167,5 @@ in
         package = gitPackage;
       };
     };
-  }
+  };
+}
