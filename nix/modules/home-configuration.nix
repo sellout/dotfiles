@@ -224,6 +224,7 @@
         # pkgs.discord # currently subsumed by ferdium
         # pkgs.element-desktop # currently subsumed by ferdium
         pkgs.ghostscript
+        pkgs.git-standup
         # pkgs.gitter # currently subsumed by ferdium
         pkgs.imagemagick
         pkgs.jekyll
@@ -369,14 +370,18 @@
       # TODO: Since this uses both `nix` and the containing flake, it seems like
       #       there should be a better way to get that information to the
       #       command than having the shell look it up.
-      devEnv = devShell: "nix develop " + ../../. + "#" + devShell;
-      template = template: "nix flake init -t " + ../../. + "#" + template;
+      devEnv = devShell: "nix develop " + "sys#" + devShell;
+      template = template: "nix flake init -t " + "sys#" + template;
     in {
       grep = "grep --color";
 
       # Some of the long flag names aren’t widely supported, so this alias
       # should be equivalent to `ls --almost-all --human-readable --color`.
       ls = "ls -Ah --color";
+
+      # Show all the flakes relative to the user’s home directory
+      list-flakes = "find \"$HOME\" -name flake.nix -exec dirname {} \\; 2>/dev/null | sed -e \"s|^$HOME/||\"";
+      list-repos = "find \"$HOME\" \( -name _darcs -o -name .git -o -name .pijul \) -exec dirname {} \\; 2>/dev/null | sed -e \"s|^$HOME/||\"";
 
       # Takes a path to a derivation (/nix/store/<hash>-foo-<version>) and
       # prints out everything that depends on it, transitively.
@@ -401,6 +406,9 @@
       ## Set paths to XDG-compatible places
       keychain = "keychain --dir ${config.lib.local.xdg.runtimeDir}/keychain --absolute";
       wget = "wget --hsts-file=${config.xdg.dataHome}/wget-hsts";
+
+      ## Include dotfiles.
+      tree = "tree -a";
     };
 
     # This value determines the Home Manager release that your
