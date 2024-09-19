@@ -332,6 +332,21 @@
           '(font-lock ((t (:family "${config.lib.local.programmingFont}"))))
           '(variable-pitch ((t (:family "${config.lib.local.defaultSansFont}")))))
       ''
+      ## FIXME: On darwin we currently have to set up the `PATH` manually so
+      ##        that it has a reasonable value when Emacs isn’t launched from a
+      ##        shell.
+      + (
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then ''
+          (setenv
+           "PATH"
+           (string-trim-right
+            (shell-command-to-string
+             "source ${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh \
+                && echo $PATH")))
+        ''
+        else ""
+      )
       + builtins.readFile ./default.el;
     extraPackages = epkgs: [
       epkgs.ace-window # better `other-window`
