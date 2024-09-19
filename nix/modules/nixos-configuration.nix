@@ -104,6 +104,7 @@
       automatic = true;
       options = "--delete-older-than 30d";
     };
+    ## Runs `nix-store --optimise` on a timer.
     optimise.automatic = true;
   };
 

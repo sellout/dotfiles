@@ -154,8 +154,10 @@
       automatic = true;
       options = "--delete-older-than 30d";
     };
-    # TODO: Enable once NixOS/nix#7273 is fixed.
-    settings.auto-optimise-store = false; # true;
+    ## Runs `nix-store --optimise` on a timer.
+    optimise.automatic = true;
+    ## TODO: Remove this once NixOS/nix#7273 is fixed.
+    settings.auto-optimise-store = lib.mkForce false;
   };
 
   nixpkgs.overlays = [dotfiles.overlays.darwin];
