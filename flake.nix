@@ -161,7 +161,7 @@
                 };
               }
             ];
-            pkgs = import nixpkgs {inherit system;};
+            pkgs = nixpkgs.legacyPackages.${system};
           };
         })
         supportedSystems);
@@ -186,7 +186,7 @@
         (builtins.filter (nixpkgs.lib.hasSuffix "-linux") supportedSystems));
     }
     // flake-utils.lib.eachSystem supportedSystems (system: let
-      pkgs = import nixpkgs {inherit system;};
+      pkgs = nixpkgs.legacyPackages.${system};
     in {
       projectConfigurations = flaky.lib.projectConfigurations.default {
         inherit pkgs self supportedSystems;
