@@ -1,13 +1,18 @@
 {
   config,
+  flaky,
   lib,
   nixpkgs,
   pkgs,
   ...
 }: {
   nix = {
-    ## Set the registry’s Nixpkgs to match this flake’s.
-    registry.nixpkgs.flake = nixpkgs;
+    registry = {
+      ## Set the registry’s Nixpkgs to match this flake’s.
+      nixpkgs.flake = nixpkgs;
+      ## Allows `sys#` to reference the templates, devShells, etc. from Flaky.
+      sys.flake = flaky;
+    };
 
     settings = {
       ## This causes builds to optimize after themselves, incrementally.
