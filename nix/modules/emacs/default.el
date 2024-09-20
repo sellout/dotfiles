@@ -53,18 +53,6 @@ FILENAME and NOERROR behave the same as for ‘require‘."
 
 (xdg-locations-custom-paths)
 
-;; FIXME: This is ridiculous. We shouldn’t have to set up the path, but
-;;        otherwise it doesn’t have anything useful. We also can’t do it in
-;;        default.el currently because something there is trampling it. Should
-;;        try moving it up to see where it’s disappearing and fix that issue
-;;        (and hopefully not have to explicitly set the PATH at all at some
-;;        point …).
-(setenv
- "PATH"
- (string-trim-right
-  (shell-command-to-string
-   "source ${XDG_STATE_HOME:-$HOME/.local/state}/etc/profile.d/hm-session-vars.sh && echo $PATH")))
-
 (eval-when-compile
   ;; See jwiegley/use-package#880
   (autoload #'use-package-autoload-keymap "use-package")

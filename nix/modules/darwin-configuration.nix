@@ -214,8 +214,5 @@
     };
   };
 
-  system = {
-    defaults.SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
-    stateVersion = 4;
-  };
+  system.defaults.SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
 }

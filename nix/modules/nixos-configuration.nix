@@ -1,4 +1,5 @@
 {
+  agenix,
   config,
   dotfiles,
   lib,
@@ -6,6 +7,7 @@
   ...
 }: {
   imports = [
+    agenix.nixosModules.age
     ./input-devices.nix
     ./nix-configuration.nix
     ./nixpkgs-configuration.nix
@@ -209,15 +211,8 @@
 
   sound.enable = true;
 
-  system = {
-    autoUpgrade = {
-      allowReboot = true;
-      enable = true;
-    };
-    # This value determines the NixOS release with which your system is to be
-    # compatible, in order to avoid breaking some software such as database
-    # servers. You should change this only after NixOS release notes say you
-    # should.
-    stateVersion = "23.05"; # Did you read the comment?
+  system.autoUpgrade = {
+    allowReboot = true;
+    enable = true;
   };
 }

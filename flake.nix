@@ -39,8 +39,46 @@
     unison-nix,
   }: let
     supportedSystems = import systems;
+
+    exampleHomeConfiguration = {
+      ## Attributes that the configuration expects to have set, but
+      ## aren’t set publicly.
+      ##
+      ## TODO: Maybe have the configuration check if these are set,
+      ##       so it’s more robust.
+      accounts.email.accounts.Example = {
+        address = "example-user@example.com";
+        flavor = "gmail.com";
+        primary = true; # This is the important value.
+        realName = "example user";
+      };
+      home.sessionVariables.XDG_RUNTIME_DIR = /tmp/example/runtime;
+      programs.git = {
+        extraConfig.github.user = "example-user";
+        signing.key = "";
+      };
+      ## These attributes are simply required by home-manager.
+      home = {
+        homeDirectory = "/tmp/example";
+        stateVersion = "24.05";
+        username = "example-user";
+      };
+    };
   in
     {
+      lib = import ./nix/lib.nix {
+        inherit
+          agenix
+          darwin
+          emacs-color-theme-solarized
+          flaky
+          home-manager
+          nixpkgs
+          org-invoice-table
+          self
+          ;
+      };
+
       overlays = {
         darwin = nixpkgs.lib.composeManyExtensions [
           self.overlays.default
@@ -108,59 +146,23 @@
 
       darwinConfigurations = builtins.listToAttrs (map (hostPlatform: {
           name = "${hostPlatform}-example";
-          value = darwin.lib.darwinSystem {
+          value = self.lib.darwinSystem {
             modules = [
-              self.darwinModules.darwin
-              {nixpkgs = {inherit hostPlatform;};}
+              {
+                home-manager.users.example-user = exampleHomeConfiguration;
+                nixpkgs = {inherit hostPlatform;};
+                system.stateVersion = 5;
+                users.users.example-user.home = "/tmp/example";
+              }
             ];
-            specialArgs = {
-              inherit flaky nixpkgs;
-              dotfiles = self;
-            };
           };
         })
         (builtins.filter (nixpkgs.lib.hasSuffix "-darwin") supportedSystems));
 
       homeConfigurations = builtins.listToAttrs (map (system: {
           name = "${system}-example";
-          value = home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = {
-              inherit
-                emacs-color-theme-solarized
-                flaky
-                nixpkgs
-                org-invoice-table
-                self
-                ;
-              dotfiles = self;
-            };
-            modules = [
-              agenix.homeManagerModules.age
-              self.homeModules.home
-              {
-                ## Attributes that the configuration expects to have set, but
-                ## aren’t set publicly.
-                ##
-                ## TODO: Maybe have the configuration check if these are set,
-                ##       so it’s more robust.
-                accounts.email.accounts.Example = {
-                  address = "example-user@example.com";
-                  flavor = "gmail.com";
-                  primary = true; # This is the important value.
-                  realName = "example user";
-                };
-                home.sessionVariables.XDG_RUNTIME_DIR = "/tmp/example/runtime";
-                programs.git = {
-                  extraConfig.github.user = "example-user";
-                  signing.key = "";
-                };
-                ## These attributes are simply required by home-manager.
-                home = {
-                  homeDirectory = "/tmp/example";
-                  username = "example-user";
-                };
-              }
-            ];
+          value = self.lib.homeManagerConfiguration {
+            modules = [exampleHomeConfiguration];
             pkgs = nixpkgs.legacyPackages.${system};
           };
         })
@@ -168,19 +170,24 @@
 
       nixosConfigurations = builtins.listToAttrs (map (hostPlatform: {
           name = "${hostPlatform}-example";
-          value = nixpkgs.lib.nixosSystem {
+          value = self.lib.nixosSystem {
             modules = [
-              agenix.nixosModules.age
-              self.nixosModules.nixos
               {
+                boot.loader.grub.devices = ["/dev/vba"];
                 fileSystems."/".device = "/dev/vba";
+                home-manager.users.example-user = exampleHomeConfiguration;
                 nixpkgs = {inherit hostPlatform;};
+                system.stateVersion = "24.05";
+                users = {
+                  groups.example-user = {};
+                  users.example-user = {
+                    group = "example-user";
+                    home = "/tmp/example";
+                    isNormalUser = true;
+                  };
+                };
               }
             ];
-            specialArgs = {
-              inherit flaky nixpkgs;
-              dotfiles = self;
-            };
           };
         })
         (builtins.filter (nixpkgs.lib.hasSuffix "-linux") supportedSystems));

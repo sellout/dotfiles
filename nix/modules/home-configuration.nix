@@ -1,4 +1,5 @@
 {
+  agenix,
   config,
   dotfiles,
   lib,
@@ -7,6 +8,7 @@
   ...
 }: {
   imports = [
+    agenix.homeManagerModules.age
     ./emacs
     ./i3.nix
     ./input-devices.nix
@@ -410,16 +412,6 @@
       ## Include dotfiles.
       tree = "tree -a";
     };
-
-    # This value determines the Home Manager release that your
-    # configuration is compatible with. This helps avoid breakage
-    # when a new Home Manager release introduces backwards
-    # incompatible changes.
-    #
-    # You can update Home Manager without changing this value. See
-    # the Home Manager release notes for a list of state version
-    # changes in each release.
-    stateVersion = "23.05";
   };
 
   lib.local = {
@@ -507,7 +499,10 @@
   news.display = "show";
 
   nix = {
-    package = pkgs.nix;
+    ## TODO: `nix.package` must be set in a configuration, but it gets
+    ##       overridden when Home Manager is used as a module. This is a
+    ##       workaround until nix-community/home-manager#5870 is resolved.
+    package = lib.mkDefault pkgs.nix;
     registry.sys.flake = self;
     settings = {
       ## TODO: was required for Nix on Mac at some point -- review
