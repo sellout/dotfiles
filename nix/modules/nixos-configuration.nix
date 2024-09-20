@@ -142,7 +142,9 @@
 
   services = {
     avahi = {
-      enable = true;
+      ## Mitigate various CUPS vulnerabilities (see
+      ## https://www.evilsocket.net/2024/09/26/Attacking-UNIX-systems-via-CUPS-Part-I/)
+      enable = false;
       nssmdns4 = true;
       openFirewall = true;
     };
@@ -158,18 +160,15 @@
       };
       enable = true;
       pulse.enable = true;
-      # If you want to use JACK applications, uncomment this
-      #jack.enable = true;
-
-      # use the example session manager (no others are packaged yet so this is enabled by default,
-      # no need to redefine it in your config for now)
-      #media-session.enable = true;
     };
 
     printing = {
+      enable = true;
       browsing = true;
       defaultShared = true;
-      enable = true;
+      ## This might also help mitigate the above-mentioned vulnerabilities,
+      ## since printing isn’t enabled all the time.
+      startWhenNeeded = true;
     };
 
     tailscale.enable = true;
