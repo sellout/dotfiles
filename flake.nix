@@ -243,8 +243,7 @@
 
     darwin = {
       inputs.nixpkgs.follows = "nixpkgs";
-      ## TODO: Remove the pinned commit once LnL7/nix-darwin#1082 is resolved.
-      url = "github:emilazy/nix-darwin/push-zovpmlzlzvvm";
+      url = "github:LnL7/nix-darwin";
     };
 
     emacs-color-theme-solarized = {
