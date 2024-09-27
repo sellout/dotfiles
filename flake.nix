@@ -41,6 +41,8 @@
     supportedSystems = import systems;
 
     exampleHomeConfiguration = {
+      imports = [self.homeModules.home];
+
       ## Attributes that the configuration expects to have set, but
       ## aren’t set publicly.
       ##
@@ -52,7 +54,7 @@
         primary = true; # This is the important value.
         realName = "example user";
       };
-      home.sessionVariables.XDG_RUNTIME_DIR = /tmp/example/runtime;
+      home.sessionVariables.XDG_RUNTIME_DIR = "/tmp/example/runtime";
       programs.git = {
         extraConfig.github.user = "example-user";
         signing.key = "";
@@ -148,6 +150,7 @@
           name = "${hostPlatform}-example";
           value = self.lib.darwinSystem {
             modules = [
+              self.darwinModules.darwin
               {
                 home-manager.users.example-user = exampleHomeConfiguration;
                 nixpkgs = {inherit hostPlatform;};
@@ -172,6 +175,7 @@
           name = "${hostPlatform}-example";
           value = self.lib.nixosSystem {
             modules = [
+              self.nixosModules.nixos
               {
                 boot.loader.grub.devices = ["/dev/vba"];
                 fileSystems."/".device = "/dev/vba";
@@ -243,8 +247,7 @@
 
     darwin = {
       inputs.nixpkgs.follows = "nixpkgs";
-      ## TODO: Remove the pinned commit once LnL7/nix-darwin#1082 is resolved.
-      url = "github:emilazy/nix-darwin/push-zovpmlzlzvvm";
+      url = "github:LnL7/nix-darwin";
     };
 
     emacs-color-theme-solarized = {
