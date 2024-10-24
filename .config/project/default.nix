@@ -37,6 +37,7 @@
       excludes = [
         "*.el"
         "*.lisp"
+        "./home/.config/npm/npmrc"
         "./home/.local/bin/*"
         "./root/etc/hosts"
       ];
@@ -49,7 +50,7 @@
   ## CI
   services.garnix = {
     enable = true;
-    builds.exclude = [
+    builds."*".exclude = [
       # TODO: Remove once NixOS/nix#4119 is fixed.
       "homeConfigurations.aarch64-darwin-example"
       # TODO: Remove once garnix-io/garnix#285 is fixed.
