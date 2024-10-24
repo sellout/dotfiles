@@ -92,7 +92,6 @@
             home-manager
             mkalias
             nixpkgs
-            unison-nix
             ;
         };
         home = nixpkgs.lib.composeManyExtensions [
@@ -114,7 +113,13 @@
               }
             else {})
           nur.overlay
-          unison-nix.overlays.default
+          ## TODO: unison-nix’s UCM doesn’t yet support aarch64-darwin, so we
+          ##       use the rest of the overlay without shadowing the UCM from
+          ##       Nixpkgs.
+          (final: prev:
+            nixpkgs.lib.removeAttrs
+            (unison-nix.overlays.default final prev)
+            ["unison-ucm"])
           self.overlays.default
         ];
         nixos = nixpkgs.lib.composeManyExtensions [
@@ -146,21 +151,40 @@
         nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
       };
 
-      darwinConfigurations = builtins.listToAttrs (map (hostPlatform: {
-          name = "${hostPlatform}-example";
+      darwinConfigurations = let
+        ## Generates two darwinConfigurations – one using the home-manager
+        ## module, and one without.
+        ##
+        ## TODO: This exists so the one without can be tested on garnix (in a
+        ##       sandbox) until NixOS/nix#4119 is fixed.
+        generate = homeManagerModule: hostPlatform: {
+          name =
+            "${hostPlatform}-example"
+            + (
+              if homeManagerModule == {}
+              then "-bare"
+              else ""
+            );
           value = self.lib.darwinSystem {
             modules = [
               self.darwinModules.darwin
               {
-                home-manager.users.example-user = exampleHomeConfiguration;
                 nixpkgs = {inherit hostPlatform;};
                 system.stateVersion = 5;
                 users.users.example-user.home = "/tmp/example";
               }
+              homeManagerModule
             ];
           };
-        })
-        (builtins.filter (nixpkgs.lib.hasSuffix "-darwin") supportedSystems));
+        };
+      in
+        builtins.listToAttrs (nixpkgs.lib.concatMap (hostPlatform: [
+            (generate {} hostPlatform)
+            (generate
+              {home-manager.users.example-user = exampleHomeConfiguration;}
+              hostPlatform)
+          ])
+          (builtins.filter (nixpkgs.lib.hasSuffix "-darwin") supportedSystems));
 
       homeConfigurations = builtins.listToAttrs (map (system: {
           name = "${system}-example";

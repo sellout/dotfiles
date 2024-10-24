@@ -1,4 +1,9 @@
-{config, lib, pkgs, ...}: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   project = {
     name = "dotfiles";
     summary = "Sellout’s general configuration";
@@ -37,6 +42,7 @@
       excludes = [
         "*.el"
         "*.lisp"
+        "./home/.config/npm/npmrc"
         "./home/.local/bin/*"
         "./root/etc/hosts"
       ];
@@ -49,11 +55,13 @@
   ## CI
   services.garnix = {
     enable = true;
-    builds.exclude = [
+    builds."*".exclude = [
       # TODO: Remove once NixOS/nix#4119 is fixed.
+      "darwinConfigurations.aarch64-darwin-example"
       "homeConfigurations.aarch64-darwin-example"
       # TODO: Remove once garnix-io/garnix#285 is fixed.
       "darwinConfigurations.x86_64-darwin-example"
+      "darwinConfigurations.x86_64-darwin-example-bare"
       "homeConfigurations.x86_64-darwin-example"
     ];
   };
