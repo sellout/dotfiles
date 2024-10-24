@@ -22,10 +22,18 @@ in {
   ## Idris 1 doesn’t build on Nixpkgs 23.11.
   idris = final.idris2;
 
+  ## TODO: This gives us Karabiner 15, but the nix-darwin module doesn’t yet
+  ##       support that version, and since it involves running services, we
+  ##       can’t live without it.
+  # karabiner-elements = master.karabiner-elements;
+
+  lexica-ultralegible = final.callPackage ./packages/lexica-ultralegible.nix {};
+
   mkalias = mkalias.packages.${final.system}.mkalias;
 
-  ## I don’t even use Python, but sometimes it’s forced upon me, and Python 2 is
-  ## EOL, so don’t let anything use it.
+  ## NB: Python 2 is EOL, so I don’t know why it’s still the default. Since we
+  ##     pull Python in for at least some Emacs tooling, ensure that `python`
+  ##     means Python 3.
   python = final.python3;
   pythonPackages = final.python3Packages;
 }

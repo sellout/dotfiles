@@ -171,8 +171,6 @@
     ## • the package has its own GUI that we prefer over any Emacs interface.
     packages = let
       fonts = [
-        # https://brailleinstitute.org/freefont
-        {package = pkgs.atkinson-hyperlegible;}
         {package = pkgs.fira;}
         {
           package = pkgs.fira-code;
@@ -183,6 +181,7 @@
           package = pkgs.fira-mono;
           nerdfont = "FiraMono";
         }
+        {package = pkgs.lexica-ultralegible;}
         # https://github.com/liberationfonts
         {
           package = pkgs.liberation_ttf;
@@ -417,7 +416,7 @@
     defaultFontSize = 12.0;
     # NB: These faces need to be listed in `home.packages`.
     defaultMonoFont = "Fira Mono";
-    defaultSansFont = "Atkinson Hyperlegible";
+    defaultSansFont = "Lexica Ultralegible";
     programmingFont = "Fira Code";
 
     defaultFont =

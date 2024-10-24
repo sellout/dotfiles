@@ -812,7 +812,7 @@ Committer: %cN <%cE>
 "
    nil
    nil
-   "The padding here is specific to my ‘default’ face, Atkinson Hyperlegible. If that changes, this should as well. Ideally I could use text properties to align all this, but can’t get that to work (presumably because it’s passed to `git`.")
+   "The padding here is specific to my ‘default’ face, Lexica Ultralegible. If that changes, this should as well. Ideally I could use text properties to align all this, but can’t get that to work (presumably because it’s passed to `git`.")
   (magit-revision-show-gravatars
    '("^\\(\\)Author: " . "^\\(\\)Committer: ")
    nil
