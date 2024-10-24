@@ -57,9 +57,11 @@
     enable = true;
     builds."*".exclude = [
       # TODO: Remove once NixOS/nix#4119 is fixed.
+      "darwinConfigurations.aarch64-darwin-example"
       "homeConfigurations.aarch64-darwin-example"
       # TODO: Remove once garnix-io/garnix#285 is fixed.
       "darwinConfigurations.x86_64-darwin-example"
+      "darwinConfigurations.x86_64-darwin-example-bare"
       "homeConfigurations.x86_64-darwin-example"
     ];
   };
