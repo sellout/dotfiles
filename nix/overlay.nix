@@ -3,7 +3,6 @@
   home-manager,
   mkalias,
   nixpkgs,
-  unison-nix,
 }: final: prev: let
   # On aarch64-darwin, this gives us a Rosetta fallback, otherwise, it’s a NOP.
   x86_64 =
@@ -13,7 +12,6 @@
         config =
           import ./modules/nixpkgs-configuration.nix {inherit (nixpkgs) lib;};
         localSystem = flake-utils.lib.system.x86_64-darwin;
-        overlays = [unison-nix.overlays.default];
       }
     else prev;
 in {
@@ -30,6 +28,4 @@ in {
   ## EOL, so don’t let anything use it.
   python = final.python3;
   pythonPackages = final.python3Packages;
-
-  unison-ucm = x86_64.unison-ucm;
 }

@@ -92,7 +92,6 @@
             home-manager
             mkalias
             nixpkgs
-            unison-nix
             ;
         };
         home = nixpkgs.lib.composeManyExtensions [
@@ -114,7 +113,13 @@
               }
             else {})
           nur.overlay
-          unison-nix.overlays.default
+          ## TODO: unison-nix’s UCM doesn’t yet support aarch64-darwin, so we
+          ##       use the rest of the overlay without shadowing the UCM from
+          ##       Nixpkgs.
+          (final: prev:
+            nixpkgs.lib.removeAttrs
+            (unison-nix.overlays.default final prev)
+            ["unison-ucm"])
           self.overlays.default
         ];
         nixos = nixpkgs.lib.composeManyExtensions [
