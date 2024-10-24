@@ -1,4 +1,9 @@
-{config, lib, pkgs, ...}: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   project = {
     name = "dotfiles";
     summary = "Sellout’s general configuration";
