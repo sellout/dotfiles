@@ -102,14 +102,19 @@
           "bradix",
           "flaky",
           "nixpkgs"
+        ],
+        "systems": [
+          "bradix",
+          "flaky",
+          "systems"
         ]
       },
       "locked": {
-        "lastModified": 1727152774,
-        "narHash": "sha256-gl22QhlVo85J8q3i+LkzjrnuzhbWF30XN0G0s5P5dmk=",
+        "lastModified": 1729884344,
+        "narHash": "sha256-5UDT6oFovUqEIiyHe3tsLsVjjEmz7bJYyvO9M/e9TXU=",
         "owner": "sellout",
         "repo": "bradix",
-        "rev": "bd1b2cb6b4b47012cd74665faa94fc3f911edb4a",
+        "rev": "367efd3bcff767856f03c42f4f74f3684a053af1",
         "type": "github"
       },
       "original": {
@@ -158,11 +163,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1722525569,
-        "narHash": "sha256-ZDMttQMIMwTiZKpQbTWCZKEnoXdvSq8P/jhiMDDPvB8=",
+        "lastModified": 1725603962,
+        "narHash": "sha256-dF+B1ueCHcL0K3oz07sxa6WxsLl8jLpRrjiDGEnI450=",
         "owner": "sellout",
         "repo": "elisp-reader.el",
-        "rev": "875fa64a4c079c6f1938e90517c8b33aa6f7ebac",
+        "rev": "fb567d91c420da5c3bc3ee6981111ffa03e208dc",
         "type": "github"
       },
       "original": {
