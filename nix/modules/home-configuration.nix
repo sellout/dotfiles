@@ -492,6 +492,17 @@
     '';
   };
 
+  local.nixpkgs = {
+    enable = true;
+    allowedUnfreePackages = [
+      "1password-cli"
+      "eagle"
+      "onepassword-password-manager"
+      "plexmediaserver"
+      "zoom"
+    ];
+  };
+
   manual.html.enable = true;
 
   news.display = "show";

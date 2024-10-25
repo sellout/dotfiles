@@ -80,6 +80,15 @@
     supportedLocales = ["all"]; # How big can these things be?
   };
 
+  local.nixpkgs = {
+    enable = true;
+    allowedUnfreePackages = [
+      "steam"
+      "steam-original"
+      "steam-run"
+    ];
+  };
+
   ## Auto-adjust system time.
   location.provider = "geoclue2";
   services = {
