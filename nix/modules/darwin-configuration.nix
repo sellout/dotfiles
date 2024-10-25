@@ -44,8 +44,8 @@
   };
 
   fonts.packages = [
-    pkgs.atkinson-hyperlegible # https://brailleinstitute.org/freefont
     pkgs.inconsolata
+    pkgs.lexica-ultralegible
   ];
 
   # The preferred location of applications is, in order:

@@ -53,16 +53,16 @@
     enableDefaultPackages = true;
     fontconfig.defaultFonts = {
       monospace = ["Fira Mono"];
-      sansSerif = ["Atkinson Hyperlegible"];
+      sansSerif = ["Lexica Ultralegible"];
     };
     fontDir.enable = true;
     packages = [
-      pkgs.atkinson-hyperlegible # https://brailleinstitute.org/freefont
       pkgs.fira
       pkgs.fira-code
       pkgs.fira-code-symbols
       pkgs.fira-mono
       pkgs.inconsolata
+      pkgs.lexica-ultralegible
     ];
   };
 

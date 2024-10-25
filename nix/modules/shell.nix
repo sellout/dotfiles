@@ -4,6 +4,8 @@
   pkgs,
   ...
 }: {
+  imports = [./ntfy.nix];
+
   home = {
     packages = [
       pkgs.mosh # SSH client replacement
