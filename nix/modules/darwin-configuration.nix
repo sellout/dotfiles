@@ -145,8 +145,14 @@
       # Twitter = 409789998; # currently subsumed by ferdium
       Xcode = 497799835;
     };
-    onActivation.cleanup = "uninstall";
-    taps = ["homebrew/cask"];
+    ## NB: These settings unfortunately make `darwin-rebuild switch`
+    ##     non-idempotent, but the alternative is having Homebrew just be
+    ##     outdated forever (because I’ll never do it manually).
+    onActivation = {
+      autoUpdate = true;
+      cleanup = "uninstall";
+      upgrade = true;
+    };
   };
 
   nix = {
@@ -156,8 +162,6 @@
     };
     ## Runs `nix-store --optimise` on a timer.
     optimise.automatic = true;
-    ## TODO: Remove this once NixOS/nix#7273 is fixed.
-    settings.auto-optimise-store = lib.mkForce false;
   };
 
   nixpkgs.overlays = [dotfiles.overlays.darwin];
@@ -165,7 +169,7 @@
   programs = {
     bash = {
       enable = true;
-      enableCompletion = true;
+      completion.enable = true;
       interactiveShellInit = ''
         # System-wide .bashrc file for interactive bash(1) shells.
         if [ -z "$PS1" ]; then

@@ -16,7 +16,8 @@
 
     settings = {
       ## This causes builds to optimize after themselves, incrementally.
-      auto-optimise-store = true;
+      ## TODO: Make this `true` once NixOS/nix#7273 is fixed.
+      auto-optimise-store = !pkgs.stdenv.hostPlatform.isDarwin;
       ## This is generally superseded by `config.programs.starship`, but in some
       ## subshells, remote machines, etc. that’s not there, so this gives us
       ## _something_.

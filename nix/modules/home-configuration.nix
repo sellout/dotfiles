@@ -9,8 +9,10 @@
   imports = [
     agenix.homeManagerModules.age
     ./emacs
+    ./firefox.nix
     ./i3.nix
     ./input-devices.nix
+    ./locale.nix
     ./nix-configuration.nix
     ./nixpkgs-configuration.nix
     ./shell.nix
@@ -144,13 +146,6 @@
         executable = true;
         source = ../../home/${config.lib.local.xdg.bin.rel}/emacs-pager;
       };
-    };
-
-    ## TODO: Replace these with my ./locale.nix module
-    ## TODO: Only set these if the locale is available on the system.
-    language = {
-      base = "en_US.UTF-8";
-      time = "en_DK.UTF-8"; # “joke” value for getting ISO datetimes
     };
 
     ## Ideally, packages are provided by projects (e.g., Nix flakes + direnv)
@@ -537,56 +532,6 @@
       nix-direnv.enable = true;
     };
 
-    firefox = {
-      enable = pkgs.system != "aarch64-linux";
-      # Nix really wanted to build the default package from scratch.
-      package = pkgs.firefox-bin;
-      profiles.default = {
-        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-          # add-to-deliveries
-          # amazon-assistant
-          c-c-search-extension # prefix search bar with `cc ` to search C/C++ docs
-          display-_anchors
-          facebook-container
-          ghostery
-          onepassword-password-manager
-          rust-search-extension # prefix search bar with `rs ` to search Rust docs
-          tree-style-tab
-        ];
-        search.default = "DuckDuckGo";
-        settings = {
-          "browser.contentblocking.category" = "strict";
-          "font.default.x-unicode" = "sans-serif";
-          "font.default.x-western" = "sans-serif";
-          "font.name.monospace.x-unicode" = config.lib.local.defaultMonoFont;
-          "font.name.monospace.x-western" = config.lib.local.defaultMonoFont;
-          "font.name.sans-serif.x-unicode" = config.lib.local.defaultFont;
-          "font.name.sans-serif.x-western" = config.lib.local.defaultFont;
-          "font.size.monospace.x-unicode" =
-            builtins.floor config.lib.local.defaultFontSize;
-          "font.size.monospace.x-western" =
-            builtins.floor config.lib.local.defaultFontSize;
-          "font.size.variable.x-unicode" =
-            builtins.floor config.lib.local.defaultFontSize;
-          "font.size.variable.x-western" =
-            builtins.floor config.lib.local.defaultFontSize;
-        };
-        userChrome = ''
-          /* Hide tab bar in FF Quantum */
-          @-moz-document url("chrome://browser/content/browser.xul") {
-            #TabsToolbar {
-              visibility: collapse !important;
-              margin-bottom: 21px !important;
-            }
-
-            #sidebar-box[sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"] #sidebar-header {
-              visibility: collapse !important;
-            }
-          }
-        '';
-      };
-    };
-
     gpg = {
       enable = true;
       homedir = "${config.xdg.configHome}/gnupg/";
@@ -713,24 +658,7 @@
   targets.darwin = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     defaults = {
       NSGlobalDomain = {
-        AppleFirstWeekday.gregorian = 2; # Monday
-        AppleICUDateFormatStrings."1" = "y-MM-dd"; # Iso
-        AppleICUForce24HourTime = 1;
         AppleInterfaceStyleSwitchesAutomatically = true;
-        AppleLanguages = ["en"];
-        AppleLocale = "en_US";
-        AppleMeasurementUnits = "Centimeters";
-        AppleMetricUnits = true;
-        AppleICUNumberSymbols = let
-          decimalSeparator = ".";
-          groupSeparator = " "; # NARROW NO-BREAK SPACE
-        in {
-          "0" = decimalSeparator;
-          "1" = groupSeparator;
-          "10" = decimalSeparator;
-          "17" = groupSeparator;
-        };
-        AppleTemperatureUnit = "Celsius";
         NSAutomaticCapitalizationEnabled = false;
         NSAutomaticDashSubstitutionEnabled = false;
         NSAutomaticPeriodSubstitutionEnabled = false;
@@ -745,15 +673,13 @@
           }
           {
             replace = "*shrug*";
-            "with" = "¯\_(ツ)_/¯";
+            "with" = "¯\\_(ツ)_/¯";
           }
           {
             replace = "*tableflip*";
             "with" = "(╯°□°)╯︵ ┻━┻";
           }
         ];
-        ## Pairs of open/close quotes, in order of nesting.
-        NSUserQuotesArray = ["“" "”" "‘" "’"];
         "com.apple.sound.beep.flash" = 1;
       };
       "com.apple.desktopservices" = {
