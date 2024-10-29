@@ -474,7 +474,7 @@
           owner = "sellout";
           repo = "auto-dark-emacs";
           rev = "default-to-custom-enabled-themes";
-          sha256 = "D+bXR9zVDLDnsuOn6NT3mboeciyQiPIGLAHmokY15nI=";
+          hash = "sha256-D+bXR9zVDLDnsuOn6NT3mboeciyQiPIGLAHmokY15nI=";
         };
       });
       envrc = prev.envrc.overrideAttrs (old: {
@@ -483,7 +483,7 @@
           owner = "siddharthverma314";
           repo = "envrc";
           rev = "master";
-          sha256 = "yz2B9c8ar9wc13LwAeycsvYkCpzyg8KqouYp4EBgM6A=";
+          hash = "sha256-yz2B9c8ar9wc13LwAeycsvYkCpzyg8KqouYp4EBgM6A=";
         };
       });
       floobits = prev.floobits.overrideAttrs (old: {
@@ -494,7 +494,7 @@
             (pkgs.fetchpatch {
               name = "floobits-warnings.patch";
               url = "https://patch-diff.githubusercontent.com/raw/Floobits/floobits-emacs/pull/103.patch";
-              sha256 = "sha256-/XhrSIKDqaitV3Kk+JkOgflgl3821m/8gLrP0yHENP0=";
+              hash = "sha256-/XhrSIKDqaitV3Kk+JkOgflgl3821m/8gLrP0yHENP0=";
             })
           ];
       });
@@ -544,7 +544,7 @@
             (pkgs.fetchpatch {
               name = "wakatime-overhaul.patch";
               url = "https://github.com/sellout/wakatime-mode/commit/9e11f217c0a524c229063b64a5b6a32daf2c804b.patch";
-              sha256 = "7+0EH9jadVj7Ac3fxaYUbayzLR7aY9KStkIZIb6tj5I=";
+              hash = "sha256-7+0EH9jadVj7Ac3fxaYUbayzLR7aY9KStkIZIb6tj5I=";
             })
           ];
       });

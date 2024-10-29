@@ -581,20 +581,20 @@
             name = "ginfuru-better-solarized-dark-theme";
             publisher = "ginfuru";
             version = "0.9.5";
-            sha256 = "ySfC3PVRezevItW3kWTiY3U8GgB9p223ZiC8XaJ3koM=";
+            hash = "sha256-ySfC3PVRezevItW3kWTiY3U8GgB9p223ZiC8XaJ3koM=";
           }
           {
             name = "unison";
             publisher = "unison-lang";
             version = "1.2.0";
-            sha256 = "ulm3a1xJxtk+SIQP1sByEqgajd1a4P3oEfVgxoF5GcQ=";
+            hash = "sha256-ulm3a1xJxtk+SIQP1sByEqgajd1a4P3oEfVgxoF5GcQ=";
           }
           {
             ## Unfortunately, the nixpkgs version doesrn’t seem to work on darwin.
             name = "vsliveshare";
             publisher = "MS-vsliveshare";
             version = "1.0.5831";
-            sha256 = "QViwZBxem0z62BLhA0zbFdQL3SfoUKZQx6X+Am1lkT0=";
+            hash = "sha256-QViwZBxem0z62BLhA0zbFdQL3SfoUKZQx6X+Am1lkT0=";
           }
         ];
       ## TODO: Would like to disable this, but seems like if it’s not mutable,
