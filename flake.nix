@@ -81,8 +81,16 @@
           ;
       };
 
-      overlays = {
+      overlays = let
+        nixcasks-overlay = final: prev: {
+          nixcasks =
+            (nixcasks.output {osVersion = "sonoma";})
+            .packages
+            .${final.system};
+        };
+      in {
         darwin = nixpkgs.lib.composeManyExtensions [
+          nixcasks-overlay
           self.overlays.default
         ];
         ## TODO: Split Emacs into its own overlay.
@@ -104,13 +112,12 @@
           (final: prev:
             if prev.stdenv.hostPlatform.isDarwin
             then
-              firefox-darwin.overlay final prev
-              // {
-                nixcasks =
-                  (nixcasks.output {osVersion = "sonoma";})
-                  .packages
-                  .${final.system};
-              }
+              nixpkgs.lib.composeManyExtensions [
+                firefox-darwin.overlay
+                nixcasks-overlay
+              ]
+              final
+              prev
             else {})
           nur.overlay
           ## TODO: unison-nix’s UCM doesn’t yet support aarch64-darwin, so we
