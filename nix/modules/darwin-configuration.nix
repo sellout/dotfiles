@@ -145,8 +145,14 @@
       # Twitter = 409789998; # currently subsumed by ferdium
       Xcode = 497799835;
     };
-    onActivation.cleanup = "uninstall";
-    taps = ["homebrew/cask"];
+    ## NB: These settings unfortunately make `darwin-rebuild switch`
+    ##     non-idempotent, but the alternative is having Homebrew just be
+    ##     outdated forever (because I’ll never do it manually).
+    onActivation = {
+      autoUpdate = true;
+      cleanup = "uninstall";
+      upgrade = true;
+    };
   };
 
   nix = {
