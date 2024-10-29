@@ -22,7 +22,10 @@
     ## shell history database
     atuin = {
       enable = true;
-      settings.update_check = false;
+      settings = {
+        update_check = false;
+        workspaces = true; # filters within whatever git repo you’re in
+      };
     };
 
     bash = {
