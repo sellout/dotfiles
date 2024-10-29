@@ -741,12 +741,9 @@
   };
 
   xdg = {
+    enable = true;
     # The files produced here should be echoed in the .gitignore file.
     configFile = {
-      "breezy/breezy.conf".text = ''
-        [DEFAULT]
-        email = ${config.lib.local.primaryEmailAccount.realName} <${config.lib.local.primaryEmailAccount.address}>
-      '';
       # TODO: I don’t know how to relocate `$HOME/.cabal/setup-exe-cache` and
       #       `$HOME/.cabal/store`. Hopefully they use `CABAL_DIR`.
       "cabal/config".text = ''
@@ -809,7 +806,6 @@
         };
       };
     };
-    enable = true;
     userDirs = {
       createDirectories = true;
       enable = pkgs.stdenv.hostPlatform.isLinux;
