@@ -32,6 +32,11 @@
 
   home = {
     activation = {
+      ## TODO: Should move a version of this to Home Manager itself.
+      setUpErrorTrap = lib.hm.dag.entryBefore ["checkLaunchAgents"] ''
+        trap '_iError "Home Manager activation failed with $? at $(basename $0):$LINENO"; exit 1' ERR
+      '';
+
       # TODO: This should be removed once
       #       https://github.com/nix-community/home-manager/issues/1341 is
       #       closed.
