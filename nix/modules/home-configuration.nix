@@ -817,7 +817,7 @@
         # often synced (like Dropbox, iCloud, etc.), so this is a parallel
         # directory for things that shouldn’t be synced – like
         # version-controlled directories.
-        XDG_PROJECTS_DIR = "${config.lib.local.xdg.userDirs.projects.home}";
+        XDG_PROJECTS_DIR = config.lib.local.xdg.userDirs.projects.home;
       };
     };
   };
