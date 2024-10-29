@@ -163,7 +163,7 @@
   programs = {
     bash = {
       enable = true;
-      enableCompletion = true;
+      completion.enable = true;
       interactiveShellInit = ''
         # System-wide .bashrc file for interactive bash(1) shells.
         if [ -z "$PS1" ]; then
