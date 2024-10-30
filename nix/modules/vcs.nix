@@ -150,9 +150,15 @@ in {
         };
       };
 
-      xdg.configFile."git/template" = {
-        recursive = true;
-        source = ../../home/${config.lib.local.xdg.config.rel}/git/template;
+      xdg.configFile = {
+        "breezy/breezy.conf".text = ''
+          [DEFAULT]
+          email = ${config.lib.local.primaryEmailAccount.realName} <${config.lib.local.primaryEmailAccount.address}>
+        '';
+        "git/template" = {
+          recursive = true;
+          source = ../../home/${config.lib.local.xdg.config.rel}/git/template;
+        };
       };
     };
     nixosConfig = {

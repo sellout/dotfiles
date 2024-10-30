@@ -10,6 +10,7 @@
     agenix.homeManagerModules.age
     ./emacs
     ./firefox.nix
+    ./gpg.nix
     ./i3.nix
     ./input-devices.nix
     ./locale.nix
@@ -532,12 +533,6 @@
       nix-direnv.enable = true;
     };
 
-    gpg = {
-      enable = true;
-      homedir = "${config.xdg.configHome}/gnupg/";
-      settings.no-default-keyring = true;
-    };
-
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
 
@@ -586,20 +581,20 @@
             name = "ginfuru-better-solarized-dark-theme";
             publisher = "ginfuru";
             version = "0.9.5";
-            sha256 = "ySfC3PVRezevItW3kWTiY3U8GgB9p223ZiC8XaJ3koM=";
+            hash = "sha256-ySfC3PVRezevItW3kWTiY3U8GgB9p223ZiC8XaJ3koM=";
           }
           {
             name = "unison";
             publisher = "unison-lang";
             version = "1.2.0";
-            sha256 = "ulm3a1xJxtk+SIQP1sByEqgajd1a4P3oEfVgxoF5GcQ=";
+            hash = "sha256-ulm3a1xJxtk+SIQP1sByEqgajd1a4P3oEfVgxoF5GcQ=";
           }
           {
             ## Unfortunately, the nixpkgs version doesrn’t seem to work on darwin.
             name = "vsliveshare";
             publisher = "MS-vsliveshare";
             version = "1.0.5831";
-            sha256 = "QViwZBxem0z62BLhA0zbFdQL3SfoUKZQx6X+Am1lkT0=";
+            hash = "sha256-QViwZBxem0z62BLhA0zbFdQL3SfoUKZQx6X+Am1lkT0=";
           }
         ];
       ## TODO: Would like to disable this, but seems like if it’s not mutable,
@@ -629,17 +624,6 @@
   '';
 
   services = {
-    gpg-agent = {
-      ## NB: Despite having a launchd configuration, this module also has a
-      ##     linux-only assertion.
-      enable = pkgs.stdenv.hostPlatform.isLinux;
-      pinentryPackage = pkgs.pinentry-tty;
-      ## TODO: These values are just copied from my manual config. Figure out if
-      ##       they’re actually good.
-      defaultCacheTtl = 600;
-      maxCacheTtl = 7200;
-    };
-
     home-manager.autoUpgrade = {
       enable = pkgs.stdenv.hostPlatform.isLinux;
       frequency = "daily";
@@ -757,12 +741,9 @@
   };
 
   xdg = {
+    enable = true;
     # The files produced here should be echoed in the .gitignore file.
     configFile = {
-      "breezy/breezy.conf".text = ''
-        [DEFAULT]
-        email = ${config.lib.local.primaryEmailAccount.realName} <${config.lib.local.primaryEmailAccount.address}>
-      '';
       # TODO: I don’t know how to relocate `$HOME/.cabal/setup-exe-cache` and
       #       `$HOME/.cabal/store`. Hopefully they use `CABAL_DIR`.
       "cabal/config".text = ''
@@ -788,28 +769,6 @@
         set history filename ${config.xdg.stateHome}/gdb/history
         set history save on
       '';
-      ## TODO: This is stolen from the Home Manager module, because that only
-      ##       works for Linux. Extract this to a local module with the linux
-      ##       config next to it or, even better, fix the upstream module.
-      "gnupg/gpg-agent.conf".text = let
-        cfg = config.services.gpg-agent;
-        optional = lib.optional;
-      in
-        lib.concatStringsSep "\n"
-        (optional (cfg.enableSshSupport) "enable-ssh-support"
-          ++ optional cfg.grabKeyboardAndMouse "grab"
-          ++ optional (!cfg.enableScDaemon) "disable-scdaemon"
-          ++ optional (cfg.defaultCacheTtl != null)
-          "default-cache-ttl ${toString cfg.defaultCacheTtl}"
-          ++ optional (cfg.defaultCacheTtlSsh != null)
-          "default-cache-ttl-ssh ${toString cfg.defaultCacheTtlSsh}"
-          ++ optional (cfg.maxCacheTtl != null)
-          "max-cache-ttl ${toString cfg.maxCacheTtl}"
-          ++ optional (cfg.maxCacheTtlSsh != null)
-          "max-cache-ttl-ssh ${toString cfg.maxCacheTtlSsh}"
-          ++ optional (cfg.pinentryPackage != null)
-          "pinentry-program ${lib.getExe cfg.pinentryPackage}"
-          ++ [cfg.extraConfig]);
       "irb/irbrc".text = ''
         IRB.conf[:EVAL_HISTORY] = 200
         IRB.conf[:HISTORY_FILE] = "${config.xdg.stateHome}/irb/history"
@@ -847,7 +806,6 @@
         };
       };
     };
-    enable = true;
     userDirs = {
       createDirectories = true;
       enable = pkgs.stdenv.hostPlatform.isLinux;
@@ -859,7 +817,7 @@
         # often synced (like Dropbox, iCloud, etc.), so this is a parallel
         # directory for things that shouldn’t be synced – like
         # version-controlled directories.
-        XDG_PROJECTS_DIR = "${config.lib.local.xdg.userDirs.projects.home}";
+        XDG_PROJECTS_DIR = config.lib.local.xdg.userDirs.projects.home;
       };
     };
   };
