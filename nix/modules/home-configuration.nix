@@ -371,8 +371,8 @@
       # TODO: Since this uses both `nix` and the containing flake, it seems like
       #       there should be a better way to get that information to the
       #       command than having the shell look it up.
-      devEnv = devShell: "nix develop " + "sys#" + devShell;
-      template = template: "nix flake init -t " + "sys#" + template;
+      devEnv = devShell: "nix develop " + "env#" + devShell;
+      template = template: "nix flake init -t " + "env#" + template;
     in {
       grep = "grep --color";
 
