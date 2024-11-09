@@ -1,6 +1,4 @@
 {
-  config,
-  flaky,
   lib,
   nixpkgs,
   pkgs,
@@ -10,8 +8,13 @@
     registry = {
       ## Set the registry’s Nixpkgs to match this flake’s.
       nixpkgs.flake = nixpkgs;
-      ## Allows `sys#` to reference the templates, devShells, etc. from Flaky.
-      sys.flake = flaky;
+      ## Allows `sys#` to reference the templates, devShells, etc. from Flaky
+      ## environments.
+      env.to = {
+        type = "github";
+        owner = "sellout";
+        repo = "flaky-environments";
+      };
     };
 
     settings = {
