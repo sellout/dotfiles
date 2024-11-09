@@ -21,7 +21,8 @@
       "3" = "EEE, MMM d, y";
       "4" = "EEEE, MMMM d, y";
     };
-    AppleICUForce24HourTime = 1;
+    AppleICUForce12HourTime = false;
+    AppleICUForce24HourTime = true;
     AppleLanguages = ["en"];
     AppleLocale = "en_US";
     AppleMeasurementUnits = "Centimeters";
