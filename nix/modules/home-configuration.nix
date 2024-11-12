@@ -16,9 +16,11 @@
     ./locale.nix
     ./nix-configuration.nix
     ./nixpkgs-configuration.nix
+    ./programming
     ./shell.nix
+    ./ssh.nix
     ./tex.nix
-    ./vcs.nix
+    ./vcs
   ];
 
   fonts.fontconfig.enable = true;
@@ -95,62 +97,18 @@
     ## 2. use the application’s preferred config file name (we don’t care if it
     ##    has a leading `.` or not, since we use `ls -A`, etc to make dotfiles
     ##    visible whenever possible.
-    file = let
-      toml = pkgs.formats.toml {};
-    in {
-      # ABCL’s init file (https://abcl.org/)
-      ".abclrc".source =
-        ../../home/${config.lib.local.xdg.config.rel}/common-lisp/init.lisp;
-      # Allegro CL’s init file
-      # (https://franz.com/support/documentation/10.1/doc/startup.htm#init-files-1)
-      ".clinit.cl".source =
-        ../../home/${config.lib.local.xdg.config.rel}/common-lisp/init.lisp;
-      # CLISP’s init file (https://clisp.sourceforge.io/impnotes/clisp.html)
-      ".clisprc.lisp".source =
-        ../../home/${config.lib.local.xdg.config.rel}/common-lisp/init.lisp;
-      # ECL’s init file
-      # (https://ecl.common-lisp.dev/static/manual/Invoking-ECL.html#Invoking-ECL)
-      ".ecl".source =
-        ../../home/${config.lib.local.xdg.config.rel}/common-lisp/init.lisp;
-      # SBCL’s init file
-      # (https://www.sbcl.org/manual/index.html#Initialization-Files)
-      ".sbclrc".text = ''
-        (load #p"${config.lib.local.addHome config.xdg.configFile."common-lisp".target}/init.lisp")
-
-        (defvar asdf::*source-to-target-mappings* '((#p"/usr/local/lib/sbcl/" nil)))
-      '';
-      # Clozure CL’s init file
-      # (https://ccl.clozure.com/docs/ccl.html#the-init-file)
-      "ccl-init.lisp".text = ''
-        (setf *default-file-character-encoding* :utf-8)
-        (load #p"${config.lib.local.addHome config.xdg.configFile."common-lisp".target}/init.lisp")
-      '';
-      # CMUCL’s init file
-      # (https://cmucl.org/docs/cmu-user/html/Command-Line-Options.html#Command-Line-Options)
-      "init.lisp".source =
-        ../../home/${config.lib.local.xdg.config.rel}/common-lisp/init.lisp;
-      # NB: This currently gets put in `config.xdg.cacheHome`, since most of the
-      #     stuff in `$CARGO_HOME` is cached data. However, this means that the
-      #     Cargo config can be erased (until the next `home-manager switch`) if
-      #     the cache is cleared.
-      "${config.lib.local.removeHome config.home.sessionVariables.CARGO_HOME}/config.toml".source = toml.generate "Cargo config.toml" {
-        ## NB: Relative paths aren’t relative to the workspace, as one would
-        ##     hope. See rust-lang/cargo#7843.
-        build.target-dir = "${config.xdg.stateHome}/cargo";
-        ## Cargo writes executables to the bin/ subdir of this path.
-        install.root = config.lib.local.xdg.local.home;
-      };
+    file = {
       # There’s no $XDG_BIN_HOME in the spec for some reason, so these files
       # aren’t managed under the xdg module.
       # TODO: Can’t just link the directory, because `executable = true` doesn’t
       #       work then. See nix-community/home-manager#3594.
       "${config.lib.local.xdg.bin.rel}/edit" = {
         executable = true;
-        source = ../../home/${config.lib.local.xdg.bin.rel}/edit;
+        source = ./edit;
       };
       "${config.lib.local.xdg.bin.rel}/emacs-pager" = {
         executable = true;
-        source = ../../home/${config.lib.local.xdg.bin.rel}/emacs-pager;
+        source = ./emacs-pager;
       };
     };
 
@@ -284,7 +242,6 @@
         pkgs.nixcasks.kiibohd-configurator
         pkgs.nixcasks.kindle
         pkgs.nixcasks.lastfm
-        pkgs.nixcasks.marathon
         pkgs.nixcasks.mendeley
         pkgs.nixcasks.netnewswire
         pkgs.nixcasks.omnifocus
@@ -338,75 +295,24 @@
     ];
 
     sessionVariables = {
-      CABAL_CONFIG = config.lib.local.addHome config.xdg.configFile."cabal/config".target;
-      CABAL_DIR = "${config.xdg.stateHome}/cabal";
-      CARGO_HOME = "${config.xdg.cacheHome}/cargo";
-      IRBRC = config.lib.local.addHome config.xdg.configFile."irb/irbrc".target;
-      LEIN_HOME = "${config.xdg.dataHome}/lein";
-      LW_INIT = "${config.lib.local.addHome config.xdg.configFile."lispworks/init.lisp".target}";
-      MAKEFLAGS = "-j$(nproc)";
-      NPM_CONFIG_USERCONFIG = "${config.xdg.configHome}/npm/npmrc";
-      OCTAVE_INITFILE = "${config.lib.local.addHome config.xdg.configFile."octave/octaverc".target}";
       PGPASSFILE = "$XDG_CONFIG_HOME/pg/pgpass";
       ## TODO: Make emacs-pager better (needs to handle ANSI escapes, like I do
       ##       in compilation buffers).
       # PAGER = "${config.lib.local.xdg.bin.home}/emacs-pager";
-      PSQLRC = "${config.lib.local.addHome config.xdg.configFile."psql/psqlrc".target}";
-      # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONPYCACHEPREFIX
-      PYTHONPYCACHEPREFIX = "${config.xdg.cacheHome}/python";
-      # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUSERBASE
-      PYTHONUSERBASE = "${config.xdg.stateHome}/python";
       RANDFILE = "${config.xdg.stateHome}/openssl/rnd";
-      R_ENVIRON_USER = "${config.xdg.configHome}/r/environ";
-      RUSTUP_HOME = "${config.xdg.stateHome}/rustup";
-      STACK_XDG = "1";
-      # May be able to remove this after wakatime/wakatime-cli#558 is fixed.
-      WAKATIME_HOME = "${config.xdg.configHome}/wakatime";
       XAUTHORITY = "${config.lib.local.xdg.runtimeDir}/Xauthority";
     };
 
-    shellAliases = let
-      # A builder for quick dev environments.
-      #
-      # TODO: Since this uses both `nix` and the containing flake, it seems like
-      #       there should be a better way to get that information to the
-      #       command than having the shell look it up.
-      devEnv = devShell: "nix develop " + "env#" + devShell;
-      template = template: "nix flake init -t " + "env#" + template;
-    in {
+    shellAliases = {
       grep = "grep --color";
 
       # Some of the long flag names aren’t widely supported, so this alias
       # should be equivalent to `ls --almost-all --human-readable --color`.
       ls = "ls -Ah --color";
 
-      # Show all the flakes relative to the user’s home directory
-      list-flakes = "find \"$HOME\" -name flake.nix -exec dirname {} \\; 2>/dev/null | sed -e \"s|^$HOME/||\"";
-      list-repos = "find \"$HOME\" \( -name _darcs -o -name .git -o -name .pijul \) -exec dirname {} \\; 2>/dev/null | sed -e \"s|^$HOME/||\"";
-
-      # Takes a path to a derivation (/nix/store/<hash>-foo-<version>) and
-      # prints out everything that depends on it, transitively.
-      #
-      # TODO: `find` all the derivations that match a simple package name to
-      #       make this easier to use.
-      nix-reverse-deps = "nix-store --query --referrers-closure";
-
-      nix-bash = devEnv "bash";
-      nix-c = devEnv "c";
-      nix-emacs-lisp = devEnv "emacs-lisp";
-      nix-haskell = devEnv "haskell";
-      nix-rust = devEnv "rust";
-      nix-scala = devEnv "scala";
-
-      nix-bash-template = template "bash";
-      nix-c-template = template "c";
-      nix-default-template = template "default";
-      nix-emacs-lisp-template = template "emacs-lisp";
-      nix-haskell-template = template "haskell";
-
       ## Set paths to XDG-compatible places
       keychain = "keychain --dir ${config.lib.local.xdg.runtimeDir}/keychain --absolute";
-      wget = "wget --hsts-file=${config.xdg.dataHome}/wget-hsts";
+      wget = "wget --hsts-file=${config.xdg.stateHome}/wget/hsts";
 
       ## Include dotfiles.
       tree = "tree -a";
@@ -550,83 +456,7 @@
     };
 
     man.generateCaches = true;
-
-    ssh = {
-      controlMaster = "auto";
-      # This moves the default `controlPath`, but also changes %n to %h, so we
-      # share the connection even if we typed different hostnames on the
-      # command-line.
-      controlPath = "${config.lib.local.xdg.runtimeDir}/ssh/master-%r@%h:%p";
-      enable = true;
-      extraConfig = ''
-        AddKeysToAgent yes
-      '';
-      ## See https://heipei.github.io/2015/02/26/SSH-Agent-Forwarding-considered-harmful/
-      forwardAgent = false;
-      package = pkgs.openssh;
-      userKnownHostsFile = "${config.xdg.stateHome}/ssh/known_hosts";
-    };
-
-    ## This is for pairing with VSCode users, including Ronnie. Would be ideal
-    ## if there were something like Foobits, but that seems effectively dead.
-    vscode = {
-      enable = true;
-      enableExtensionUpdateCheck = false; # Nervous about these two, see how
-      enableUpdateCheck = false; # they actually affect things.
-      extensions = let
-        vpkgs = pkgs.vscode-extensions;
-      in
-        [
-          vpkgs._1Password.op-vscode
-          # vpkgs.ms-vsliveshare.vsliveshare
-          vpkgs.WakaTime.vscode-wakatime
-        ]
-        ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-          {
-            name = "ginfuru-better-solarized-dark-theme";
-            publisher = "ginfuru";
-            version = "0.9.5";
-            hash = "sha256-ySfC3PVRezevItW3kWTiY3U8GgB9p223ZiC8XaJ3koM=";
-          }
-          {
-            name = "unison";
-            publisher = "unison-lang";
-            version = "1.2.0";
-            hash = "sha256-ulm3a1xJxtk+SIQP1sByEqgajd1a4P3oEfVgxoF5GcQ=";
-          }
-          {
-            ## Unfortunately, the nixpkgs version doesrn’t seem to work on darwin.
-            name = "vsliveshare";
-            publisher = "MS-vsliveshare";
-            version = "1.0.5831";
-            hash = "sha256-QViwZBxem0z62BLhA0zbFdQL3SfoUKZQx6X+Am1lkT0=";
-          }
-        ];
-      ## TODO: Would like to disable this, but seems like if it’s not mutable,
-      ##       then extensions.json never gets created, so VSCode thinks it has
-      ##       no extensions.
-      # mutableExtensionsDir = false; # See comment on `enable*`.
-      package = pkgs.vscodium; # Without non-MIT MS telemetry, etc.
-      userSettings = {
-        "editor.fontFamily" = pkgs.lib.concatStringsSep ", " [
-          "'${config.lib.local.programmingFont}'"
-          "'${config.lib.local.defaultMonoFont}'"
-          "monospace"
-        ];
-        "editor.fontLigatures" = true;
-        "editor.fontSize" = config.lib.local.defaultFontSize;
-        "workbench.colorTheme" = "Solarized Dark";
-      };
-    };
   };
-
-  ## FIXME: SSH doesn’t create the directory for the `ControlPath`, so if this
-  ##        isn’t done, SSH doesn’t work on new machines. It seems like a bug
-  ##        in SSH to me. Or, at least, SSH should give a better error message
-  ##        when this occurs.
-  home.activation.sshControlPath = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    mkdir -p '${config.lib.local.xdg.runtimeDir}/ssh'
-  '';
 
   services = {
     home-manager.autoUpgrade = {
@@ -747,83 +577,12 @@
 
   xdg = {
     enable = true;
-    # The files produced here should be echoed in the .gitignore file.
-    configFile = {
-      # TODO: I don’t know how to relocate `$HOME/.cabal/setup-exe-cache` and
-      #       `$HOME/.cabal/store`. Hopefully they use `CABAL_DIR`.
-      "cabal/config".text = ''
-        repository hackage.haskell.org
-          url: http://hackage.haskell.org/packages/archive
-        remote-repo-cache: ${config.xdg.cacheHome}/cabal/packages
-        world-file: ${config.xdg.stateHome}/cabal/world
-        extra-prog-path: ${config.xdg.dataHome}/cabal/bin
-        build-summary: ${config.xdg.stateHome}/cabal/logs/build.log
-        remote-build-reporting: anonymous
-        jobs: $ncpus
-        install-dirs user
-          prefix: ${config.xdg.stateHome}/cabal
-          bindir: ${config.xdg.dataHome}/cabal/bin
-          datadir: ${config.xdg.dataHome}/cabal
-      '';
-      ## NB: This isn’t a config file for a specific implementation, but rather
-      ##     is `load`ed by various implementations, so we put the common bits
-      ##     in one place.
-      "common-lisp".source =
-        ../../home/${config.lib.local.xdg.config.rel}/common-lisp;
-      "gdb/gdbinit".text = ''
-        set history filename ${config.xdg.stateHome}/gdb/history
-        set history save on
-      '';
-      "irb/irbrc".text = ''
-        IRB.conf[:EVAL_HISTORY] = 200
-        IRB.conf[:HISTORY_FILE] = "${config.xdg.stateHome}/irb/history"
-        IRB.conf[:SAVE_HISTORY] = 1000
-      '';
-      # LispWorks init file
-      # (http://www.lispworks.com/documentation/lwu41/readme/LIR_73.HTM)
-      "lispworks/init.lisp".text = ''
-        #+lispworks  (mp:initialize-multiprocessing)
-
-        (load #p"${config.lib.local.addHome config.xdg.configFile."common-lisp".target}/init.lisp")
-
-        (ql:quickload "swank")
-        (swank:create-server :port 4005)
-      '';
-      "npm/npmrc".source = ../../home/${config.lib.local.xdg.config.rel}/npm/npmrc;
-      "octave/octaverc".text = ''
-        history_file("${config.xdg.stateHome}/octave/history")
-      '';
-      "psql/psqlrc".text = ''
-        \set HISTFILE ${config.xdg.stateHome}/psql/history
-      '';
-      "r/environ".text = ''
-        R_HISTFILE="${config.xdg.stateHome}/r/history"
-        R_PROFILE_USER="${config.xdg.configHome}/r/profile"
-      '';
-      "r/profile".source = ../../home/${config.lib.local.xdg.config.rel}/r/profile;
-      "stack/config.yaml".text = lib.generators.toYAML {} {
-        nix.enable = true;
-        templates.params = {
-          author-name = config.lib.local.primaryEmailAccount.realName;
-          author-email = config.lib.local.primaryEmailAccount.address;
-          copyright = config.lib.local.primaryEmailAccount.realName;
-          github-username = config.programs.git.extraConfig.github.user;
-        };
-      };
-    };
     userDirs = {
       createDirectories = true;
       enable = pkgs.stdenv.hostPlatform.isLinux;
       videos =
         lib.mkIf pkgs.stdenv.hostPlatform.isDarwin
         (config.lib.local.addHome "Movies");
-      extraConfig = {
-        # I used to store these in `$XDG_DOCUMENTS_DIR`, but that directory is
-        # often synced (like Dropbox, iCloud, etc.), so this is a parallel
-        # directory for things that shouldn’t be synced – like
-        # version-controlled directories.
-        XDG_PROJECTS_DIR = config.lib.local.xdg.userDirs.projects.home;
-      };
     };
   };
 
