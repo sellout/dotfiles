@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+source strict-mode.bash
+
+## This will attempt to run `project-manager` whenever a branch is checked out.
+## It will also run it when a repo is initially cloned.
+
+## TODO: See if we can get this from flaky, or even from Project Manager (if
+##       that starts providing it somehow) rather than duplicating the content.
+
+## TODO: This should also check if `project-manager` _should_ exist, and
+##       if so do some more heroic things, e.g,
+##     • `nix run github:sellout/project-manager -- switch`.
+if command -v nix
+then nix develop .#project-manager --command project-manager switch
+elif command -v project-manager
+then
+    echo >&2 "Couldn’t find ‘project-manager’ in project, so running global installation."
+    project-manager switch
+else echo >&2 "Couldn’t find a ‘project-manager’ to run, so skipping."
+fi

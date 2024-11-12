@@ -69,7 +69,7 @@ in {
           "${config.lib.local.xdg.bin.rel}/${command}"
           {
             executable = true;
-            source = ../../home/${config.lib.local.xdg.bin.rel}/${command};
+            source = ./${command};
           }) [
           "git-bare"
           "git-gc-branches"
@@ -109,7 +109,7 @@ in {
             diff.algorithm = "histogram";
             init = {
               defaultBranch = "main";
-              templateDir = config.lib.local.addHome config.xdg.configFile."git/template".target;
+              templateDir = "${./git/template}";
             };
             log.showSignatures = true;
             merge.conflictStyle = "diff3";
@@ -155,10 +155,6 @@ in {
           [DEFAULT]
           email = ${config.lib.local.primaryEmailAccount.realName} <${config.lib.local.primaryEmailAccount.address}>
         '';
-        "git/template" = {
-          recursive = true;
-          source = ../../home/${config.lib.local.xdg.config.rel}/git/template;
-        };
       };
     };
     nixosConfig = {

@@ -11,7 +11,7 @@
     ./input-devices.nix
     ./nix-configuration.nix
     ./nixpkgs-configuration.nix
-    ./vcs.nix
+    ./vcs
   ];
 
   environment = {

@@ -147,9 +147,11 @@
         i3 = import ./nix/modules/i3.nix;
         nix-configuration = import ./nix/modules/nix-configuration.nix;
         nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
+        programming = import ./nix/modules/programming;
         shell = import ./nix/modules/shell.nix;
+        ssh = import ./nix/modules/ssh.nix;
         tex = import ./nix/modules/tex.nix;
-        vcs = import ./nix/modules/vcs.nix;
+        vcs = import ./nix/modules/vcs;
       };
 
       nixosModules = {
@@ -228,10 +230,16 @@
         (builtins.filter (nixpkgs.lib.hasSuffix "-linux") supportedSystems));
     }
     // flake-utils.lib.eachSystem supportedSystems (system: let
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
+        flaky.overlays.default
+      ];
     in {
-      projectConfigurations = flaky.lib.projectConfigurations.default {
+      projectConfigurations = flaky.lib.projectConfigurations.nix {
         inherit pkgs self supportedSystems;
+        modules = [
+          flaky.projectModules.bash
+          flaky.projectModules.emacs-lisp
+        ];
       };
 
       devShells =
@@ -268,7 +276,8 @@
         home-manager.follows = "home-manager";
         nixpkgs.follows = "nixpkgs";
       };
-      url = "github:t4ccer/agenix.el";
+      ## TODO: Switch back to upstream once bash-strict-mode is updated there.
+      url = "github:sellout/agenix.el/update-bash-strict-mode";
     };
 
     bradix = {
