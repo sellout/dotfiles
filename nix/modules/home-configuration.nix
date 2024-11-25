@@ -570,6 +570,13 @@
         IncludeDevelopMenu = true;
         ShowOverlayStatusBar = true;
       };
+      "com.apple.WindowManager" = {
+        EnableTiledWindowMargins = 0;
+        ## MacOS Sequoia (15.1) adds some new behavior that will auto-tile
+        ## windows when you move them to a screen edge. These disable those.
+        EnableTilingByEdgeDrag = 0;
+        EnableTopTilingByEdgeDrag = 0;
+      };
       "com.apple.universalaccess" = {
         closeViewScrollWheelToggle = true;
         reduceTransparency = true;
