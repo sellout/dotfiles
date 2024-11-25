@@ -23,6 +23,10 @@
     ./vcs
   ];
 
+  ## TODO: The default for this isn’t actually a path, but rather
+  ##       expands to a path in the shell. See ryantm/agenix#300.
+  age.secretsDir = "${config.lib.local.xdg.runtimeDir}/agenix";
+
   fonts.fontconfig.enable = true;
 
   # FIXME: This and `config.home.activation.aliasApplications` below _may_ be
