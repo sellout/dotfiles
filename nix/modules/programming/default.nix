@@ -23,7 +23,7 @@
       # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUSERBASE
       PYTHONUSERBASE = "${config.xdg.stateHome}/python";
       # May be able to remove this after wakatime/wakatime-cli#558 is fixed.
-      WAKATIME_HOME = "${config.xdg.configHome}/wakatime";
+      WAKATIME_HOME = "${config.xdg.stateHome}/wakatime";
     };
 
     shellAliases = let
