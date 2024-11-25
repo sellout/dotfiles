@@ -11,6 +11,7 @@
     ./emacs
     ./firefox.nix
     ./gpg.nix
+    ./i18n.nix
     ./i3.nix
     ./input-devices.nix
     ./locale.nix
@@ -320,6 +321,44 @@
 
       ## Include dotfiles.
       tree = "tree -a";
+    };
+  };
+
+  ## NB: Before removing something from these lists (because you think it is
+  ##     part of the standard dictionary now), make sure it is in _all_ the
+  ##     dictionaries that reference this list (and even then, better to have
+  ##     a word stay a word then let a dictionary cull it later).
+  i18n.spelling = {
+    enable = true;
+    dictionaries = {
+      en = [
+        "arity"
+        "boulderers"
+        "coroplast"
+        "cortado"
+        "coöperating"
+        "coöperative"
+        "coördinate"
+        "coördinated"
+        "coördinates"
+        "coördinating"
+        "coördination"
+        "dozenal"
+        "duoid"
+        "duoids"
+        "freedive"
+        "freediving"
+        "kell"
+        "kells"
+        "palantir"
+        "tenkara"
+        "topo"
+      ];
+      local = [
+        "GitHub"
+        "Skitch"
+        "Vizsla"
+      ];
     };
   };
 
