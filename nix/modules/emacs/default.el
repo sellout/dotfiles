@@ -96,6 +96,16 @@ FILENAME and NOERROR behave the same as for ‘require‘."
     "Tau or “turn” is the right way to calculate rotation.
 1𝜏 is a single full rotation.")
 
+  ;; See https://physics.nist.gov/cuu/Units/binary.html for more about these
+  ;; prefixes.
+  (defconst base-binary-multiple (expt 2 10))
+  (defconst Ki (expt base-binary-multiple 1))
+  (defconst Mi (expt base-binary-multiple 2))
+  (defconst Gi (expt base-binary-multiple 3))
+  (defconst Ti (expt base-binary-multiple 4))
+  (defconst Pi (expt base-binary-multiple 5))
+  (defconst Ei (expt base-binary-multiple 6))
+
   (defconst seconds-in-day (bradix-parse "86 399⠊999 85")
     "Mean seconds per day.
 This is needed since Emacs generally wants time values in seconds.")

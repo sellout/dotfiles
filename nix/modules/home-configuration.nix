@@ -11,6 +11,7 @@
     ./emacs
     ./firefox.nix
     ./gpg.nix
+    ./i18n.nix
     ./i3.nix
     ./input-devices.nix
     ./locale.nix
@@ -22,6 +23,10 @@
     ./tex.nix
     ./vcs
   ];
+
+  ## TODO: The default for this isn’t actually a path, but rather
+  ##       expands to a path in the shell. See ryantm/agenix#300.
+  age.secretsDir = "${config.lib.local.xdg.runtimeDir}/agenix";
 
   fonts.fontconfig.enable = true;
 
@@ -319,6 +324,44 @@
     };
   };
 
+  ## NB: Before removing something from these lists (because you think it is
+  ##     part of the standard dictionary now), make sure it is in _all_ the
+  ##     dictionaries that reference this list (and even then, better to have
+  ##     a word stay a word then let a dictionary cull it later).
+  i18n.spelling = {
+    enable = true;
+    dictionaries = {
+      en = [
+        "arity"
+        "boulderers"
+        "coroplast"
+        "cortado"
+        "coöperating"
+        "coöperative"
+        "coördinate"
+        "coördinated"
+        "coördinates"
+        "coördinating"
+        "coördination"
+        "dozenal"
+        "duoid"
+        "duoids"
+        "freedive"
+        "freediving"
+        "kell"
+        "kells"
+        "palantir"
+        "tenkara"
+        "topo"
+      ];
+      local = [
+        "GitHub"
+        "Skitch"
+        "Vizsla"
+      ];
+    };
+  };
+
   lib.local = {
     defaultFontSize = 12.0;
     # NB: These faces need to be listed in `home.packages`.
@@ -565,6 +608,13 @@
         AutoOpenSafeDownloads = false;
         IncludeDevelopMenu = true;
         ShowOverlayStatusBar = true;
+      };
+      "com.apple.WindowManager" = {
+        EnableTiledWindowMargins = 0;
+        ## MacOS Sequoia (15.1) adds some new behavior that will auto-tile
+        ## windows when you move them to a screen edge. These disable those.
+        EnableTilingByEdgeDrag = 0;
+        EnableTopTilingByEdgeDrag = 0;
       };
       "com.apple.universalaccess" = {
         closeViewScrollWheelToggle = true;
