@@ -206,8 +206,6 @@
   security.pam.enableSudoTouchIdAuth = true;
 
   services = {
-    activate-system.enable = true;
-
     nix-daemon.enable = true;
 
     tailscale = {
