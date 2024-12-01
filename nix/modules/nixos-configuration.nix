@@ -8,6 +8,7 @@
 }: {
   imports = [
     agenix.nixosModules.age
+    ./date-time.nix
     ./games.nix
     ./input-devices.nix
     ./locale.nix
@@ -71,14 +72,6 @@
   hardware = {
     bluetooth.enable = true;
     pulseaudio.enable = false;
-  };
-
-  ## Auto-adjust system time.
-  location.provider = "geoclue2";
-  services = {
-    automatic-timezoned.enable = true;
-    ## To work around NixOS/nixpkgs#68489
-    geoclue2.enableDemoAgent = lib.mkForce true;
   };
 
   networking = {
