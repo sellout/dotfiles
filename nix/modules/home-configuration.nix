@@ -22,6 +22,7 @@
     ./ssh.nix
     ./tex.nix
     ./vcs
+    ./wakatime.nix
   ];
 
   ## TODO: The default for this isn’t actually a path, but rather
