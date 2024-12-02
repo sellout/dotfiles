@@ -22,8 +22,6 @@
       PYTHONPYCACHEPREFIX = "${config.xdg.cacheHome}/python";
       # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUSERBASE
       PYTHONUSERBASE = "${config.xdg.stateHome}/python";
-      # May be able to remove this after wakatime/wakatime-cli#558 is fixed.
-      WAKATIME_HOME = "${config.xdg.stateHome}/wakatime";
     };
 
     shellAliases = let
@@ -61,55 +59,62 @@
     };
   };
 
-  ## This is for pairing with VSCode users, including Ronnie. Would be ideal
-  ## if there were something like Foobits, but that seems effectively dead.
-  programs.vscode = {
-    enable = true;
-    enableExtensionUpdateCheck = false; # Nervous about these two, see how
-    enableUpdateCheck = false; # they actually affect things.
-    extensions = let
-      vpkgs = pkgs.vscode-extensions;
-    in
-      [
-        vpkgs._1Password.op-vscode
-        # vpkgs.ms-vsliveshare.vsliveshare
-        vpkgs.WakaTime.vscode-wakatime
-      ]
-      ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-        {
-          name = "ginfuru-better-solarized-dark-theme";
-          publisher = "ginfuru";
-          version = "0.9.5";
-          hash = "sha256-ySfC3PVRezevItW3kWTiY3U8GgB9p223ZiC8XaJ3koM=";
-        }
-        {
-          name = "unison";
-          publisher = "unison-lang";
-          version = "1.2.0";
-          hash = "sha256-ulm3a1xJxtk+SIQP1sByEqgajd1a4P3oEfVgxoF5GcQ=";
-        }
-        {
-          ## Unfortunately, the nixpkgs version doesrn’t seem to work on darwin.
-          name = "vsliveshare";
-          publisher = "MS-vsliveshare";
-          version = "1.0.5831";
-          hash = "sha256-QViwZBxem0z62BLhA0zbFdQL3SfoUKZQx6X+Am1lkT0=";
-        }
-      ];
-    ## TODO: Would like to disable this, but seems like if it’s not mutable,
-    ##       then extensions.json never gets created, so VSCode thinks it has
-    ##       no extensions.
-    # mutableExtensionsDir = false; # See comment on `enable*`.
-    package = pkgs.vscodium; # Without non-MIT MS telemetry, etc.
-    userSettings = {
-      "editor.fontFamily" = pkgs.lib.concatStringsSep ", " [
-        "'${config.lib.local.programmingFont}'"
-        "'${config.lib.local.defaultMonoFont}'"
-        "monospace"
-      ];
-      "editor.fontLigatures" = true;
-      "editor.fontSize" = config.lib.local.defaultFontSize;
-      "workbench.colorTheme" = "Solarized Dark";
+  programs = {
+    ## This is for pairing with VSCode users, including Ronnie. Would be ideal
+    ## if there were something like Foobits, but that seems effectively dead.
+    vscode = {
+      enable = true;
+      enableExtensionUpdateCheck = false; # Nervous about these two, see how
+      enableUpdateCheck = false; # they actually affect things.
+      extensions = let
+        vpkgs = pkgs.vscode-extensions;
+      in
+        [
+          vpkgs._1Password.op-vscode
+          # vpkgs.ms-vsliveshare.vsliveshare
+          vpkgs.WakaTime.vscode-wakatime
+        ]
+        ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+          {
+            name = "ginfuru-better-solarized-dark-theme";
+            publisher = "ginfuru";
+            version = "0.9.5";
+            hash = "sha256-ySfC3PVRezevItW3kWTiY3U8GgB9p223ZiC8XaJ3koM=";
+          }
+          {
+            name = "unison";
+            publisher = "unison-lang";
+            version = "1.2.0";
+            hash = "sha256-ulm3a1xJxtk+SIQP1sByEqgajd1a4P3oEfVgxoF5GcQ=";
+          }
+          {
+            ## Unfortunately, the nixpkgs version doesrn’t seem to work on darwin.
+            name = "vsliveshare";
+            publisher = "MS-vsliveshare";
+            version = "1.0.5831";
+            hash = "sha256-QViwZBxem0z62BLhA0zbFdQL3SfoUKZQx6X+Am1lkT0=";
+          }
+        ];
+      ## TODO: Would like to disable this, but seems like if it’s not mutable,
+      ##       then extensions.json never gets created, so VSCode thinks it has
+      ##       no extensions.
+      # mutableExtensionsDir = false; # See comment on `enable*`.
+      package = pkgs.vscodium; # Without non-MIT MS telemetry, etc.
+      userSettings = {
+        "editor.fontFamily" = pkgs.lib.concatStringsSep ", " [
+          "'${config.lib.local.programmingFont}'"
+          "'${config.lib.local.defaultMonoFont}'"
+          "monospace"
+        ];
+        "editor.fontLigatures" = true;
+        "editor.fontSize" = config.lib.local.defaultFontSize;
+        "workbench.colorTheme" = "Solarized Dark";
+      };
+    };
+
+    wakatime = {
+      enable = true;
+      settings.guess_language = true;
     };
   };
 
