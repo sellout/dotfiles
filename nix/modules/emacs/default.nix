@@ -325,12 +325,12 @@
 
         (custom-pseudo-theme-set-faces 'sellout-system-configurations
           '(default
-            ((t (:family "${config.lib.local.defaultSansFont}"
+            ((t (:family "${config.lib.local.defaultFont.sansFamily}"
                  :height
-                 ${builtins.toString (builtins.floor (config.lib.local.defaultFontSize * 10))}))))
-          '(fixed-pitch ((t (:family "${config.lib.local.defaultMonoFont}"))))
-          '(font-lock ((t (:family "${config.lib.local.programmingFont}"))))
-          '(variable-pitch ((t (:family "${config.lib.local.defaultSansFont}")))))
+                 ${builtins.toString (builtins.floor (config.lib.local.defaultFont.size * 10))}))))
+          '(fixed-pitch ((t (:family "${config.lib.local.defaultFont.monoFamily}"))))
+          '(font-lock ((t (:family "${config.lib.local.defaultFont.programmingFamily}"))))
+          '(variable-pitch ((t (:family "${config.lib.local.defaultFont.sansFamily}")))))
       ''
       ## FIXME: On darwin we currently have to set up the `PATH` manually so
       ##        that it has a reasonable value when Emacs isn’t launched from a

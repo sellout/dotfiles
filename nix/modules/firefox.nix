@@ -27,25 +27,27 @@ in {
         tree-style-tab
       ];
       # search.default = "DuckDuckGo";
-      settings = {
+      settings = let
+        defaultFont = config.lib.local.defaultFont;
+      in {
+        "browser.aboutConfig.showWarning" = false;
         "browser.contentblocking.category" = "strict";
         "browser.startup.homepage" = "https://github.com/pulls/review-requested";
         "browser.toolbars.bookmarks.visibility" = "always";
         "browser.urlbar.suggest.quicksuggest.sponsored" = false;
         "font.default.x-unicode" = "sans-serif";
         "font.default.x-western" = "sans-serif";
-        "font.name.monospace.x-unicode" = config.lib.local.defaultMonoFont;
-        "font.name.monospace.x-western" = config.lib.local.defaultMonoFont;
-        "font.name.sans-serif.x-unicode" = config.lib.local.defaultFont;
-        "font.name.sans-serif.x-western" = config.lib.local.defaultFont;
-        "font.size.monospace.x-unicode" =
-          builtins.floor config.lib.local.defaultFontSize;
-        "font.size.monospace.x-western" =
-          builtins.floor config.lib.local.defaultFontSize;
-        "font.size.variable.x-unicode" =
-          builtins.floor config.lib.local.defaultFontSize;
-        "font.size.variable.x-western" =
-          builtins.floor config.lib.local.defaultFontSize;
+        "font.name.monospace.x-unicode" = defaultFont.monoFamily;
+        "font.name.monospace.x-western" = defaultFont.monoFamily;
+        "font.name.sans-serif.x-unicode" = defaultFont.string;
+        "font.name.sans-serif.x-western" = defaultFont.string;
+        "font.size.monospace.x-unicode" = builtins.floor defaultFont.size;
+        "font.size.monospace.x-western" = defaultFont.size;
+        "font.size.variable.x-unicode" = defaultFont.size;
+        "font.size.variable.x-western" = builtins.floor defaultFont.size;
+        "privacy.globalprivacycontrol.enabled" = true;
+        "privacy.globalprivacycontrol.functionality.enabled" = true;
+        "privacy.globalprivacycontrol.pbmode.enabled" = true;
         "services.sync.username" =
           config.lib.local.primaryEmailAccount.address;
       };

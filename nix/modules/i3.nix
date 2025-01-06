@@ -3,11 +3,13 @@
   lib,
   pkgs,
   ...
-}: {
+}: let
+  defaultFont = config.lib.local.defaultFont;
+in {
   xsession.windowManager.i3 = lib.mkIf pkgs.stdenv.hostPlatform.isLinux (let
     # the default font gets trampled by home-manager setting a font for the
     # bars no matter what, so this lets us define a common font to use.
-    font = "pango:" + config.lib.local.defaultFont;
+    font = "pango:" + defaultFont.string;
     mod = "Mod4";
     refresh_i3status = "killall -SIGUSR1 i3status";
     ws1 = "1";
@@ -25,16 +27,16 @@
       bars = [
         {
           fonts = {
-            names = [config.lib.local.defaultSansFont];
-            size = config.lib.local.defaultFontSize;
+            names = [defaultFont.sansFamily];
+            size = defaultFont.size;
           };
           statusCommand = "i3status";
         }
       ];
       floating.modifier = mod;
       fonts = {
-        names = [config.lib.local.defaultSansFont];
-        size = config.lib.local.defaultFontSize;
+        names = [defaultFont.sansFamily];
+        size = defaultFont.size;
       };
       keybindings =
         lib.mkOptionDefault

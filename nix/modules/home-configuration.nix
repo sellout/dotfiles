@@ -364,16 +364,17 @@
   };
 
   lib.local = {
-    defaultFontSize = 12.0;
-    # NB: These faces need to be listed in `home.packages`.
-    defaultMonoFont = "Fira Mono";
-    defaultSansFont = "Lexica Ultralegible";
-    programmingFont = "Fira Code";
-
-    defaultFont =
-      config.lib.local.defaultSansFont
-      + " "
-      + builtins.toString config.lib.local.defaultFontSize;
+    defaultFont = {
+      # NB: These faces need to be listed in `home.packages`.
+      monoFamily = "Fira Mono";
+      programmingFamily = "Fira Code";
+      sansFamily = "Lexica Ultralegible";
+      size = 12.0;
+      string =
+        config.lib.local.defaultFont.sansFamily
+        + " "
+        + builtins.toString config.lib.local.defaultFont.size;
+    };
 
     ## Holds the name of the (first) account designated as `primary`, or `null`
     ## (which shouldn’t happen).
@@ -560,7 +561,7 @@
 
     mako = {
       enable = pkgs.stdenv.hostPlatform.isLinux;
-      font = config.lib.local.defaultFont;
+      font = config.lib.local.defaultFont.string;
     };
 
     screen-locker.lockCmd = "${pkgs.i3lock}/bin/i3lock -n -c 000000";
