@@ -26,6 +26,12 @@
     ./wakatime.nix
   ];
 
+  accounts = {
+    calendar.basePath = "${config.xdg.stateHome}/calendar";
+    contact.basePath = "${config.xdg.stateHome}/contact";
+    email.maildirBasePath = "${config.xdg.stateHome}/Maildir";
+  };
+
   ## TODO: The default for this isn’t actually a path, but rather
   ##       expands to a path in the shell. See ryantm/agenix#300.
   age.secretsDir = "${config.lib.local.xdg.runtimeDir}/agenix";
