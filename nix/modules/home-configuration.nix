@@ -539,8 +539,9 @@
   nixpkgs.overlays = [dotfiles.overlays.home];
 
   programs = {
-    # Let Home Manager install and manage itself.
-    home-manager.enable = true;
+    ## We let Project Manager provide Home Manager to projects that have
+    ## `homeConfigurations`.`
+    home-manager.enable = false;
 
     info.enable = true;
 
