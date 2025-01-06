@@ -8,6 +8,7 @@
 }: {
   imports = [
     agenix.homeManagerModules.age
+    ./direnv.nix
     ./emacs
     ./firefox.nix
     ./gpg.nix
@@ -477,17 +478,6 @@
   nixpkgs.overlays = [dotfiles.overlays.home];
 
   programs = {
-    direnv = {
-      config.global = {
-        # Ideally could set this for specific projects, see direnv/direnv#793.
-        strict_env = true;
-        # Nix flakes tend to take a while. This is probably still too short.
-        warn_timeout = "60s";
-      };
-      enable = true;
-      nix-direnv.enable = true;
-    };
-
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
 
