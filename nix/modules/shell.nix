@@ -19,6 +19,34 @@
   };
 
   programs = {
+    ## cross-platform terminal emulator
+    alacritty = {
+      enable = true;
+      ## Documented at https://alacritty.org/config-alacritty.html.
+      settings = {
+        colors = let
+          solarized = config.lib.local.solarized "dark";
+        in {
+          inherit (solarized.ANSI) bright normal;
+          cursor = {
+            cursor = solarized.color.base0;
+            text = solarized.background;
+          };
+          primary = {
+            inherit (solarized) background;
+            foreground = solarized.color.base0;
+          };
+        };
+        font = {
+          normal.family = config.lib.local.defaultFont.monoFamily;
+          size = config.lib.local.defaultFont.size;
+        };
+        ## Make sure we don’t fall back to different versions on non-NixOS (e.g.
+        ## the ancient Bash 3.2 on darwin).
+        shell.program = lib.getExe pkgs.bashInteractive;
+      };
+    };
+
     ## shell history database
     atuin = {
       enable = true;
