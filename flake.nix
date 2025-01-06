@@ -119,7 +119,7 @@
               final
               prev
             else {})
-          nur.overlay
+          nur.overlays.default
           ## TODO: unison-nix’s UCM doesn’t yet support aarch64-darwin, so we
           ##       use the rest of the overlay without shadowing the UCM from
           ##       Nixpkgs.
