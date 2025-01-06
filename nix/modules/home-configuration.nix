@@ -565,6 +565,7 @@
 
     keybase.enable = pkgs.stdenv.hostPlatform.isLinux;
 
+    ## notification daemon for Wayland
     mako = {
       enable = pkgs.stdenv.hostPlatform.isLinux;
       font = config.lib.local.defaultFont.string;
