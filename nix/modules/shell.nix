@@ -9,7 +9,6 @@
   home = {
     packages = [
       pkgs.mosh # SSH client replacement
-      pkgs.pinentry.tty
       pkgs.tree
       pkgs.viddy # `watch` replacement
       pkgs.wget

@@ -57,6 +57,9 @@
     ##       to Emacs.
     packages =
       [
+        ## This doesn’t seem to be looked up via gpg-agent.conf, and
+        ## `config.services.gpg-agent` doesn’t seem to expose the package.
+        config.services.gpg-agent.pinentryPackage
         pkgs.dtach
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
@@ -558,6 +561,8 @@
       enable = false; # pkgs.stdenv.hostPlatform.isLinux; # because it relies on systemd
     };
 
+    ## This works, but it is annoying to have to enter my actual GPG password
+    ## all the time, rather than relying on system features like fingerprints.
     gpg-agent.extraConfig = ''
       ## See magit/magit#4076 for the struggles re: getting Magit/TRAMP/GPG
       ## working.
