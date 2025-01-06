@@ -317,7 +317,6 @@
       ls = "ls -Ah --color";
 
       ## Set paths to XDG-compatible places
-      keychain = "keychain --dir ${config.lib.local.xdg.runtimeDir}/keychain --absolute";
       wget = "wget --hsts-file=${config.xdg.stateHome}/wget/hsts";
 
       ## Include dotfiles.
@@ -541,12 +540,6 @@
     home-manager.enable = true;
 
     info.enable = true;
-
-    keychain = {
-      enable = true;
-      enableXsessionIntegration = true;
-      keys = ["id_ed25519"];
-    };
 
     man.generateCaches = true;
   };
