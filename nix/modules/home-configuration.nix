@@ -260,7 +260,6 @@
         pkgs.nixcasks.processing
         # pkgs.nixcasks.psi # broken
         pkgs.nixcasks.quicksilver
-        pkgs.nixcasks.remarkable
         pkgs.nixcasks.rowmote-helper
         pkgs.nixcasks.screenflow
         pkgs.nixcasks.scrivener

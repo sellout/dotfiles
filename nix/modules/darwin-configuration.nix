@@ -139,6 +139,7 @@
       Pages = 409201541;
       "Picture Window" = 507262984;
       "Prime Video" = 545519333;
+      reMarkable = 1276493162;
       "Remote Mouse" = 403195710;
       Robotek = 462238382;
       SoundCloud = 412754595;
