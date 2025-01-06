@@ -117,6 +117,9 @@
         executable = true;
         source = ./emacs-pager;
       };
+      ## This is ostensibly used by a local SMTP daemon to forward emails to the
+      ## appropriate account, but is also displayed by `finger`.
+      ".forward".text = config.lib.local.primaryEmailAccount.address;
     };
 
     ## Ideally, packages are provided by projects (e.g., Nix flakes + direnv)
