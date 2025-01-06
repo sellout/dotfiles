@@ -552,6 +552,9 @@
     info.enable = true;
 
     man.generateCaches = true;
+
+    ## Declarative management of VCS repos
+    mr.enable = true;
   };
 
   services = {
