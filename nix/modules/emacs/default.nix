@@ -481,12 +481,13 @@
         };
       });
       envrc = prev.envrc.overrideAttrs (old: {
-        ## adds TRAMP support (purcell/envrc#29)
+        ## Temporarily set to my lighter branch, but eventually get that fixed &
+        ## merged.
         src = pkgs.fetchFromGitHub {
-          owner = "siddharthverma314";
+          owner = "sellout";
           repo = "envrc";
-          rev = "master";
-          hash = "sha256-yz2B9c8ar9wc13LwAeycsvYkCpzyg8KqouYp4EBgM6A=";
+          rev = "lighter";
+          hash = "sha256-yMgDJ7D1pa37tHIX8SgO++eMqNCUOM0Bx+A5p10vWWg=";
         };
       });
       floobits = prev.floobits.overrideAttrs (old: {

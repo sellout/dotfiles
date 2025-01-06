@@ -54,13 +54,50 @@ FILENAME and NOERROR behave the same as for ‘require‘."
 (xdg-locations-custom-paths)
 
 (eval-when-compile
-  ;; See jwiegley/use-package#880
-  (autoload #'use-package-autoload-keymap "use-package")
   (require 'use-package))
+
+(use-package use-package
+  :custom (use-package-always-defer t))
 
 ;; NB: Need these ones first, because use-package uses them in other clauses.
 (use-package bind-key)
 (use-package delight)
+
+(use-package inheritance-theme
+  ;; FIXME: Not sure why the ‘autoload’ in this file isn’t working. Maybe have
+  ;;        to move it to the primary package file? In any case, this ensures
+  ;;        that our theme is available. Once I get the ‘autoload’ working,
+  ;;        remove this.
+  :demand t)
+
+(use-package interim-faces
+  :demand t)
+
+(use-package solarized-theme
+  ;; FIXME: Not sure why the ‘autoload’ in this file isn’t working. Maybe have
+  ;;        to move it to the primary package file? In any case, this ensures
+  ;;        that our theme is available. Once I get the ‘autoload’ working,
+  ;;        remove this.
+  :demand t)
+
+;; This package is assumed to be loaded already, so do the rest of the setup
+;; immediately.
+(use-package custom
+  ;; NB: Themes need to be loaded before we set up ‘custom’, since that then
+  ;;     enables them.
+  :after (inheritance-theme solarized-theme)
+  :config
+  ;; Stolen from https://www.emacswiki.org/emacs/DisabledCommands
+  (defadvice en/disable-command (around put-in-custom-file activate)
+    "Put declarations in `custom-file'."
+    (let ((user-init-file custom-file))
+      ad-do-it))
+  (load custom-file)
+  :custom
+  (custom-enabled-themes '(bringhurst solarized inheritance))
+  (custom-unlispify-remove-prefixes t)
+  :init
+  )
 
 ;; This is a escape hatch for loading non-Nix-managed configuration local to the
 ;; user account. See the contents of ‘user-init-file’ for more information.
@@ -84,16 +121,17 @@ FILENAME and NOERROR behave the same as for ‘require‘."
 (use-package auto-dark
   :after custom
   :defer nil
+  :delight (auto-dark-mode)
   :init (auto-dark-mode))
 
 (use-package autorevert
   :custom (auto-revert-mode-text "↩"))
 
 (use-package bradix
-  :config
+  :preface
   ;; TODO: Move these into a separate repo for my dozenal work.
-  (defconst 𝜏 (* 2 pi)
-    "Tau or “turn” is the right way to calculate rotation.
+  (defconst 𝜏 (* 2 float-pi)
+    "Tau or “turn” is the correct way to calculate rotation.
 1𝜏 is a single full rotation.")
 
   ;; See https://physics.nist.gov/cuu/Units/binary.html for more about these
@@ -105,7 +143,7 @@ FILENAME and NOERROR behave the same as for ‘require‘."
   (defconst Ti (expt base-binary-multiple 4))
   (defconst Pi (expt base-binary-multiple 5))
   (defconst Ei (expt base-binary-multiple 6))
-
+  :config
   (defconst seconds-in-day (bradix-parse "86 399⠊999 85")
     "Mean seconds per day.
 This is needed since Emacs generally wants time values in seconds.")
@@ -116,7 +154,8 @@ This is needed since Emacs generally wants time values in seconds.")
 
   (defconst dozenal-blink-rate
     (days-to-seconds (* (bradix-parse "0⠌000 02") 𝜏))
-    "Blink at a rate of 0⠌000 02𝜏."))
+    "Blink at a rate of 0⠌000 02𝜏.")
+  :functions bradix-parse days-to-seconds)
 
 (use-package bug-reference
   :hook
@@ -155,27 +194,9 @@ This is needed since Emacs generally wants time values in seconds.")
    'projectile-current-project-buffer-p
    "This only asks to save buffers in the project being compiled ... unless we're not in a project, then it asks for all files."))
 
-(use-package custom
-  ;; NB: Themes need to be loaded before we set up ‘custom’, since that then
-  ;;     enables them.
-  :after (inheritance-theme solarized-theme)
-  :config
-  ;; Stolen from https://www.emacswiki.org/emacs/DisabledCommands
-  (defadvice en/disable-command (around put-in-custom-file activate)
-    "Put declarations in `custom-file'."
-    (let ((user-init-file custom-file))
-      ad-do-it))
-  (load custom-file)
-  :custom
-  (custom-enabled-themes '(bringhurst solarized inheritance))
-  (custom-unlispify-remove-prefixes t))
-
-(custom-set-variables
- ;; NB: This can’t be set in a theme, see ‘custom-safe-themes’.
- '(custom-safe-themes t))
-
 (use-package dap-mode
   :commands dap-debug
+  :functions dap-hydra
   :hook
   (dap-stopped . (lambda (arg) (call-interactively #'dap-hydra))))
 
@@ -183,7 +204,8 @@ This is needed since Emacs generally wants time values in seconds.")
   :config
   (defun dap-python--pyenv-executable-find (command)
     (with-venv (executable-find "python")))
-  :custom (dap-python-debugger 'debugpy))
+  :custom (dap-python-debugger 'debugpy)
+  :functions with-venv)
 
 ;; TODO: The fringe and margin widths don’t appear to be correct
 (cl-defun fix-frame-width
@@ -214,6 +236,9 @@ characters of FACE plus any specified ‘fringe’."
   ;;       trampling something.
   :bind ("C-M-;" . fix-frame-width-fixed)
   :custom (default-text-scale-mode t))
+
+(use-package delsel
+  :custom (delete-selection-mode t))
 
 (defun sellout--detached--db-update-sessions (orig-fn)
   "Ensure ORIG-FN doesn’t truncate data written to the sessions DB."
@@ -375,7 +400,16 @@ characters of FACE plus any specified ‘fringe’."
   (list prefix `(:propertize ,status face mode-line-state)))
 
 (use-package flycheck
-  :config
+  :custom
+  (flycheck-mode-line '(:eval (sellout--flycheck-mode-line-status-text)))
+  (flycheck-mode-line-prefix "✓")
+  :defines
+  flycheck-current-errors
+  flycheck-last-status-change
+  flycheck-mode-line-prefix
+  :functions global-flycheck-mode
+  :init (global-flycheck-mode)
+  :preface
   ;; Overridden to match my general format for this stuff
   ;; > prefix[err warn info]
   ;; with faces to match.
@@ -403,16 +437,13 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
                        '((:propertize " ✓ " face success)))))
                   ('interrupted '((:propertize " . " face warning)))
                   ('suspicious '((:propertize " ? " face warning))))))
-      (sellout--mode-line-status-indicator flycheck-mode-line-prefix text)))
-  :custom
-  (flycheck-mode-line '(:eval (sellout--flycheck-mode-line-status-text)))
-  (flycheck-mode-line-prefix "✓")
-  :init (global-flycheck-mode))
+      (sellout--mode-line-status-indicator flycheck-mode-line-prefix text))))
 
 (use-package flycheck-eldev
   :custom (flycheck-eldev-unknown-projects 'trust))
 
 (use-package flycheck-vale
+  :functions flycheck-vale-setup
   :init (flycheck-vale-setup))
 
 (use-package flyspell
@@ -436,6 +467,73 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
 
 (use-package forge
   :after magit
+  :preface
+  (defun forge--fake-alpha (rgb alpha &optional underlying-face)
+    (let ((underlying-face (or underlying-face 'default)))
+      (cl-mapcar (lambda (color background)
+                   (+ (* color alpha) (* background (- 1 alpha))))
+                 rgb
+                 (color-name-to-rgb (face-background underlying-face nil t)))))
+
+  (defun forge--label-face (background-mode label &optional underlying-face)
+    "Produce an anonymous face from the provided LABEL."
+    (cl-destructuring-bind (label-r label-g label-b) (color-name-to-rgb label)
+      (cl-destructuring-bind (label-h label-s label-l)
+          (color-rgb-to-hsl label-r label-g label-b)
+        (let* ((light-mode (eq background-mode 'light))
+               (lightness-threshold (if light-mode 0.453 0.6))
+               (perceived-lightness (+ (* label-r 0.2126)
+                                       (* label-g 0.7152)
+                                       (* label-b 0.0722)))
+               (border-threshold 0.96)
+               (border-alpha (if light-mode (if (< border-threshold perceived-lightness) 1 0) 0.3))
+               (lightness-switch (if (< perceived-lightness lightness-threshold) 1 0))
+               ;; TODO: Redefine this in terms of ‘lightness-switch’ once we’re in dark mode again.
+               (lighten-by (max 0 (- lightness-threshold perceived-lightness))))
+          (list
+           :foreground
+           (apply #'color-rgb-to-hex
+                  (color-hsl-to-rgb label-h
+                                    label-s
+                                    (if light-mode
+                                        lightness-switch
+                                      (+ label-l lighten-by))))
+           :background
+           (if light-mode
+               label
+             (apply #'color-rgb-to-hex
+                    (forge--fake-alpha (list label-r label-g label-b) 0.18 underlying-face)))
+           :box
+           (list
+            :line-width (if (>= emacs-major-version 28) (cons -1 -1) -1)
+            :color
+            (apply #'color-rgb-to-hex
+                   (forge--fake-alpha (color-hsl-to-rgb label-h
+                                                        label-s
+                                                        (if light-mode
+                                                            (- label-l 0.25)
+                                                          (+ label-l lighten-by)))
+                                      border-alpha
+                                      underlying-face))))))))
+
+  (defun forge--insert-topic-labels (topic &optional skip-separator labels)
+    (pcase-dolist (`(,name ,color ,description)
+                   (or labels (closql--iref topic 'labels)))
+      (if skip-separator
+          (setq skip-separator nil)
+        (insert " "))
+      (let ((name (concat " " name " ")))
+        (insert name)
+        (let ((o (make-overlay (- (point) (length name)) (point))))
+          (overlay-put o 'priority 2)
+          (overlay-put o 'evaporate t)
+          (overlay-put o 'font-lock-face
+                       `(forge-topic-label
+                         ',(forge--label-face frame-background-mode
+                                              (forge--sanitize-color color))))
+          (when description
+            (overlay-put o 'help-echo description))))))
+
   :bind
   (:map magit-mode-map ("C-c v" . forge-copy-url-at-point-as-kill)))
 
@@ -445,6 +543,9 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
   (blink-cursor-blinks 0)
   (blink-cursor-delay dozenal-blink-rate)
   (blink-cursor-interval dozenal-blink-rate))
+
+(use-package flymake
+  :custom (flymake-mode-line-lighter "🛠️"))
 
 (use-package git-commit
   :custom
@@ -521,19 +622,16 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
 (use-package highlight-doxygen
   :custom (highlight-doxygen-global-mode t))
 
+(use-package icloud
+  :delight "☁️"
+  ;; TODO: Would be nice to switch this to check if iCloud is a running service
+  ;;       or something like that.
+  :disabled (not (eq system-type 'darwin))
+  :init (icloud-navigation-mode))
+
 (use-package idris-mode
   :delight
   '(:eval (propertize "🐲" 'face '(:inverse-video nil :foreground "#aa0100"))))
-
-(use-package inheritance-theme
-  ;; FIXME: Not sure why the ‘autoload’ in this file isn’t working. Maybe have
-  ;;        to move it to the primary package file? In any case, this ensures
-  ;;        that our theme is available. Once I get the ‘autoload’ working,
-  ;;        remove this.
-  :demand t)
-
-(use-package interim-faces
-  :demand t)
 
 (use-package isearch
   :delight "🔎")
@@ -833,7 +931,10 @@ Committer: %cN <%cE>
   :delight (magit-status-mode "✨"))
 
 (use-package markdown-mode
-  :custom (markdown-italic-underscore t)
+  :custom
+  (markdown-fontify-code-blocks-natively t)
+  (markdown-fontify-whole-heading-line t)
+  (markdown-italic-underscore t)
   :hook (markdown-mode . visual-line-mode))
 
 (use-package minibuffer
@@ -846,15 +947,38 @@ Committer: %cN <%cE>
   ("C-c m <" . mc/mark-previous-like-this)
   ("C-c m *" . mc/mark-all-like-this))
 
-(use-package muse-project ; muse
-  :config
-  (add-to-list 'muse-project-alist
-               '("Society" ("~/Documents/personal/society" :default "index"))))
-
 (use-package muse-wiki ; muse
   :config
   (add-to-list 'muse-wiki-interwiki-alist
                '("WardsWiki" . "http://c2.com/cgi/wiki?")))
+
+(use-package org
+  :custom
+  (org-babel-load-languages '((C . t)
+                              (emacs-lisp . t)
+                              (haskell . t)
+                              (python . t)))
+  (org-link-abbrev-alist '(("github" . "https://github.com/"))))
+
+(use-package org-brain
+  :after extended-faces
+  :config
+  ;; This mode draws lines and arrows, so it expects characters to be a common
+  ;; width.
+  (extended-faces-default-mode-face 'pseudo-column '(org-brain-visualize-mode))
+  :custom
+  ;; NB: This path is ostensibly local, but I’m consistent enough with where
+  ;;     repos live, that it should be accurate.
+  (org-brain-path "~/Projects/personal/brain")
+  :custom-face
+  ;; FIXME: Upstream has a bug in these faces, where there is an extra quote in
+  ;;        the inheritance field, which at least confuses the Customize
+  ;;        interface.
+  (org-brain-title ((t (:inherit org-level-1))))
+  ;; NB: I also added `pseudo-column' to this face’s inheritance, to make it
+  ;;     render better, but I probably have to use `buffer-face-set' for that.
+  (org-brain-wires ((t ( :inherit (pseudo-column font-lock-comment-face)
+                         :slant normal)))))
 
 (use-package org-clock
   :custom
@@ -883,6 +1007,10 @@ Committer: %cN <%cE>
   :bind (:map haskell-mode-map ("C-c r" . ormolu-format-buffer))
   :defines haskell-mode-map
   :hook (haskell-mode . ormolu-format-on-save-mode))
+
+(use-package ox-latex
+  ;; Much richer than `pdflatex`.
+  :custom (org-latex-compiler "xelatex"))
 
 ;; In general, prefer installation via Nix. However, we can manually install
 ;; temporarily in order to test things out before deciding to commit. The cycle
@@ -982,7 +1110,10 @@ Committer: %cN <%cE>
         ("C-c C-c q" . lsp-workspace-restart)
         ("C-c C-c Q" . lsp-workspace-shutdown)
         ("C-c C-c s" . lsp-rust-analyzer-status))
-  :custom (rustic-lsp-client sellout-lsp-package)
+  :custom
+  (rustic-format-trigger 'on-save)
+  (rustic-lsp-client sellout-lsp-package)
+  :defines rustic-mode-map
   :delight "🦀")
 
 (use-package scala-mode2
@@ -1020,36 +1151,17 @@ Committer: %cN <%cE>
     (read-kbd-macro paredit-backward-delete-key) nil)
   :hook (slime-repl-mode . paredit-mode))
 
-(use-package solarized-theme
-  ;; FIXME: Not sure why the ‘autoload’ in this file isn’t working. Maybe have
-  ;;        to move it to the primary package file? In any case, this ensures
-  ;;        that our theme is available. Once I get the ‘autoload’ working,
-  ;;        remove this.
-  :demand t)
-
 (use-package theme-kit
   :bind-keymap ("C-c t" . theme-kit-keymap))
 
 (use-package text-mode
   :hook (text-mode . visual-line-mode))
 
-;; This is one of two features I need from Emacs 29 (not yet released). The
-;; other is correct .dir-locals.el symlink refreshing on localhost. Funny how
-;; they’re so similar.
-(defun sellout-patch--tramp-handle-file-regular-p (orig-fn filename)
-  "Returns true if either ORIG-FN or TRAMP currently doesn’t currently identify symlinks as regular files.
-See https://debbugs.gnu.org/cgi/bugreport.cgi?bug=60943 for more information."
-  (or (funcall orig-fn filename)
-      (tramp-handle-file-symlink-p filename)))
-
 (use-package tramp
   :config
   ;; Use a login shell on remote machines to pull in correct environment.
   ;; See Info node ‘(tramp)Remote programs’
-  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
-  (advice-add #'tramp-handle-file-regular-p
-              :around
-              #'sellout-patch--tramp-handle-file-regular-p))
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
 (use-package transient
   :custom
@@ -1065,18 +1177,12 @@ See https://debbugs.gnu.org/cgi/bugreport.cgi?bug=60943 for more information."
   (uniquify-separator "→"))
 
 (use-package unison-ts-mode
+  :after markdown-mode
+  :config (add-to-list 'markdown-code-lang-modes '("unison" . unison-ts-mode))
   :hook (unison-ts-mode . eglot-ensure))
 
 (use-package vc-pijul
   :init (add-to-list 'vc-handled-backends 'Pijul))
-
-(use-package warnings
-  :custom
-  ;; TODO: There is some incompatibility between emacs-sqlite3 & emacs-forge in
-  ;;       nixpkgs 23.05. This should go away either when that’s fixed or with
-  ;;       Emacs 29.
-  (warning-suppress-log-types '((emacsql)))
-  (warning-suppress-types '((emacsql))))
 
 (use-package wakatime-mode
   :delight "⏱"
@@ -1120,6 +1226,8 @@ See https://debbugs.gnu.org/cgi/bugreport.cgi?bug=60943 for more information."
   (whitespace-mode "␠"))
 
 (use-package wl
+  ;; Binding mnemonic: “Read Mail”
+  :bind ("C-c C-r m" . wl)
   :custom
   (elmo-imap4-default-stream-type 'ssl)
   (wl-smtp-authenticate-type "login")
@@ -1491,11 +1599,19 @@ be very useful."
 ;;     https://github.com/purcell/envrc/blob/master/README.md#usage
 (use-package envrc
   :custom
-  (envrc-error-lighter '(:propertize "🗁" face envrc-mode-line-error-face))
-  (envrc-none-lighter '(:propertize "🗁" face envrc-mode-line-none-face))
-  (envrc-on-lighter '(:propertize "🗁" face envrc-mode-line-on-face))
+  (envrc-lighter-function #'sellout--envrc-lighter)
   (envrc-remote t)
-  :defer nil
-  :hook (after-init . envrc-global-mode))
+  :hook (after-init . envrc-global-mode)
+  :preface
+  ;; TODO: Customize ‘envrc-lighter-function’ with this once purcell/envrc#86 is
+  ;;       merged.
+  (defun sellout--envrc-lighter (status)
+    "Return a lighter for the provided envrc STATUS."
+    `(:propertize "🗁"
+                  face
+                  ,(pcase status
+                     ('error 'envrc-mode-line-error-face)
+                     ('on 'envrc-mode-line-on-face)
+                     (_ 'envrc-mode-line-none-face)))))
 
 ;;; default.el ends here
