@@ -65,6 +65,16 @@
       '';
     };
 
+    ## NB: Running `neowofetch` will skip the pride colors.
+    hyfetch = {
+      enable = true;
+      settings = {
+        color_align.mode = "horizontal";
+        preset = "nonbinary";
+        pride_month_disable = false;
+      };
+    };
+
     ## A shell prompt customizer (https://starship.rs/)
     starship = let
       ## Group some of the modules.
