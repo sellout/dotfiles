@@ -473,12 +473,11 @@
     ];
     overrides = final: prev: {
       auto-dark = prev.auto-dark.overrideAttrs (old: {
-        ## adds `frame-background-mode` support (LionyxML/auto-dark-emacs#57)
         src = pkgs.fetchFromGitHub {
-          owner = "sellout";
+          owner = "LionyxML";
           repo = "auto-dark-emacs";
-          rev = "default-to-custom-enabled-themes";
-          hash = "sha256-D+bXR9zVDLDnsuOn6NT3mboeciyQiPIGLAHmokY15nI=";
+          rev = "development"; # since I’m a contributor
+          hash = "sha256-hyiNSuUVoW3+A9wpUR5eu905okXW/2L7n/CnGc/4QYI=";
         };
       });
       envrc = prev.envrc.overrideAttrs (old: {
