@@ -435,6 +435,7 @@
       epkgs.nix-mode
       epkgs.nix-sandbox
       epkgs.nixos-options
+      epkgs.org-brain
       epkgs.orgit # link to Magit from Org
       epkgs.orgit-forge # link to Forge topics from Org
       epkgs.ormolu
