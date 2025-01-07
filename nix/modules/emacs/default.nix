@@ -57,6 +57,9 @@
     ##       to Emacs.
     packages =
       [
+        ## This doesn’t seem to be looked up via gpg-agent.conf, and
+        ## `config.services.gpg-agent` doesn’t seem to expose the package.
+        config.services.gpg-agent.pinentryPackage
         pkgs.dtach
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
@@ -325,12 +328,12 @@
 
         (custom-pseudo-theme-set-faces 'sellout-system-configurations
           '(default
-            ((t (:family "${config.lib.local.defaultSansFont}"
+            ((t (:family "${config.lib.local.defaultFont.sansFamily}"
                  :height
-                 ${builtins.toString (builtins.floor (config.lib.local.defaultFontSize * 10))}))))
-          '(fixed-pitch ((t (:family "${config.lib.local.defaultMonoFont}"))))
-          '(font-lock ((t (:family "${config.lib.local.programmingFont}"))))
-          '(variable-pitch ((t (:family "${config.lib.local.defaultSansFont}")))))
+                 ${builtins.toString (builtins.floor (config.lib.local.defaultFont.size * 10))}))))
+          '(fixed-pitch ((t (:family "${config.lib.local.defaultFont.monoFamily}"))))
+          '(font-lock ((t (:family "${config.lib.local.defaultFont.programmingFamily}"))))
+          '(variable-pitch ((t (:family "${config.lib.local.defaultFont.sansFamily}")))))
       ''
       ## FIXME: On darwin we currently have to set up the `PATH` manually so
       ##        that it has a reasonable value when Emacs isn’t launched from a
@@ -432,6 +435,7 @@
       epkgs.nix-mode
       epkgs.nix-sandbox
       epkgs.nixos-options
+      epkgs.org-brain
       epkgs.orgit # link to Magit from Org
       epkgs.orgit-forge # link to Forge topics from Org
       epkgs.ormolu
@@ -469,21 +473,21 @@
     ];
     overrides = final: prev: {
       auto-dark = prev.auto-dark.overrideAttrs (old: {
-        ## adds `frame-background-mode` support (LionyxML/auto-dark-emacs#57)
         src = pkgs.fetchFromGitHub {
-          owner = "sellout";
+          owner = "LionyxML";
           repo = "auto-dark-emacs";
-          rev = "default-to-custom-enabled-themes";
-          hash = "sha256-D+bXR9zVDLDnsuOn6NT3mboeciyQiPIGLAHmokY15nI=";
+          rev = "development"; # since I’m a contributor
+          hash = "sha256-hyiNSuUVoW3+A9wpUR5eu905okXW/2L7n/CnGc/4QYI=";
         };
       });
       envrc = prev.envrc.overrideAttrs (old: {
-        ## adds TRAMP support (purcell/envrc#29)
+        ## Temporarily set to my lighter branch, but eventually get that fixed &
+        ## merged.
         src = pkgs.fetchFromGitHub {
-          owner = "siddharthverma314";
+          owner = "sellout";
           repo = "envrc";
-          rev = "master";
-          hash = "sha256-yz2B9c8ar9wc13LwAeycsvYkCpzyg8KqouYp4EBgM6A=";
+          rev = "lighter";
+          hash = "sha256-yMgDJ7D1pa37tHIX8SgO++eMqNCUOM0Bx+A5p10vWWg=";
         };
       });
       floobits = prev.floobits.overrideAttrs (old: {
@@ -558,6 +562,8 @@
       enable = false; # pkgs.stdenv.hostPlatform.isLinux; # because it relies on systemd
     };
 
+    ## This works, but it is annoying to have to enter my actual GPG password
+    ## all the time, rather than relying on system features like fingerprints.
     gpg-agent.extraConfig = ''
       ## See magit/magit#4076 for the struggles re: getting Magit/TRAMP/GPG
       ## working.

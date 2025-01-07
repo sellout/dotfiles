@@ -102,12 +102,12 @@
       package = pkgs.vscodium; # Without non-MIT MS telemetry, etc.
       userSettings = {
         "editor.fontFamily" = pkgs.lib.concatStringsSep ", " [
-          "'${config.lib.local.programmingFont}'"
-          "'${config.lib.local.defaultMonoFont}'"
+          "'${config.lib.local.defaultFont.programmingFamily}'"
+          "'${config.lib.local.defaultFont.monoFamily}'"
           "monospace"
         ];
         "editor.fontLigatures" = true;
-        "editor.fontSize" = config.lib.local.defaultFontSize;
+        "editor.fontSize" = config.lib.local.defaultFont.size;
         "workbench.colorTheme" = "Solarized Dark";
       };
     };

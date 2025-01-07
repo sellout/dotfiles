@@ -32,10 +32,34 @@ in {
       '';
     };
   };
-  config = {
+  config = let
+    ## Get keychain to use an XDG-compatible location.
+    keychainFlags = [
+      "--absolute"
+      "--dir"
+      "${config.lib.local.xdg.runtimeDir}/keychain"
+    ];
+  in {
     programs.bash = {inherit profileExtra;};
     programs.zsh = {inherit profileExtra;};
     xsession = {inherit profileExtra;};
+
+    programs.keychain = {
+      enable = true;
+      ## This is done instead of `programs.keychain.extraArgs` because that only
+      ## applies to the initial setup. We also can’t easily get away with adding
+      ## it via `home.shellAliases` because there are contexts (Emacs) that run
+      ## it outside of a shell environment, so then it still gets overlooked.
+      package = pkgs.keychain.overrideAttrs (old: {
+        nativeBuildInputs = old.nativeBuildInputs ++ [pkgs.makeWrapper];
+        postFixup = ''
+          wrapProgram "$out/bin/keychain" \
+            --add-flags "${lib.escapeShellArgs keychainFlags}"
+        '';
+      });
+      extraFlags = keychainFlags;
+      keys = ["id_ed25519"];
+    };
 
     programs.ssh = {
       controlMaster = "auto";

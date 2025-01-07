@@ -28,7 +28,6 @@
       extra-experimental-features = [
         "flakes"
         "nix-command"
-        "repl-flake" # provides a `:lf` (load flake) command in `nix repl`
       ];
       extra-substituters = ["https://cache.garnix.io"];
       extra-trusted-public-keys = [

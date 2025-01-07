@@ -8,6 +8,7 @@
 }: {
   imports = [
     agenix.homeManagerModules.age
+    ./direnv.nix
     ./emacs
     ./firefox.nix
     ./gpg.nix
@@ -24,6 +25,12 @@
     ./vcs
     ./wakatime.nix
   ];
+
+  accounts = {
+    calendar.basePath = "${config.xdg.stateHome}/calendar";
+    contact.basePath = "${config.xdg.stateHome}/contact";
+    email.maildirBasePath = "${config.xdg.stateHome}/Maildir";
+  };
 
   ## TODO: The default for this isn’t actually a path, but rather
   ##       expands to a path in the shell. See ryantm/agenix#300.
@@ -116,6 +123,9 @@
         executable = true;
         source = ./emacs-pager;
       };
+      ## This is ostensibly used by a local SMTP daemon to forward emails to the
+      ## appropriate account, but is also displayed by `finger`.
+      ".forward".text = config.lib.local.primaryEmailAccount.address;
     };
 
     ## Ideally, packages are provided by projects (e.g., Nix flakes + direnv)
@@ -259,7 +269,6 @@
         pkgs.nixcasks.processing
         # pkgs.nixcasks.psi # broken
         pkgs.nixcasks.quicksilver
-        pkgs.nixcasks.remarkable
         pkgs.nixcasks.rowmote-helper
         pkgs.nixcasks.screenflow
         pkgs.nixcasks.scrivener
@@ -317,7 +326,6 @@
       ls = "ls -Ah --color";
 
       ## Set paths to XDG-compatible places
-      keychain = "keychain --dir ${config.lib.local.xdg.runtimeDir}/keychain --absolute";
       wget = "wget --hsts-file=${config.xdg.stateHome}/wget/hsts";
 
       ## Include dotfiles.
@@ -364,16 +372,17 @@
   };
 
   lib.local = {
-    defaultFontSize = 12.0;
-    # NB: These faces need to be listed in `home.packages`.
-    defaultMonoFont = "Fira Mono";
-    defaultSansFont = "Lexica Ultralegible";
-    programmingFont = "Fira Code";
-
-    defaultFont =
-      config.lib.local.defaultSansFont
-      + " "
-      + builtins.toString config.lib.local.defaultFontSize;
+    defaultFont = {
+      # NB: These faces need to be listed in `home.packages`.
+      monoFamily = "Fira Mono";
+      programmingFamily = "Fira Code";
+      sansFamily = "Lexica Ultralegible";
+      size = 12.0;
+      string =
+        config.lib.local.defaultFont.sansFamily
+        + " "
+        + builtins.toString config.lib.local.defaultFont.size;
+    };
 
     ## Holds the name of the (first) account designated as `primary`, or `null`
     ## (which shouldn’t happen).
@@ -400,6 +409,65 @@
     ## possible, so there is also `removeHome`. absolute paths we have.
     addHome = path: config.home.homeDirectory + "/" + path;
     removeHome = lib.removePrefix (config.home.homeDirectory + "/");
+
+    ## These make it easy to match the Solarized theme
+    ## (https://ethanschoonover.com/solarized/) for modules that support color
+    ## configuration.
+    solarized = mode: let
+      darkColors = {
+        base03 = "#002b36";
+        base02 = "#073642";
+        base01 = "#586e75";
+        base00 = "#657b83";
+        base0 = "#839496";
+        base1 = "#93a1a1";
+        base2 = "#eee8d5";
+        base3 = "#fdf6e3";
+        blue = "#268bd2";
+        cyan = "#2aa198";
+        green = "#859900";
+        magenta = "#d33682";
+        orange = "#cb4b16";
+        red = "#dc322f";
+        violet = "#6c71c4";
+        yellow = "#b58900";
+      };
+      color =
+        if mode == "dark"
+        then darkColors
+        else
+          darkColors
+          // {
+            base03 = darkColors.base3;
+            base02 = darkColors.base2;
+            base01 = darkColors.base1;
+            base00 = darkColors.base0;
+            base0 = darkColors.base00;
+            base1 = darkColors.base01;
+            base2 = darkColors.base02;
+            base3 = darkColors.base03;
+          };
+    in {
+      inherit color;
+      background = color.base03;
+      ANSI = {
+        normal = {
+          inherit (color) blue cyan green magenta red yellow;
+          black = color.base02;
+          white = color.base2;
+        };
+        bright = {
+          black = color.base03;
+          blue = color.base0;
+          cyan = color.base1;
+          green = color.base01;
+          magenta = color.violet;
+          red = color.orange;
+          white = color.base3;
+          yellow = color.base00;
+        };
+      };
+    };
 
     # Variables that `config.xdg` doesn’t provide, but that I wish it would.
     xdg = {
@@ -477,29 +545,16 @@
   nixpkgs.overlays = [dotfiles.overlays.home];
 
   programs = {
-    direnv = {
-      config.global = {
-        # Ideally could set this for specific projects, see direnv/direnv#793.
-        strict_env = true;
-        # Nix flakes tend to take a while. This is probably still too short.
-        warn_timeout = "60s";
-      };
-      enable = true;
-      nix-direnv.enable = true;
-    };
-
-    # Let Home Manager install and manage itself.
-    home-manager.enable = true;
+    ## We let Project Manager provide Home Manager to projects that have
+    ## `homeConfigurations`.`
+    home-manager.enable = false;
 
     info.enable = true;
 
-    keychain = {
-      enable = true;
-      enableXsessionIntegration = true;
-      keys = ["id_ed25519"];
-    };
-
     man.generateCaches = true;
+
+    ## Declarative management of VCS repos
+    mr.enable = true;
   };
 
   services = {
@@ -510,9 +565,10 @@
 
     keybase.enable = pkgs.stdenv.hostPlatform.isLinux;
 
+    ## notification daemon for Wayland
     mako = {
       enable = pkgs.stdenv.hostPlatform.isLinux;
-      font = config.lib.local.defaultFont;
+      font = config.lib.local.defaultFont.string;
     };
 
     screen-locker.lockCmd = "${pkgs.i3lock}/bin/i3lock -n -c 000000";
@@ -520,7 +576,7 @@
 
   targets.darwin = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     defaults = {
-      NSGlobalDomain = {
+      "Apple Global Domain" = {
         AppleInterfaceStyleSwitchesAutomatically = true;
         NSAutomaticCapitalizationEnabled = false;
         NSAutomaticDashSubstitutionEnabled = false;
