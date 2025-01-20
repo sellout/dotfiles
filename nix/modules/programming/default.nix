@@ -5,6 +5,7 @@
 }: {
   imports = [
     ./common-lisp
+    ./connectiq
     ./haskell.nix
     ./javascript
     ./r
