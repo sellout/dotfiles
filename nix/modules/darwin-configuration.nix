@@ -95,8 +95,6 @@
       # "delicious-library" # perhaps removed?
       "eagle" # doesn't respect appdir # not available on darwin via Nix
       "google-drive" # doesn't respect appdir
-      "growlnotify"
-      "pokemon-trading-card-game-online" # for the kids
       "psi"
       "r" # doesn't respect appdir
       "racket"
