@@ -64,9 +64,6 @@
   #
   # NB: Ideally this would be managed in home.nix, but that's not yet supported.
   homebrew = {
-    brews = [
-      "sysbench" # not available on darwin via Nix
-    ];
     caskArgs = {
       appdir = "/Applications/Homebrew Apps";
       fontdir = "/Library/Fonts/Homebrew Fonts";
