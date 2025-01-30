@@ -113,13 +113,7 @@
     # mtr.enable = true;
   };
 
-  security = {
-    pam.services = {
-      login.fprintAuth = true;
-      xscreensaver.fprintAuth = true;
-    };
-    rtkit.enable = true;
-  };
+  security.rtkit.enable = true;
 
   services = {
     avahi = {
@@ -188,8 +182,6 @@
       lidSwitchExternalPower = "ignore";
     };
   };
-
-  sound.enable = true;
 
   system.autoUpgrade = {
     allowReboot = true;

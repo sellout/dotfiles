@@ -266,6 +266,7 @@
         darwin.follows = "darwin";
         home-manager.follows = "home-manager";
         nixpkgs.follows = "nixpkgs";
+        systems.follows = "systems";
       };
       url = "github:ryantm/agenix";
     };
@@ -287,7 +288,7 @@
 
     darwin = {
       inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:LnL7/nix-darwin";
+      url = "github:LnL7/nix-darwin/nix-darwin-24.11";
     };
 
     emacs-color-theme-solarized = {

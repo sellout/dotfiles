@@ -20,7 +20,7 @@ in {
   nixpkgs = {
     ## TODO: This is needed by the overlaid version of `pkgs.ntfy`, because I
     ##       can’t figure out how to override django properly.
-    config.permittedInsecurePackages = ["python3.11-django-3.2.25"];
+    config.permittedInsecurePackages = ["python3.12-django-3.2.25"];
     overlays = [
       (final: prev: {
         ## TODO: Update this upstream. I’ve changed it to work with the python3
@@ -33,7 +33,7 @@ in {
         ntfy =
           (prev.ntfy.override {
             python39 = final.python3;
-            withXmpp = false; # sleekxmpp doesn’t work on Python 3.11
+            withXmpp = false; # sleekxmpp doesn’t work on Python 3.12
           })
           .overrideAttrs (old: {
             version = "2.7.1";

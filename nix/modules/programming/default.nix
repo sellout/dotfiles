@@ -24,6 +24,10 @@
       PYTHONUSERBASE = "${config.xdg.stateHome}/python";
     };
 
+    packages = [
+      pkgs._1password-cli # This is needed by VSCode 1Password extension
+    ];
+
     shellAliases = let
       # A builder for quick dev environments.
       #
@@ -70,9 +74,9 @@
         vpkgs = pkgs.vscode-extensions;
       in
         [
-          vpkgs._1Password.op-vscode
+          vpkgs."1Password".op-vscode
           # vpkgs.ms-vsliveshare.vsliveshare
-          vpkgs.WakaTime.vscode-wakatime
+          vpkgs.wakatime.vscode-wakatime
         ]
         ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
           {
