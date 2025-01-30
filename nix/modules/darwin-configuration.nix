@@ -8,6 +8,7 @@
   ...
 }: {
   imports = [
+    ./games.nix
     ./input-devices.nix
     ./nix-configuration.nix
     ./nixpkgs-configuration.nix
@@ -99,9 +100,6 @@
       "r" # doesn't respect appdir
       "racket"
       "spotify" # not available on darwin via Nix
-      # not available on darwin via Nix
-      # I don’t know how to control auto-update
-      "steam"
       "timemachineeditor"
       # "virtualbox" # requires Intel architecture
       {
@@ -136,7 +134,6 @@
       "Prime Video" = 545519333;
       reMarkable = 1276493162;
       "Remote Mouse" = 403195710;
-      Robotek = 462238382;
       SoundCloud = 412754595;
       # Twitter = 409789998; # currently subsumed by ferdium
       Xcode = 497799835;

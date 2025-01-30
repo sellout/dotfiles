@@ -6,6 +6,17 @@
   ...
 }: {
   config = flaky.lib.multiConfig options {
+    darwinConfig = {
+      homebrew = {
+        casks = [
+          # not available on darwin via Nix
+          # I don’t know how to control auto-update
+          "steam"
+        ];
+        masApps.Robotek = 462238382;
+      };
+    };
+
     homeConfig = {
       home.packages = lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
         pkgs.nixcasks.marathon
