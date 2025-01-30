@@ -266,6 +266,7 @@
         darwin.follows = "darwin";
         home-manager.follows = "home-manager";
         nixpkgs.follows = "nixpkgs";
+        systems.follows = "systems";
       };
       url = "github:ryantm/agenix";
     };

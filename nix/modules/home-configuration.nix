@@ -184,8 +184,6 @@
         else pkgs.${pkg};
     in
       [
-        pkgs._1password # This is the CLI, needed by VSCode 1Password extension
-        # pkgs._1password-gui # doesn’t get installed in the correct location
         pkgs.age
         pkgs.agenix
         ## doesn’t contain darwin GUI
@@ -285,6 +283,7 @@
         pkgs.terminal-notifier
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+        pkgs._1password-gui # doesn’t get installed in the correct location on Darwin
         pkgs.bitcoin # doesn’t contain darwin GUI
         # pkgs.github-desktop # not supported on darwin # in 23.05, still uses OpenSSL 1.1.1u
         pkgs.hdhomerun-config-gui # not supported on darwin
@@ -514,6 +513,7 @@
   local.nixpkgs = {
     enable = true;
     allowedUnfreePackages = [
+      "1password"
       "1password-cli"
       "eagle"
       "onepassword-password-manager"

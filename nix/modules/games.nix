@@ -17,8 +17,7 @@
         enable = true;
         allowedUnfreePackages = [
           "steam"
-          "steam-original"
-          "steam-run"
+          "steam-unwrapped"
         ];
       };
       programs.steam = {

@@ -547,8 +547,8 @@
             ## Fixes wakatime/wakatime-mode#67 among other changes.
             (pkgs.fetchpatch {
               name = "wakatime-overhaul.patch";
-              url = "https://github.com/sellout/wakatime-mode/commit/9e11f217c0a524c229063b64a5b6a32daf2c804b.patch";
-              hash = "sha256-7+0EH9jadVj7Ac3fxaYUbayzLR7aY9KStkIZIb6tj5I=";
+              url = "https://github.com/sellout/wakatime-mode/commit/18d9f22a11fbde1753b76100ece59518c1e90026.patch";
+              hash = "sha256-HAPASibvElg6/uaOEJ2vi9AfaMnJ8YPRdj26YjuXUNY=";
             })
           ];
       });
