@@ -215,6 +215,7 @@
         })
         ## not available on darwin via Nix
         (maybeNixcask "obs-studio" "obs")
+        pkgs.python3Packages.opentype-feature-freezer
         # pkgs.slack # currently subsumed by ferdium
         pkgs.synergy
         pkgs.tailscale
