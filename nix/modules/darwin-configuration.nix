@@ -103,7 +103,6 @@
       "psi"
       "r" # doesn't respect appdir
       "racket"
-      "spotify" # not available on darwin via Nix
       "timemachineeditor"
       # "virtualbox" # requires Intel architecture
       {

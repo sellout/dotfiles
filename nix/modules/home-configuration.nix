@@ -225,6 +225,7 @@
       ]
       ++ map (font: font.package) fonts
       ++ lib.optionals (pkgs.system != "aarch64-linux") [
+        pkgs.spotify
         pkgs.unison-ucm # Unison dev tooling
         pkgs.zoom-us
       ]
@@ -519,6 +520,7 @@
       "eagle"
       "onepassword-password-manager"
       "plexmediaserver"
+      "spotify"
       "zoom"
     ];
   };
