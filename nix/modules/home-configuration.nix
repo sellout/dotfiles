@@ -577,7 +577,7 @@
 
   targets.darwin = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     defaults = {
-      "Apple Global Domain" = {
+      "NSGlobalDomain" = {
         AppleInterfaceStyleSwitchesAutomatically = true;
         NSAutomaticCapitalizationEnabled = false;
         NSAutomaticDashSubstitutionEnabled = false;
