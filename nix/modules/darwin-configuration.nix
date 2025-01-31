@@ -149,6 +149,9 @@
       upgrade = true;
     };
   };
+  ## Don’t auto-upgrade from the Mac App Store (this is handled by
+  ## `homebrew.masApps`).
+  system.defaults.CustomSystemPreferences."com.apple.commerce".AutoUpdate = false;
 
   nix = {
     gc = {
