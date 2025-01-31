@@ -37,6 +37,8 @@
       pkgs.gnupg
       pkgs.yubikey-manager
       pkgs.yubikey-personalization
+      ## TODO: This is a work around for LnL7/nix-darwin#1314
+      pkgs.mas
     ];
     systemPath = [
       # TODO: Support this via the homebrew module.
@@ -65,6 +67,8 @@
   #
   # NB: Ideally this would be managed in home.nix, but that's not yet supported.
   homebrew = {
+    ## TODO: This is a workaround for LnL7/nix-darwin#1314.
+    brews = lib.mkForce [];
     caskArgs = {
       appdir = "/Applications/Homebrew Apps";
       fontdir = "/Library/Fonts/Homebrew Fonts";
