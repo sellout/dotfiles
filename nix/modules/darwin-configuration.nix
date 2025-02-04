@@ -127,7 +127,6 @@
       Deliveries = 290986013;
       FocusMask = 435999818;
       GarageBand = 682658836;
-      Harvest = 506189836;
       iMovie = 408981434;
       Keynote = 409183694;
       Numbers = 409203825;
