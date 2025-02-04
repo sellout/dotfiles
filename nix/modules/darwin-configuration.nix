@@ -151,6 +151,17 @@
   ## Don’t auto-upgrade from the Mac App Store (this is handled by
   ## `homebrew.masApps`).
   system.defaults.CustomSystemPreferences."com.apple.commerce".AutoUpdate = false;
+  ## TODO: Build this incrementally from arbitrarily-named scripts.
+  system.activationScripts.postUserActivation.text = ''
+    echo "checking for un-managed apps ..."
+    mas list | sort >installed-packages
+    echo "App Store apps that are installed, but not in the nix-darwin configuration:"
+    join -v1 -1 1 installed-packages - <<EOF
+    ${lib.concatStringsSep "\n"
+      (lib.sort (a: b: a <= b) (map toString (lib.attrValues config.homebrew.masApps)))}
+    EOF
+    rm installed-packages
+  '';
 
   nix = {
     gc = {
