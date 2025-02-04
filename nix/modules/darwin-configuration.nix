@@ -8,6 +8,7 @@
   ...
 }: {
   imports = [
+    ./games.nix
     ./input-devices.nix
     ./nix-configuration.nix
     ./nixpkgs-configuration.nix
@@ -36,6 +37,8 @@
       pkgs.gnupg
       pkgs.yubikey-manager
       pkgs.yubikey-personalization
+      ## TODO: This is a work around for LnL7/nix-darwin#1314
+      pkgs.mas
     ];
     systemPath = [
       # TODO: Support this via the homebrew module.
@@ -64,9 +67,8 @@
   #
   # NB: Ideally this would be managed in home.nix, but that's not yet supported.
   homebrew = {
-    brews = [
-      "sysbench" # not available on darwin via Nix
-    ];
+    ## TODO: This is a workaround for LnL7/nix-darwin#1314.
+    brews = lib.mkForce [];
     caskArgs = {
       appdir = "/Applications/Homebrew Apps";
       fontdir = "/Library/Fonts/Homebrew Fonts";
@@ -98,15 +100,9 @@
       # "delicious-library" # perhaps removed?
       "eagle" # doesn't respect appdir # not available on darwin via Nix
       "google-drive" # doesn't respect appdir
-      "growlnotify"
-      "pokemon-trading-card-game-online" # for the kids
       "psi"
       "r" # doesn't respect appdir
       "racket"
-      "spotify" # not available on darwin via Nix
-      # not available on darwin via Nix
-      # I don’t know how to control auto-update
-      "steam"
       "timemachineeditor"
       # "virtualbox" # requires Intel architecture
       {
@@ -131,17 +127,14 @@
       Deliveries = 290986013;
       FocusMask = 435999818;
       GarageBand = 682658836;
-      Harvest = 506189836;
       iMovie = 408981434;
       Keynote = 409183694;
       Numbers = 409203825;
-      "ODAT Tracker" = 448831531;
       Pages = 409201541;
       "Picture Window" = 507262984;
       "Prime Video" = 545519333;
       reMarkable = 1276493162;
       "Remote Mouse" = 403195710;
-      Robotek = 462238382;
       SoundCloud = 412754595;
       # Twitter = 409789998; # currently subsumed by ferdium
       Xcode = 497799835;
@@ -155,6 +148,20 @@
       upgrade = true;
     };
   };
+  ## Don’t auto-upgrade from the Mac App Store (this is handled by
+  ## `homebrew.masApps`).
+  system.defaults.CustomSystemPreferences."com.apple.commerce".AutoUpdate = false;
+  ## TODO: Build this incrementally from arbitrarily-named scripts.
+  system.activationScripts.postUserActivation.text = ''
+    echo "checking for un-managed apps ..."
+    mas list | sort >installed-packages
+    echo "App Store apps that are installed, but not in the nix-darwin configuration:"
+    join -v1 -1 1 installed-packages - <<EOF
+    ${lib.concatStringsSep "\n"
+      (lib.sort (a: b: a <= b) (map toString (lib.attrValues config.homebrew.masApps)))}
+    EOF
+    rm installed-packages
+  '';
 
   nix = {
     gc = {

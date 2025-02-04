@@ -13,6 +13,7 @@ in {
     sessionVariables.AUTO_NTFY_DONE_IGNORE = lib.concatStringsSep " " [
       "emacs"
       "less"
+      "man"
       "ssh"
     ];
   };

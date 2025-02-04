@@ -215,6 +215,7 @@
         })
         ## not available on darwin via Nix
         (maybeNixcask "obs-studio" "obs")
+        pkgs.python3Packages.opentype-feature-freezer
         # pkgs.slack # currently subsumed by ferdium
         pkgs.synergy
         pkgs.tailscale
@@ -224,6 +225,7 @@
       ]
       ++ map (font: font.package) fonts
       ++ lib.optionals (pkgs.system != "aarch64-linux") [
+        pkgs.spotify
         pkgs.unison-ucm # Unison dev tooling
         pkgs.zoom-us
       ]
@@ -518,6 +520,7 @@
       "eagle"
       "onepassword-password-manager"
       "plexmediaserver"
+      "spotify"
       "zoom"
     ];
   };
@@ -576,7 +579,7 @@
 
   targets.darwin = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     defaults = {
-      "Apple Global Domain" = {
+      "NSGlobalDomain" = {
         AppleInterfaceStyleSwitchesAutomatically = true;
         NSAutomaticCapitalizationEnabled = false;
         NSAutomaticDashSubstitutionEnabled = false;
@@ -601,6 +604,8 @@
         ];
         "com.apple.sound.beep.flash" = 1;
       };
+      # Opt out of Apple Intelligence.
+      "com.apple.CloudSubscriptionFeatures.optIn"."545129924" = false;
       "com.apple.desktopservices" = {
         DSDontWriteNetworkStores = true;
         DSDontWriteUSBStores = true;
