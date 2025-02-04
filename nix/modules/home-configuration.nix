@@ -604,6 +604,8 @@
         ];
         "com.apple.sound.beep.flash" = 1;
       };
+      # Opt out of Apple Intelligence.
+      "com.apple.CloudSubscriptionFeatures.optIn"."545129924" = false;
       "com.apple.desktopservices" = {
         DSDontWriteNetworkStores = true;
         DSDontWriteUSBStores = true;
