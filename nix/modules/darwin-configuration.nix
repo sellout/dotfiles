@@ -12,6 +12,7 @@
     ./input-devices.nix
     ./nix-configuration.nix
     ./nixpkgs-configuration.nix
+    ./remarkable
     ./vcs
   ];
 
@@ -133,7 +134,6 @@
       Pages = 409201541;
       "Picture Window" = 507262984;
       "Prime Video" = 545519333;
-      reMarkable = 1276493162;
       "Remote Mouse" = 403195710;
       SoundCloud = 412754595;
       # Twitter = 409789998; # currently subsumed by ferdium

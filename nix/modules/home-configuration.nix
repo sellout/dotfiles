@@ -11,6 +11,7 @@
     ./direnv.nix
     ./emacs
     ./firefox.nix
+    ./games.nix
     ./gpg.nix
     ./i18n.nix
     ./i3.nix
@@ -19,6 +20,7 @@
     ./nix-configuration.nix
     ./nixpkgs-configuration.nix
     ./programming
+    ./remarkable
     ./shell.nix
     ./ssh.nix
     ./tex.nix

@@ -45,6 +45,10 @@ in {
         "font.size.monospace.x-western" = defaultFont.size;
         "font.size.variable.x-unicode" = defaultFont.size;
         "font.size.variable.x-western" = builtins.floor defaultFont.size;
+        ## Prefer the system print dialog. This is especially helpful on darwin,
+        ## where I have a print plugin to send PDFs to my reMarkable tablet.
+        "print.prefer_system_dialog" = true;
+        # "print.tab_modal.enabled" = false;
         "privacy.globalprivacycontrol.enabled" = true;
         "privacy.globalprivacycontrol.functionality.enabled" = true;
         "privacy.globalprivacycontrol.pbmode.enabled" = true;

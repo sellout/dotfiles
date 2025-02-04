@@ -137,12 +137,15 @@
 
       darwinModules = {
         darwin = import ./nix/modules/darwin-configuration.nix;
+        games = import ./nix/modules/games.nix;
         nix-configuration = import ./nix/modules/nix-configuration.nix;
         nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
+        remarkable = import ./nix/modules/remarkable;
       };
 
       homeModules = {
         emacs = import ./nix/modules/emacs;
+        games = import ./nix/modules/games.nix;
         home = import ./nix/modules/home-configuration.nix;
         i3 = import ./nix/modules/i3.nix;
         nix-configuration = import ./nix/modules/nix-configuration.nix;
@@ -151,10 +154,12 @@
         shell = import ./nix/modules/shell.nix;
         ssh = import ./nix/modules/ssh.nix;
         tex = import ./nix/modules/tex.nix;
+        remarkable = import ./nix/modules/remarkable;
         vcs = import ./nix/modules/vcs;
       };
 
       nixosModules = {
+        games = import ./nix/modules/games.nix;
         nix-configuration = import ./nix/modules/nix-configuration.nix;
         nixos = import ./nix/modules/nixos-configuration.nix;
         nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
