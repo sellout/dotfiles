@@ -12,6 +12,10 @@
   ];
 
   home = {
+    ## TODO: Add `userDirs.*.file` to the xdg module, so templates, etc. can be
+    ##       put in place by Home Manager.
+    file."${config.lib.local.removeHome config.xdg.userDirs.templates}/.envrc".source = ./envrc;
+
     sessionVariables = {
       IRBRC = config.lib.local.addHome config.xdg.configFile."irb/irbrc".target;
       LEIN_HOME = "${config.xdg.dataHome}/lein";
