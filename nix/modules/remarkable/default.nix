@@ -12,8 +12,17 @@
     darwinConfig.homebrew.masApps.reMarkable = 1276493162;
     homeConfig.home = {
       ## https://github.com/juruen/rmapi/blob/master/docs/tutorial-print-macosx.md
-      file."Library/PDF Services/Save PDF to reMarkable.workflow" = lib.mkIf pkgs.stdenv.isDarwin {
-        source = ./save-pdf-to-remarkable.workflow;
+      file = lib.mkIf pkgs.stdenv.isDarwin {
+        "Library/PDF Services/Save PDF to reMarkable.workflow" = {
+          ## We include one of the files separately, because it needs
+          ## substitutions.
+          recursive = true;
+          source = ./save-pdf-to-remarkable.workflow;
+        };
+        "Library/PDF Services/Save PDF to reMarkable.workflow/Contents/document.wflow".source = pkgs.substituteAll {
+          src = ./save-pdf-to-remarkable.wflow;
+          inherit (pkgs) rmapi;
+        };
       };
       packages = [
         ## a CLI for reMarkable – `rmapi` needs to be run manually once after

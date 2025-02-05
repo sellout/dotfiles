@@ -61,7 +61,7 @@
 					<key>COMMAND_STRING</key>
 					<string>for f in "$@"
 do
-	rmapi put "$f"
+	@rmapi@/bin/rmapi put "$f"
 done</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
