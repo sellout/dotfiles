@@ -1,0 +1,9 @@
+direnv_layout_dir="$PWD/.cache/direnv"
+
+if type -P lorri &>/dev/null; then
+  eval "$(lorri direnv)"
+else
+  echo 'NOTE(.envrc): While direnv evaluated .envrc, could not find the command ‘lorri’'
+  echo '             (https://github.com/nix-community/lorri).'
+  use flake
+fi

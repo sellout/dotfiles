@@ -13,6 +13,14 @@
   ];
 
   home = {
+    ## TODO: Add `userDirs.*.file` to the xdg module, so templates, etc. can be
+    ##       put in place by Home Manager.
+    file."${config.lib.local.removeHome config.xdg.userDirs.templates}/.envrc".source = ./envrc;
+
+    packages = [
+      pkgs._1password-cli # This is needed by VSCode 1Password extension
+    ];
+
     sessionVariables = {
       IRBRC = config.lib.local.addHome config.xdg.configFile."irb/irbrc".target;
       LEIN_HOME = "${config.xdg.dataHome}/lein";
@@ -24,10 +32,6 @@
       # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUSERBASE
       PYTHONUSERBASE = "${config.xdg.stateHome}/python";
     };
-
-    packages = [
-      pkgs._1password-cli # This is needed by VSCode 1Password extension
-    ];
 
     shellAliases = let
       # A builder for quick dev environments.
@@ -70,7 +74,7 @@
     vscode = {
       enable = true;
       enableExtensionUpdateCheck = false; # Nervous about these two, see how
-      enableUpdateCheck = false; # they actually affect things.
+      enableUpdateCheck = false; #          they actually affect things.
       extensions = let
         vpkgs = pkgs.vscode-extensions;
       in
@@ -85,12 +89,6 @@
             publisher = "ginfuru";
             version = "0.9.5";
             hash = "sha256-ySfC3PVRezevItW3kWTiY3U8GgB9p223ZiC8XaJ3koM=";
-          }
-          {
-            name = "unison";
-            publisher = "unison-lang";
-            version = "1.2.0";
-            hash = "sha256-ulm3a1xJxtk+SIQP1sByEqgajd1a4P3oEfVgxoF5GcQ=";
           }
           {
             ## Unfortunately, the nixpkgs version doesrn’t seem to work on darwin.
