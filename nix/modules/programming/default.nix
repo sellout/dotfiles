@@ -65,7 +65,7 @@
 
   programs = {
     ## This is for pairing with VSCode users, including Ronnie. Would be ideal
-    ## if there were something like Foobits, but that seems effectively dead.
+    ## if there were something like Floobits, but that seems effectively dead.
     vscode = {
       enable = true;
       enableExtensionUpdateCheck = false; # Nervous about these two, see how
@@ -113,6 +113,12 @@
         "editor.fontLigatures" = true;
         "editor.fontSize" = config.lib.local.defaultFont.size;
         "workbench.colorTheme" = "Solarized Dark";
+        ## Projects that don’t keep things formatted should have a
+        ## .vscode/settings.json that overrides this.
+        "editor.formatOnSave" = true;
+        ## This avoids calling out all of my wonderful Unicode content.
+        "editor.unicodeHighlight.includeComments" = false;
+        "editor.unicodeHighlight.includeStrings" = false;
       };
     };
 
