@@ -40,9 +40,6 @@
           normal.family = config.lib.local.defaultFont.monoFamily;
           size = config.lib.local.defaultFont.size;
         };
-        ## Make sure we don’t fall back to different versions on non-NixOS (e.g.
-        ## the ancient Bash 3.2 on darwin).
-        terminal.shell.program = lib.getExe pkgs.bashInteractive;
       };
     };
 

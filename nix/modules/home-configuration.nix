@@ -367,7 +367,8 @@
       local = [
         "GitHub"
         "Skitch"
-        "Vizsla"
+        "Rankine" # the temperature scale
+        "Vizsla" # the dog breed
       ];
     };
   };

@@ -8,7 +8,7 @@
     registry = {
       ## Set the registry’s Nixpkgs to match this flake’s.
       nixpkgs.flake = nixpkgs;
-      ## Allows `sys#` to reference the templates, devShells, etc. from Flaky
+      ## Allows `env#` to reference the templates, devShells, etc. from Flaky
       ## environments.
       env.to = {
         type = "github";
