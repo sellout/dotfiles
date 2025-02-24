@@ -224,5 +224,10 @@
     };
   };
 
+  ## For any of this to work, we need to enable automatic updates in general.
+  system.defaults.CustomSystemPreferences."com.apple.SoftwareUpdate".AutomaticCheckEnabled = true;
+  ## This will automatically install macOS updates, which we want because Nix
+  ## doesn’t manage the OS.
+  system.defaults.CustomSystemPreferences."com.apple.commerce".AutoUpdateRestartRequired = true;
   system.defaults.SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
 }
