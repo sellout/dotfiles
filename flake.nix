@@ -34,7 +34,7 @@
     nixpkgs,
     nixpkgs-master,
     nur,
-    org-invoice-table,
+    org-invoice,
     self,
     systems,
     unison-nix,
@@ -77,7 +77,7 @@
           flaky
           home-manager
           nixpkgs
-          org-invoice-table
+          org-invoice
           self
           ;
       };
@@ -332,9 +332,9 @@
 
     nur.url = "github:nix-community/nur";
 
-    org-invoice-table = {
+    org-invoice = {
       flake = false;
-      url = "git+https://git.sr.ht/~trevdev/org-invoice-table";
+      url = "github:sellout/org-invoice";
     };
 
     unison-nix = {

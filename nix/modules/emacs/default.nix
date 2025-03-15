@@ -25,7 +25,7 @@
   config,
   emacs-color-theme-solarized,
   lib,
-  org-invoice-table,
+  org-invoice,
   pkgs,
   ...
 }: {
@@ -146,7 +146,7 @@
 
         ;; TODO: Add these via a flake input … but need it to be in git or hg.
         (add-to-list 'load-path "${emacs-color-theme-solarized}")
-        (add-to-list 'load-path "${org-invoice-table}")
+        (add-to-list 'load-path "${org-invoice}")
 
         ;;; This contains settings we want to customize with Nix-dependent values,
         ;;; organized by package.

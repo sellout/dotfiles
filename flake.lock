@@ -1256,20 +1256,20 @@
         "type": "github"
       }
     },
-    "org-invoice-table": {
+    "org-invoice": {
       "flake": false,
       "locked": {
-        "lastModified": 1741832208,
-        "narHash": "sha256-qvT4B4JylZzhbUfMiVK6ho7Ftgzx95pKWtvh4IdcV7I=",
-        "ref": "refs/heads/main",
-        "rev": "02178a05588352040e3cf71f7717f2aa728a503e",
-        "revCount": 17,
-        "type": "git",
-        "url": "https://git.sr.ht/~trevdev/org-invoice-table"
+        "lastModified": 1630076905,
+        "narHash": "sha256-8OFnf+vfzCDOQrogBH5vAKkkWciI7bU5wDBS31YpBcU=",
+        "owner": "sellout",
+        "repo": "org-invoice",
+        "rev": "a8823db4f9d0ed46284c3f31a76b93b25c4f9dd7",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "https://git.sr.ht/~trevdev/org-invoice-table"
+        "owner": "sellout",
+        "repo": "org-invoice",
+        "type": "github"
       }
     },
     "project-manager": {
@@ -1348,7 +1348,7 @@
         ],
         "nixpkgs-master": "nixpkgs-master",
         "nur": "nur",
-        "org-invoice-table": "org-invoice-table",
+        "org-invoice": "org-invoice",
         "systems": "systems_2",
         "unison-nix": "unison-nix"
       }

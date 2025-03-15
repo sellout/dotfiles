@@ -5,7 +5,7 @@
   flaky,
   home-manager,
   nixpkgs,
-  org-invoice-table,
+  org-invoice,
   self,
 }: let
   ## Recursively merges a list of values.
@@ -28,13 +28,7 @@
 
   ## For Home Manager configurations (both standalone and as a system module).
   extraSpecialArgs = {
-    inherit
-      agenix
-      emacs-color-theme-solarized
-      flaky
-      nixpkgs
-      org-invoice-table
-      ;
+    inherit agenix emacs-color-theme-solarized flaky nixpkgs org-invoice;
     dotfiles = self;
   };
 in {
