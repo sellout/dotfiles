@@ -25,10 +25,18 @@
   config,
   emacs-color-theme-solarized,
   lib,
-  org-invoice-table,
+  org-invoice,
   pkgs,
   ...
 }: {
+  ## FIXME: The ‘extended-faces’ package is currently not working with emacs30
+  ##       (the default Emacs in Nixpkgs 24.11). See
+  ##        sellout/emacs-extended-faces#13.
+  nixpkgs.config.permittedInsecurePackages = [
+    "emacs-29.4"
+    "emacs-with-packages-29.4"
+  ];
+
   home = {
     ## Some packages, even if only used by Emacs, need to be installed outside
     ## `programs.emacs.extraPackages`. This is due to a few reasons:
@@ -112,12 +120,16 @@
     emacs-cache-home = "~/${config.lib.local.xdg.cache.rel}/emacs";
     emacs-state-home = "~/${config.lib.local.xdg.state.rel}/emacs";
   in {
+    ## FIXME: The ‘extended-faces’ package is currently not working with emacs30
+    ##       (the default Emacs in Nixpkgs 24.11). See
+    ##        sellout/emacs-extended-faces#13.
+    package = pkgs.emacs29;
+
     enable = true;
     ## enable this if I play with getting dbus working again
     #  = pkgs.emacs.overrideAttrs (old: {
     #   buildInputs = [ pkgs.dbus ] ++ old.buildInputs;
     # });
-    package = pkgs.emacs29;
     extraConfig =
       ''
         ;;; -*- lexical-binding: t; -*-
@@ -134,7 +146,7 @@
 
         ;; TODO: Add these via a flake input … but need it to be in git or hg.
         (add-to-list 'load-path "${emacs-color-theme-solarized}")
-        (add-to-list 'load-path "${org-invoice-table}")
+        (add-to-list 'load-path "${org-invoice}")
 
         ;;; This contains settings we want to customize with Nix-dependent values,
         ;;; organized by package.
