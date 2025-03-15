@@ -3,17 +3,14 @@
   home-manager,
   mkalias,
   nixpkgs,
+  nixpkgs-master,
 }: final: prev: let
   # On aarch64-darwin, this gives us a Rosetta fallback, otherwise, it’s a NOP.
   x86_64 =
     if final.system == flake-utils.lib.system.aarch64-darwin
-    then
-      import nixpkgs {
-        config =
-          import ./modules/nixpkgs-configuration.nix {inherit (nixpkgs) lib;};
-        localSystem = flake-utils.lib.system.x86_64-darwin;
-      }
+    then import nixpkgs {localSystem = flake-utils.lib.system.x86_64-darwin;}
     else prev;
+  master = nixpkgs-master.legacyPackages.${final.system};
 in {
   ## Use the home-manager from our inputs (but it doesn’t provide an overlay
   ## itself).
@@ -30,6 +27,11 @@ in {
   lexica-ultralegible = final.callPackage ./packages/lexica-ultralegible.nix {};
 
   mkalias = mkalias.packages.${final.system}.mkalias;
+
+  ## TODO: This should be in Nixpkgs 24.05, but check to see if
+  ##       https://github.com/NixOS/nixpkgs/commit/002d82c95fdc43b69b58357791fe4474c0160b0c
+  ##       makes it into nixpks-unstable sooner.
+  ntfy = master.ntfy;
 
   ## NB: Python 2 is EOL, so I don’t know why it’s still the default. Since we
   ##     pull Python in for at least some Emacs tooling, ensure that `python`

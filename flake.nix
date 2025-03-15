@@ -32,6 +32,7 @@
     mkalias,
     nixcasks,
     nixpkgs,
+    nixpkgs-master,
     nur,
     org-invoice-table,
     self,
@@ -100,6 +101,7 @@
             home-manager
             mkalias
             nixpkgs
+            nixpkgs-master
             ;
         };
         home = nixpkgs.lib.composeManyExtensions [
@@ -325,7 +327,7 @@
 
     ## NB: These are very helpful when they’re needed, but otherwise keep them
     ##     commented out, because they’re big and slow.
-    # nixpkgs-master.url = "github:NixOS/nixpkgs/master";
+    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     # nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     nur.url = "github:nix-community/nur";
