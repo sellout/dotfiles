@@ -1082,6 +1082,8 @@ Committer: %cN <%cE>
   (projectile-project-name-function
    (lambda (project-root)
      (intercalate (-take-last 2 (file-name-split (directory-file-name project-root)))  "/")))
+  ;; Open Magit or ‘vc-dir’ by default when switching projects.
+  (projectile-switch-project-action 'projectile-vc)
   (projectile-use-git-grep t)
   ;; TODO: This should be set by ‘projectile-mode-line-prefix’, but sometimes
   ;; it’s not, so this handles that case. However, this might trample
