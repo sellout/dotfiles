@@ -902,11 +902,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1742765943,
-        "narHash": "sha256-qv3oikgof9NSDA8xt0DPz/rXKL41IDWKBPBEHyD1mN8=",
+        "lastModified": 1743370762,
+        "narHash": "sha256-8h5YNG4gbYuERyNUSGdWG1ZeddJ/KKRvSmqCIyb1lwg=",
         "owner": "jacekszymanski",
         "repo": "nixcasks",
-        "rev": "2ff4b73b2d9685b745a679493315f97372058079",
+        "rev": "5925f44745ca03da795d1811875a98ee99910a0a",
         "type": "github"
       },
       "original": {
