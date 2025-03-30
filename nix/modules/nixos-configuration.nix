@@ -82,7 +82,10 @@
     # Per-interface useDHCP will be mandatory in the future, so this generated config
     # replicates the default behavior.
     useDHCP = false;
-    wireless.enable = !config.networking.networkmanager.enable;
+    wireless = {
+      enable = !config.networking.networkmanager.enable;
+      userControlled.enable = true;
+    };
   };
 
   nix = {
