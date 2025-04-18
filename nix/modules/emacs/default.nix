@@ -120,16 +120,30 @@
     emacs-cache-home = "~/${config.lib.local.xdg.cache.rel}/emacs";
     emacs-state-home = "~/${config.lib.local.xdg.state.rel}/emacs";
   in {
-    ## FIXME: The ‘extended-faces’ package is currently not working with emacs30
-    ##       (the default Emacs in Nixpkgs 24.11). See
-    ##        sellout/emacs-extended-faces#13.
-    package = pkgs.emacs29;
-
     enable = true;
-    ## enable this if I play with getting dbus working again
-    #  = pkgs.emacs.overrideAttrs (old: {
-    #   buildInputs = [ pkgs.dbus ] ++ old.buildInputs;
-    # });
+
+    package =
+      (
+        emacs:
+          if pkgs.stdenv.isDarwin
+          then
+            ## TODO: This is a temporary workaround for NixOS/nixpkgs#395169,
+            ##       caused by macOS Sequoia 15.4. It should be removed as soon
+            ##       as possible.
+            (emacs.override {
+              withNativeCompilation = false;
+            })
+          ## enable this if I play with getting dbus working again
+          #  .overrideAttrs (old: {
+          #   buildInputs = [ pkgs.dbus ] ++ old.buildInputs;
+          # });
+          else emacs
+      )
+      ## FIXME: The ‘extended-faces’ package is currently not working with
+      ##       emacs30 (the default Emacs in Nixpkgs 24.11). See
+      ##       sellout/emacs-extended-faces#13.
+      pkgs.emacs29;
+
     extraConfig =
       ''
         ;;; -*- lexical-binding: t; -*-
