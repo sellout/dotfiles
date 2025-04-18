@@ -29,7 +29,7 @@
       pkgs.mosh
       ## Nix
       pkgs.home-manager
-      # pkgs.nix-du # fails to build on aarch64
+      pkgs.nix-du
       pkgs.nox
       ## system
       pkgs.cacert
