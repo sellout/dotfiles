@@ -46,6 +46,10 @@ in {
       in {
         "browser.aboutConfig.showWarning" = false;
         "browser.contentblocking.category" = "strict";
+        ## Disable AI chat
+        "browser.ml.chat.enabled" = false;
+        ## Disable ads for Mozilla products
+        "browser.preferences.moreFromMozilla" = false;
         "browser.startup.homepage" = "https://github.com/pulls/review-requested";
         "browser.toolbars.bookmarks.visibility" = "always";
         "browser.urlbar.suggest.quicksuggest.sponsored" = false;
