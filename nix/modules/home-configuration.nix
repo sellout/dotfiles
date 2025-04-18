@@ -252,7 +252,6 @@
         pkgs.nixcasks.github
         pkgs.nixcasks.gotomeeting
         pkgs.nixcasks.hammerspoon
-        pkgs.nixcasks.handbrake
         pkgs.nixcasks.imageoptim
         pkgs.nixcasks.keybase # not available on darwin via Nix
         pkgs.nixcasks.kiibohd-configurator
