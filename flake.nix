@@ -122,13 +122,7 @@
               prev
             else {})
           nur.overlays.default
-          ## TODO: unison-nix’s UCM doesn’t yet support aarch64-darwin, so we
-          ##       use the rest of the overlay without shadowing the UCM from
-          ##       Nixpkgs.
-          (final: prev:
-            nixpkgs.lib.removeAttrs
-            (unison-nix.overlays.default final prev)
-            ["unison-ucm"])
+          unison-nix.overlays.default
           self.overlays.default
         ];
         nixos = nixpkgs.lib.composeManyExtensions [
