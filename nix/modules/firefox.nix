@@ -14,17 +14,31 @@ in {
     # Nix really wanted to build the default package from scratch.
     package = pkgs.firefox-bin;
     profiles.default = {
+      ## These are ordered to match `about:addons`.
       extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-        # add-to-deliveries
-        # amazon-assistant
-        # bibitnow # creates BibTeX citations
-        c-c-search-extension # prefix search bar with `cc ` to search C/C++ docs
-        display-_anchors
-        facebook-container
-        ghostery
         onepassword-password-manager
+        # Add to MyRegistry.com Button
+        # Add to OmniFocus
+        # BibItNow! # creates BibTeX citations
+        c-c-search-extension # prefix search bar with `cc ` to search C/C++ docs
+        # Clip to DEVONthink (managed by DEVONthink)
+        display-_anchors
+        # Evernote Web Clipper
+        facebook-container
+        multi-account-containers
+        ghostery
+        # Honey
+        # Panorama Tab Groups
+        # Read on reMarkable
         rust-search-extension # prefix search bar with `rs ` to search Rust docs
+        # Tab Manager Plus for Firefox
+        to-google-translate
         tree-style-tab
+        user-agent-string-switcher
+        # Window Titler
+        # ZenHub for GitHub
+        ## Disabled
+        foxytab
       ];
       # search.default = "DuckDuckGo";
       settings = let
@@ -35,6 +49,8 @@ in {
         "browser.startup.homepage" = "https://github.com/pulls/review-requested";
         "browser.toolbars.bookmarks.visibility" = "always";
         "browser.urlbar.suggest.quicksuggest.sponsored" = false;
+        ## Automatically enable newly-installed extensions.
+        "extensions.autoDisableScopes" = 0;
         "font.default.x-unicode" = "sans-serif";
         "font.default.x-western" = "sans-serif";
         "font.name.monospace.x-unicode" = defaultFont.monoFamily;
