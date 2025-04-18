@@ -240,7 +240,7 @@
         pkgs.nixcasks.beamer
         # pkgs.nixcasks.bowtie # broken
         pkgs.nixcasks.controlplane
-        pkgs.nixcasks.devonthink # license only works for version 2
+        # pkgs.nixcasks.devonthink # v3, but licensed for version 2, and want to migrate off this
         # pkgs.nixcasks.discord # currently subsumed by ferdium
         pkgs.nixcasks.disk-inventory-x
         pkgs.nixcasks.dropbox
