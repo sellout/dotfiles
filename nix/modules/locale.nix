@@ -45,7 +45,9 @@ in {
           "10" = decimalSeparator;
           "17" = groupSeparator;
         };
-        AppleTemperatureUnit = "Celsius";
+        ## I prefer Rankine, but it’s easy to convert from Fahrenheit by adding
+        ## 460⠊.
+        AppleTemperatureUnit = "Fahrenheit";
         ## Pairs of open/close quotes, in order of nesting.
         NSUserQuotesArray = ["“" "”" "‘" "’"];
       };

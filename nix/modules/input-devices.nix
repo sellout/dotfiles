@@ -36,6 +36,8 @@
           pkgs.chrysalis # packaged as x86_64-linux binary
         ];
       };
+      ## TODO: This should symlink the directory, not the file (see
+      ##       https://karabiner-elements.pqrs.org/docs/manual/misc/configuration-file-path/#about-symbolic-link).
       xdg.configFile."karabiner/karabiner.json".text = let
         vendorId = {
           apple = 1452;
