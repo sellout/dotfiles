@@ -225,6 +225,7 @@
       ]
       ++ map (font: font.package) fonts
       ++ lib.optionals (pkgs.system != "aarch64-linux") [
+        (maybeNixcask "simplex-chat-desktop" "simplex")
         pkgs.spotify
         pkgs.unison-ucm # Unison dev tooling
         pkgs.zoom-us
