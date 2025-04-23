@@ -334,7 +334,6 @@
         pkgs.racket # doesn’t contain darwin GUI
       ]
       ++ lib.optionals (pkgs.system == "x86_64-linux") [
-        pkgs.chrysalis # Atreus keyboard customizer # packaged as x86_64-linux binary
         pkgs.cider # we have Music.app on darwin
         pkgs.eagle # not supported on darwin
         pkgs.ferdium # not supported on darwin

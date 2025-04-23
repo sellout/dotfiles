@@ -9,8 +9,6 @@
   config = flaky.lib.multiConfig options {
     darwinConfig = {
       homebrew.casks = [
-        # Atreus keyboard customizer
-        "chrysalis" # not available on darwin via Nix
         # TODO: nix-darwin module doesn’t yet support 15.0 and in nixcasks this
         #       package is marked as broken.
         "karabiner-elements"
@@ -31,10 +29,15 @@
           options = ["ctrl:nocaps"];
           variant = "dvorak";
         };
-        packages = lib.optionals (pkgs.system == "x86_64-linux") [
-          # Atreus keyboard customizer
-          pkgs.chrysalis # packaged as x86_64-linux binary
-        ];
+        packages =
+          lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+            # Atreus keyboard customizer
+            pkgs.nixcasks.chrysalis # not available on darwin via Nix
+          ]
+          ++ lib.optionals (pkgs.system == "x86_64-linux") [
+            # Atreus keyboard customizer
+            pkgs.chrysalis # packaged as x86_64-linux binary
+          ];
       };
       ## TODO: This should symlink the directory, not the file (see
       ##       https://karabiner-elements.pqrs.org/docs/manual/misc/configuration-file-path/#about-symbolic-link).
