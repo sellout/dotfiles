@@ -162,40 +162,21 @@
         nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
       };
 
-      darwinConfigurations = let
-        ## Generates two darwinConfigurations – one using the home-manager
-        ## module, and one without.
-        ##
-        ## TODO: This exists so the one without can be tested on garnix (in a
-        ##       sandbox) until NixOS/nix#4119 is fixed.
-        generate = homeManagerModule: hostPlatform: {
-          name =
-            "${hostPlatform}-example"
-            + (
-              if homeManagerModule == {}
-              then "-bare"
-              else ""
-            );
+      darwinConfigurations = builtins.listToAttrs (map (hostPlatform: {
+          name = "${hostPlatform}-example";
           value = self.lib.darwinSystem {
             modules = [
               self.darwinModules.darwin
               {
+                home-manager.users.example-user = exampleHomeConfiguration;
                 nixpkgs = {inherit hostPlatform;};
                 system.stateVersion = 5;
                 users.users.example-user.home = "/tmp/example";
               }
-              homeManagerModule
             ];
           };
-        };
-      in
-        builtins.listToAttrs (nixpkgs.lib.concatMap (hostPlatform: [
-            (generate {} hostPlatform)
-            (generate
-              {home-manager.users.example-user = exampleHomeConfiguration;}
-              hostPlatform)
-          ])
-          (builtins.filter (nixpkgs.lib.hasSuffix "-darwin") supportedSystems));
+        })
+        (builtins.filter (nixpkgs.lib.hasSuffix "-darwin") supportedSystems));
 
       homeConfigurations = builtins.listToAttrs (map (system: {
           name = "${system}-example";
