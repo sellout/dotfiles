@@ -231,9 +231,6 @@
             (idris-interpreter-path "${pkgs.idris}/bin/idris"))
           '(lsp-nix
             (lsp-nix-nil-server-path "${pkgs.nil}/bin/nil"))
-          '(lsp-pylsp
-            (lsp-pylsp-server-command
-             '("${pkgs.pythonPackages.python-lsp-server}/bin/pylsp")))
           '(lsp-rust
             (lsp-rust-analyzer-server-command
              '("${pkgs.rust-analyzer}/bin/rust-analyzer")))
@@ -396,7 +393,6 @@
       epkgs.envrc
       epkgs.epresent
       epkgs.extended-faces
-      epkgs.floobits
       epkgs.flycheck
       epkgs.flycheck-eldev
       epkgs.flycheck-vale # linter for English prose
@@ -452,7 +448,6 @@
       epkgs.orgit-forge # link to Forge topics from Org
       epkgs.ormolu
       epkgs.ox-gfm
-      epkgs.ox-slack
       epkgs.page-break-lines
       epkgs.paredit
       epkgs.paredit-everywhere
@@ -471,7 +466,6 @@
       pkgs.cargo
       epkgs.sbt-mode
       epkgs.scala-mode
-      epkgs.slack
       epkgs.twittering-mode
       epkgs.undo-tree
       epkgs.unison-ts-mode
