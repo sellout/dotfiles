@@ -957,6 +957,7 @@ Committer: %cN <%cE>
   (org-babel-load-languages '((C . t)
                               (emacs-lisp . t)
                               (haskell . t)
+                              (mermaid . t) ; via ob-mermaid
                               (python . t)))
   (org-link-abbrev-alist '(("github" . "https://github.com/"))))
 

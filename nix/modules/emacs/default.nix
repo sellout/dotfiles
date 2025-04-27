@@ -245,6 +245,8 @@
             (nix-nixfmt-bin "${pkgs.nixfmt-classic}/bin/nixfmt")
             (nix-shell-executable "${pkgs.nix}/bin/nix-shell")
             (nix-store-executable "${pkgs.nix}/bin/nix-store"))
+          '(ob-mermaid
+            (ob-mermaid-cli-path "${pkgs.mermaid-cli}/bin/mmdc"))
           ;; NB: This (and probably plenty of other settings currently in here) is
           ;;     project-specific, and should inherit whatever’s in the context of
           ;;     the project, rather than some global value.
@@ -443,6 +445,7 @@
       epkgs.nix-mode
       epkgs.nix-sandbox
       epkgs.nixos-options
+      epkgs.ob-mermaid # rendering Mermaid in Org
       epkgs.org-brain
       epkgs.orgit # link to Magit from Org
       epkgs.orgit-forge # link to Forge topics from Org

@@ -12,6 +12,14 @@
   ];
 
   home = {
+    ## TODO: Add `userDirs.*.file` to the xdg module, so templates, etc. can be
+    ##       put in place by Home Manager.
+    file."${config.lib.local.removeHome config.xdg.userDirs.templates}/.envrc".source = ./envrc;
+
+    packages = [
+      pkgs._1password-cli # This is needed by VSCode 1Password extension
+    ];
+
     sessionVariables = {
       IRBRC = config.lib.local.addHome config.xdg.configFile."irb/irbrc".target;
       LEIN_HOME = "${config.xdg.dataHome}/lein";
@@ -23,10 +31,6 @@
       # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUSERBASE
       PYTHONUSERBASE = "${config.xdg.stateHome}/python";
     };
-
-    packages = [
-      pkgs._1password-cli # This is needed by VSCode 1Password extension
-    ];
 
     shellAliases = let
       # A builder for quick dev environments.
@@ -63,19 +67,28 @@
     };
   };
 
+  local.nixpkgs.allowedUnfreePackages = [
+    "vscode-extension-ms-vsliveshare-vsliveshare"
+  ];
+
   programs = {
     ## This is for pairing with VSCode users, including Ronnie. Would be ideal
     ## if there were something like Floobits, but that seems effectively dead.
     vscode = {
       enable = true;
       enableExtensionUpdateCheck = false; # Nervous about these two, see how
-      enableUpdateCheck = false; # they actually affect things.
+      enableUpdateCheck = false; #          they actually affect things.
+      ## Project-specific extensions (e.g., PL extensions) should be installed
+      ## as “local workspace extensions”
+      ## (https://code.visualstudio.com/updates/v1_89#_local-workspace-extensions),
+      ## rather than globally here.
       extensions = let
         vpkgs = pkgs.vscode-extensions;
       in
         [
           vpkgs."1Password".op-vscode
-          # vpkgs.ms-vsliveshare.vsliveshare
+          vpkgs.ms-vsliveshare.vsliveshare
+          vpkgs.unison-lang.unison
           vpkgs.wakatime.vscode-wakatime
         ]
         ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
@@ -84,19 +97,6 @@
             publisher = "ginfuru";
             version = "0.9.5";
             hash = "sha256-ySfC3PVRezevItW3kWTiY3U8GgB9p223ZiC8XaJ3koM=";
-          }
-          {
-            name = "unison";
-            publisher = "unison-lang";
-            version = "1.2.0";
-            hash = "sha256-ulm3a1xJxtk+SIQP1sByEqgajd1a4P3oEfVgxoF5GcQ=";
-          }
-          {
-            ## Unfortunately, the nixpkgs version doesrn’t seem to work on darwin.
-            name = "vsliveshare";
-            publisher = "MS-vsliveshare";
-            version = "1.0.5831";
-            hash = "sha256-QViwZBxem0z62BLhA0zbFdQL3SfoUKZQx6X+Am1lkT0=";
           }
         ];
       ## TODO: Would like to disable this, but seems like if it’s not mutable,

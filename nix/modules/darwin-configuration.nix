@@ -29,7 +29,7 @@
       pkgs.mosh
       ## Nix
       pkgs.home-manager
-      # pkgs.nix-du # fails to build on aarch64
+      pkgs.nix-du
       pkgs.nox
       ## system
       pkgs.cacert
@@ -161,6 +161,15 @@
       (lib.sort (a: b: a <= b) (map toString (lib.attrValues config.homebrew.masApps)))}
     EOF
     rm installed-packages
+
+    ## The “default” profile is created by the original Nix install. It can be
+    ## dangerous to remove it, and some things reference it explicitly,
+    ## unfortunately, so we can at least keep it up to date.
+    ##
+    ## NB: For this to work, I had to initially replace the original packages in
+    ##     the profile with ones from the nixpkgs flake.
+    echo "upgrading default nix profile ..."
+    sudo nix profile upgrade --all --profile /nix/var/nix/profiles/default
   '';
 
   nix = {

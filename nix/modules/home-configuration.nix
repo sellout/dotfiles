@@ -169,7 +169,7 @@
         }
       ];
 
-      ## For packages that should be gotten from nixcask on darwin. The second
+      ## For packages that should be gotten from nixcasks on darwin. The second
       ## argument may be null, but if the nixcast package name differs from the
       ## Nixpkgs name, then it needs to be set.
       maybeNixcask = pkg: nixcastPkg:
@@ -225,13 +225,23 @@
       ]
       ++ map (font: font.package) fonts
       ++ lib.optionals (pkgs.system != "aarch64-linux") [
+        (maybeNixcask "simplex-chat-desktop" "simplex")
         pkgs.spotify
         pkgs.unison-ucm # Unison dev tooling
         pkgs.zoom-us
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
         pkgs.mas
-        pkgs.nixcasks.ableton-live-standard # license only works for version 6
+        # (pkgs.nixcasks.ableton-live-standard.overrideAttrs (old: let
+        #   version = "6.0.1"; # version I have a license for
+        # in {
+        #   inherit version;
+        #   src = pkgs.fetchurl {
+        #     url = "https://cdn-downloads.ableton.com/channels/${version}/ableton_live_standard_${version}_64.dmg";
+        #     hash = "";
+
+        #   };
+        # }))
         pkgs.nixcasks.acorn
         pkgs.nixcasks.adium
         pkgs.nixcasks.alfred
@@ -239,7 +249,30 @@
         pkgs.nixcasks.beamer
         # pkgs.nixcasks.bowtie # broken
         pkgs.nixcasks.controlplane
-        pkgs.nixcasks.devonthink # license only works for version 2
+        (pkgs.nixcasks.devonthink.overrideAttrs (old: let
+          # version I have a license for (and want to migrate off this)
+          app = "DEVONthink Pro.app";
+          version = "2.11.3";
+        in {
+          inherit version;
+          src = pkgs.fetchurl {
+            url = "https://s3.amazonaws.com/DTWebsiteSupport/download/devonthink/${version}/DEVONthink_Pro_Office.app.zip";
+            hash = "sha256-cHSU08cJ4K+kso3dfBOPOr5bHS0gcVt6hitpgqMH9gs=";
+          };
+          installPhase = ''
+            runHook preInstall
+
+            mkdir -p $(dirname $out/Applications/${app})
+            cp -r "${app}" "$out/Applications/${app}"
+
+            mkdir -p $out/bin
+            for bin in $out/Applications/*.app/Contents/MacOS/*; do
+              [[ "$(basename "$bin")" =~ $pname && ! "$bin" =~ \.dylib && -f "$bin" && -x "$bin" ]] &&  makeWrapper "$bin" "$out/bin/$(basename "$bin")"
+            done
+
+            runHook postInstall
+          '';
+        }))
         # pkgs.nixcasks.discord # currently subsumed by ferdium
         pkgs.nixcasks.disk-inventory-x
         pkgs.nixcasks.dropbox
@@ -258,7 +291,15 @@
         pkgs.nixcasks.lastfm
         pkgs.nixcasks.mendeley
         pkgs.nixcasks.netnewswire
-        pkgs.nixcasks.omnifocus
+        (pkgs.nixcasks.omnifocus.overrideAttrs (old: let
+          version = "3.15.8"; # version I have a license for
+        in {
+          inherit version;
+          src = pkgs.fetchurl {
+            url = "https://downloads.omnigroup.com/software/macOS/11/OmniFocus-${version}.dmg";
+            hash = "sha256-8P578Pr8NdUKI/4NYUuUA7WN6UOXBKLj2T+9xgKqtmE=";
+          };
+        }))
         pkgs.nixcasks.omnigraffle
         pkgs.nixcasks.omnioutliner
         pkgs.nixcasks.openoffice
@@ -293,7 +334,6 @@
         pkgs.racket # doesn’t contain darwin GUI
       ]
       ++ lib.optionals (pkgs.system == "x86_64-linux") [
-        pkgs.chrysalis # Atreus keyboard customizer # packaged as x86_64-linux binary
         pkgs.cider # we have Music.app on darwin
         pkgs.eagle # not supported on darwin
         pkgs.ferdium # not supported on darwin
@@ -603,8 +643,11 @@
         ];
         "com.apple.sound.beep.flash" = 1;
       };
-      # Opt out of Apple Intelligence.
+
+      ## Opt out of Apple Intelligence.
+      "com.apple.AppleIntelligenceReport".reportDuration = 0;
       "com.apple.CloudSubscriptionFeatures.optIn"."545129924" = false;
+
       "com.apple.desktopservices" = {
         DSDontWriteNetworkStores = true;
         DSDontWriteUSBStores = true;
