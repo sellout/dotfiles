@@ -28,7 +28,13 @@ in {
 
   mkalias = mkalias.packages.${final.system}.mkalias;
 
-  ## TODO: This should be in Nixpkgs 24.05, but check to see if
+  ## These tests are failing on aarch64-darwin with Nixpkgs 24.11, so disable
+  ## them for now.
+  nodejs-slim = prev.nodejs-slim.overrideAttrs (old: {
+    doCheck = false;
+  });
+
+  ## TODO: This should be in Nixpkgs 25.05, but check to see if
   ##       https://github.com/NixOS/nixpkgs/commit/002d82c95fdc43b69b58357791fe4474c0160b0c
   ##       makes it into nixpks-unstable sooner.
   ntfy = master.ntfy;
