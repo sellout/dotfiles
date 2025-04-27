@@ -44,4 +44,8 @@ in {
   ##     means Python 3.
   python = final.python3;
   pythonPackages = final.python3Packages;
+
+  ## The install checks for unison-nix’s UCM derivation can’t be sandboxed, so
+  ## we disable them in order to use Garnix.
+  unison-ucm = prev.unison-ucm.overrideAttrs (old: {doInstallCheck = false;});
 }
