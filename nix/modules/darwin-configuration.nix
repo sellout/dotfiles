@@ -9,6 +9,7 @@
 }: {
   imports = [
     ./games.nix
+    ./garnix-cache.nix
     ./input-devices.nix
     ./nix-configuration.nix
     ./nixpkgs-configuration.nix
@@ -50,6 +51,8 @@
     pkgs.inconsolata
     pkgs.lexica-ultralegible
   ];
+
+  garnix.cache.enable = true;
 
   # The preferred location of applications is, in order:
   # 1. home.nix#home.packages (~/Applications/Home Manager Apps)

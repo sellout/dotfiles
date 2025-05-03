@@ -29,10 +29,6 @@
         "flakes"
         "nix-command"
       ];
-      extra-substituters = ["https://cache.garnix.io"];
-      extra-trusted-public-keys = [
-        "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
-      ];
       ## NIX_PATH is still used by many useful tools, so we set it to the same
       ## value as the one used by this flake. For more information, see
       ## https://nixos-and-flakes.thiscute.world/best-practices/nix-path-and-flake-registry

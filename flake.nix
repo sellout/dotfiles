@@ -133,12 +133,14 @@
 
       darwinModules = {
         darwin = import ./nix/modules/darwin-configuration.nix;
+        garnix-cache = import ./nix/modules/garnix-cache.nix;
         nix-configuration = import ./nix/modules/nix-configuration.nix;
         nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
       };
 
       homeModules = {
         emacs = import ./nix/modules/emacs;
+        garnix-cache = import ./nix/modules/garnix-cache.nix;
         home = import ./nix/modules/home-configuration.nix;
         i3 = import ./nix/modules/i3.nix;
         nix-configuration = import ./nix/modules/nix-configuration.nix;
@@ -151,6 +153,7 @@
       };
 
       nixosModules = {
+        garnix-cache = import ./nix/modules/garnix-cache.nix;
         nix-configuration = import ./nix/modules/nix-configuration.nix;
         nixos = import ./nix/modules/nixos-configuration.nix;
         nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
