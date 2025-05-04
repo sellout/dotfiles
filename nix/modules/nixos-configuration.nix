@@ -10,6 +10,7 @@
     agenix.nixosModules.age
     ./date-time.nix
     ./games.nix
+    ./garnix-cache.nix
     ./input-devices.nix
     ./locale.nix
     ./nix-configuration.nix
@@ -68,6 +69,8 @@
       pkgs.lexica-ultralegible
     ];
   };
+
+  garnix.cache.enable = true;
 
   hardware = {
     bluetooth.enable = true;

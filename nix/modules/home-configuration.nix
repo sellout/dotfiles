@@ -11,6 +11,7 @@
     ./direnv.nix
     ./emacs
     ./firefox.nix
+    ./garnix-cache.nix
     ./gpg.nix
     ./i18n.nix
     ./i3.nix
@@ -37,6 +38,11 @@
   age.secretsDir = "${config.lib.local.xdg.runtimeDir}/agenix";
 
   fonts.fontconfig.enable = true;
+
+  garnix.cache = {
+    enable = true;
+    config = "on";
+  };
 
   # FIXME: This and `config.home.activation.aliasApplications` below _may_ be
   #        needed because the alias (rather than symlink) things into
