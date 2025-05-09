@@ -53,6 +53,16 @@ FILENAME and NOERROR behave the same as for ‘require‘."
 
 (xdg-locations-custom-paths)
 
+;; This needs to be loaded like _right here_:
+;;
+;; • ‘xdg-locations-custom-paths’ above sets the correct ‘custom-file’ and
+;;
+;; • any variables in ‘custom-file’ should be initialized before we start
+;;   loading any other packages (in particular, we need to set
+;;  ‘custom-safe-themes’ from the local value before ‘custom-enabled-themes’ is
+;;   set below).
+(load custom-file)
+
 (eval-when-compile
   (require 'use-package))
 
@@ -92,12 +102,9 @@ FILENAME and NOERROR behave the same as for ‘require‘."
     "Put declarations in `custom-file'."
     (let ((user-init-file custom-file))
       ad-do-it))
-  (load custom-file)
   :custom
   (custom-enabled-themes '(bringhurst solarized inheritance))
-  (custom-unlispify-remove-prefixes t)
-  :init
-  )
+  (custom-unlispify-remove-prefixes t))
 
 ;; This is a escape hatch for loading non-Nix-managed configuration local to the
 ;; user account. See the contents of ‘user-init-file’ for more information.
@@ -1128,7 +1135,7 @@ Committer: %cN <%cE>
   ;; Stop SLIME's REPL from grabbing DEL,
   ;; which is annoying when backspacing over a '('
   (define-key slime-repl-mode-map
-    (read-kbd-macro paredit-backward-delete-key) nil)
+              (read-kbd-macro paredit-backward-delete-key) nil)
   :hook (slime-repl-mode . paredit-mode))
 
 (use-package theme-kit
