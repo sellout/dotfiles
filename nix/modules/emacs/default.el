@@ -53,6 +53,16 @@ FILENAME and NOERROR behave the same as for ‘require‘."
 
 (xdg-locations-custom-paths)
 
+;; This needs to be loaded like _right here_:
+;;
+;; • ‘xdg-locations-custom-paths’ above sets the correct ‘custom-file’ and
+;;
+;; • any variables in ‘custom-file’ should be initialized before we start
+;;   loading any other packages (in particular, we need to set
+;;  ‘custom-safe-themes’ from the local value before ‘custom-enabled-themes’ is
+;;   set below).
+(load custom-file)
+
 (eval-when-compile
   (require 'use-package))
 
@@ -92,12 +102,9 @@ FILENAME and NOERROR behave the same as for ‘require‘."
     "Put declarations in `custom-file'."
     (let ((user-init-file custom-file))
       ad-do-it))
-  (load custom-file)
   :custom
   (custom-enabled-themes '(bringhurst solarized inheritance))
-  (custom-unlispify-remove-prefixes t)
-  :init
-  )
+  (custom-unlispify-remove-prefixes t))
 
 ;; This is a escape hatch for loading non-Nix-managed configuration local to the
 ;; user account. See the contents of ‘user-init-file’ for more information.
@@ -382,19 +389,6 @@ characters of FACE plus any specified ‘fringe’."
   (list-directory-brief-switches "-ACF")
   (list-directory-verbose-switches "-Alh")
   (make-backup-files nil))
-
-(use-package floobits
-  ;; TODO: Recommend a `floobits-prefix-key` ‘defcustom’ upstream.
-  :init
-  (let ((map (make-sparse-keymap)))
-    (global-set-key (kbd "C-c f") map)
-    (define-key map "k" 'floobits-clear-highlights)
-    (define-key map "t" 'floobits-follow-mode-toggle)
-    (define-key map "f" 'floobits-follow-user)
-    (define-key map "j" 'floobits-join-workspace)
-    (define-key map "l" 'floobits-leave-workspace)
-    (define-key map "p" 'floobits-share-dir-public)
-    (define-key map "s" 'floobits-summon)))
 
 (defun sellout--mode-line-status-indicator (prefix status)
   (list prefix `(:propertize ,status face mode-line-state)))
@@ -1131,16 +1125,6 @@ Committer: %cN <%cE>
   (column-number-mode t)
   (mail-user-agent 'wl-user-agent))
 
-(use-package slack
-  :config
-  (slack-register-team
-   :name "SlamData"
-   :default t
-   :client-id "7741787362.135511560273"
-   :client-secret "741e4bde05f1c72e8abfa64efe07e955"
-   :token "xoxp-7741787362-7950594261-136873000262-caf5641f39e0c0acc14a649d62474315"
-   :subscribed-channels '(backend backend-team)))
-
 (use-package slime
   :after paredit
   :bind
@@ -1151,7 +1135,7 @@ Committer: %cN <%cE>
   ;; Stop SLIME's REPL from grabbing DEL,
   ;; which is annoying when backspacing over a '('
   (define-key slime-repl-mode-map
-    (read-kbd-macro paredit-backward-delete-key) nil)
+              (read-kbd-macro paredit-backward-delete-key) nil)
   :hook (slime-repl-mode . paredit-mode))
 
 (use-package theme-kit

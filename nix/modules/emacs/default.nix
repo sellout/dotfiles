@@ -469,7 +469,6 @@
       pkgs.cargo
       epkgs.sbt-mode
       epkgs.scala-mode
-      epkgs.twittering-mode
       epkgs.undo-tree
       epkgs.unison-ts-mode
       epkgs.vc-darcs
