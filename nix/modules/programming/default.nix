@@ -95,8 +95,8 @@
           {
             name = "ginfuru-better-solarized-dark-theme";
             publisher = "ginfuru";
-            version = "0.9.5";
-            hash = "sha256-ySfC3PVRezevItW3kWTiY3U8GgB9p223ZiC8XaJ3koM=";
+            version = "0.10.9";
+            hash = "sha256-Zh3u1iq/kSzwtOY1RmG4cwvN6nJO6ys88BXn/EH/wTs=";
           }
         ];
       ## TODO: Would like to disable this, but seems like if it’s not mutable,
@@ -112,13 +112,16 @@
         ];
         "editor.fontLigatures" = true;
         "editor.fontSize" = config.lib.local.defaultFont.size;
-        "workbench.colorTheme" = "Solarized Dark";
         ## Projects that don’t keep things formatted should have a
         ## .vscode/settings.json that overrides this.
         "editor.formatOnSave" = true;
         ## This avoids calling out all of my wonderful Unicode content.
         "editor.unicodeHighlight.includeComments" = false;
         "editor.unicodeHighlight.includeStrings" = false;
+        ## Set up themes.
+        "window.autoDetectColorScheme" = true;
+        "workbench.preferredDarkColorTheme" = "Better Solarized Dark";
+        "workbench.preferredLightColorTheme" = "Better Solarized Light";
       };
     };
 
