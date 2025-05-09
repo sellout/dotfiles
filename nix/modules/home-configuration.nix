@@ -405,6 +405,7 @@
         "kell"
         "kells"
         "palantir"
+        "parametricity"
         "tenkara"
         "topo"
       ];
