@@ -383,19 +383,6 @@ characters of FACE plus any specified ‘fringe’."
   (list-directory-verbose-switches "-Alh")
   (make-backup-files nil))
 
-(use-package floobits
-  ;; TODO: Recommend a `floobits-prefix-key` ‘defcustom’ upstream.
-  :init
-  (let ((map (make-sparse-keymap)))
-    (global-set-key (kbd "C-c f") map)
-    (define-key map "k" 'floobits-clear-highlights)
-    (define-key map "t" 'floobits-follow-mode-toggle)
-    (define-key map "f" 'floobits-follow-user)
-    (define-key map "j" 'floobits-join-workspace)
-    (define-key map "l" 'floobits-leave-workspace)
-    (define-key map "p" 'floobits-share-dir-public)
-    (define-key map "s" 'floobits-summon)))
-
 (defun sellout--mode-line-status-indicator (prefix status)
   (list prefix `(:propertize ,status face mode-line-state)))
 
@@ -1130,16 +1117,6 @@ Committer: %cN <%cE>
   :custom
   (column-number-mode t)
   (mail-user-agent 'wl-user-agent))
-
-(use-package slack
-  :config
-  (slack-register-team
-   :name "SlamData"
-   :default t
-   :client-id "7741787362.135511560273"
-   :client-secret "741e4bde05f1c72e8abfa64efe07e955"
-   :token "xoxp-7741787362-7950594261-136873000262-caf5641f39e0c0acc14a649d62474315"
-   :subscribed-channels '(backend backend-team)))
 
 (use-package slime
   :after paredit
