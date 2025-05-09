@@ -139,7 +139,6 @@
       reMarkable = 1276493162;
       "Remote Mouse" = 403195710;
       SoundCloud = 412754595;
-      # Twitter = 409789998; # currently subsumed by ferdium
       Xcode = 497799835;
     };
     ## NB: These settings unfortunately make `darwin-rebuild switch`
