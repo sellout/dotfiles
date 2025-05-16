@@ -22,6 +22,7 @@
     ./programming
     ./shell.nix
     ./ssh.nix
+    ./storage.nix
     ./tex.nix
     ./vcs
     ./wakatime.nix
