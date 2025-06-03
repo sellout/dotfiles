@@ -209,7 +209,7 @@
         ignoreSpace = true;
         path = "${config.xdg.stateHome}/zsh/history";
       };
-      initExtra = ''
+      initContent = ''
         compinit -d "$XDG_CACHE_HOME"/zsh/zcompdump-"$ZSH_VERSION"
 
         autoload -U colors && colors
