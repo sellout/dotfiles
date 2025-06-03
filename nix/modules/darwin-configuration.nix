@@ -154,7 +154,7 @@
   ## `homebrew.masApps`).
   system.defaults.CustomSystemPreferences."com.apple.commerce".AutoUpdate = false;
   ## TODO: Build this incrementally from arbitrarily-named scripts.
-  system.activationScripts.postUserActivation.text = ''
+  system.activationScripts.postActivation.text = ''
     echo "checking for un-managed apps ..."
     mas list | sort >installed-packages
     echo "App Store apps that are installed, but not in the nix-darwin configuration:"
@@ -222,17 +222,13 @@
     };
   };
 
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
-  services = {
-    nix-daemon.enable = true;
-
-    tailscale = {
-      enable = true;
-      ## TODO: Remove this (from nix-darwin, too) once tailscale/tailscale#8436
-      ##       is fixed.
-      overrideLocalDns = true;
-    };
+  services.tailscale = {
+    enable = true;
+    ## TODO: Remove this (from nix-darwin, too) once tailscale/tailscale#8436 is
+    ##       fixed.
+    overrideLocalDns = true;
   };
 
   ## For any of this to work, we need to enable automatic updates in general.

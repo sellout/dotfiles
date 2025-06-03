@@ -76,52 +76,54 @@
     ## if there were something like Floobits, but that seems effectively dead.
     vscode = {
       enable = true;
-      enableExtensionUpdateCheck = false; # Nervous about these two, see how
-      enableUpdateCheck = false; #          they actually affect things.
-      ## Project-specific extensions (e.g., PL extensions) should be installed
-      ## as “local workspace extensions”
-      ## (https://code.visualstudio.com/updates/v1_89#_local-workspace-extensions),
-      ## rather than globally here.
-      extensions = let
-        vpkgs = pkgs.vscode-extensions;
-      in
-        [
-          vpkgs."1Password".op-vscode
-          vpkgs.ms-vsliveshare.vsliveshare
-          vpkgs.unison-lang.unison
-          vpkgs.wakatime.vscode-wakatime
-        ]
-        ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-          {
-            name = "ginfuru-better-solarized-dark-theme";
-            publisher = "ginfuru";
-            version = "0.10.9";
-            hash = "sha256-Zh3u1iq/kSzwtOY1RmG4cwvN6nJO6ys88BXn/EH/wTs=";
-          }
-        ];
       ## TODO: Would like to disable this, but seems like if it’s not mutable,
       ##       then extensions.json never gets created, so VSCode thinks it has
       ##       no extensions.
       # mutableExtensionsDir = false; # See comment on `enable*`.
       package = pkgs.vscodium; # Without non-MIT MS telemetry, etc.
-      userSettings = {
-        "editor.fontFamily" = pkgs.lib.concatStringsSep ", " [
-          "'${config.lib.local.defaultFont.programmingFamily}'"
-          "'${config.lib.local.defaultFont.monoFamily}'"
-          "monospace"
-        ];
-        "editor.fontLigatures" = true;
-        "editor.fontSize" = config.lib.local.defaultFont.size;
-        ## Projects that don’t keep things formatted should have a
-        ## .vscode/settings.json that overrides this.
-        "editor.formatOnSave" = true;
-        ## This avoids calling out all of my wonderful Unicode content.
-        "editor.unicodeHighlight.includeComments" = false;
-        "editor.unicodeHighlight.includeStrings" = false;
-        ## Set up themes.
-        "window.autoDetectColorScheme" = true;
-        "workbench.preferredDarkColorTheme" = "Better Solarized Dark";
-        "workbench.preferredLightColorTheme" = "Better Solarized Light";
+      ## Project-specific extensions (e.g., PL extensions) should be installed
+      ## as “local workspace extensions”
+      ## (https://code.visualstudio.com/updates/v1_89#_local-workspace-extensions),
+      ## rather than globally here.
+      profiles.default = {
+        enableExtensionUpdateCheck = false; # Nervous about these two, see how
+        enableUpdateCheck = false; #          they actually affect things.
+        extensions = let
+          vpkgs = pkgs.vscode-extensions;
+        in
+          [
+            vpkgs."1Password".op-vscode
+            vpkgs.ms-vsliveshare.vsliveshare
+            vpkgs.unison-lang.unison
+            vpkgs.wakatime.vscode-wakatime
+          ]
+          ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+            {
+              name = "ginfuru-better-solarized-dark-theme";
+              publisher = "ginfuru";
+              version = "0.10.9";
+              hash = "sha256-Zh3u1iq/kSzwtOY1RmG4cwvN6nJO6ys88BXn/EH/wTs=";
+            }
+          ];
+        userSettings = {
+          "editor.fontFamily" = pkgs.lib.concatStringsSep ", " [
+            "'${config.lib.local.defaultFont.programmingFamily}'"
+            "'${config.lib.local.defaultFont.monoFamily}'"
+            "monospace"
+          ];
+          "editor.fontLigatures" = true;
+          "editor.fontSize" = config.lib.local.defaultFont.size;
+          ## Projects that don’t keep things formatted should have a
+          ## .vscode/settings.json that overrides this.
+          "editor.formatOnSave" = true;
+          ## This avoids calling out all of my wonderful Unicode content.
+          "editor.unicodeHighlight.includeComments" = false;
+          "editor.unicodeHighlight.includeStrings" = false;
+          ## Set up themes.
+          "window.autoDetectColorScheme" = true;
+          "workbench.preferredDarkColorTheme" = "Better Solarized Dark";
+          "workbench.preferredLightColorTheme" = "Better Solarized Light";
+        };
       };
     };
 

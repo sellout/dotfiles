@@ -20,6 +20,6 @@ in {
 
   programs = {
     bash = {inherit initExtra;};
-    zsh = {inherit initExtra;};
+    zsh.initContent = initExtra;
   };
 }

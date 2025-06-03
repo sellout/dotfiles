@@ -67,7 +67,7 @@
       [
         ## This doesn’t seem to be looked up via gpg-agent.conf, and
         ## `config.services.gpg-agent` doesn’t seem to expose the package.
-        config.services.gpg-agent.pinentryPackage
+        config.services.gpg-agent.pinentry.package
         pkgs.dtach
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [

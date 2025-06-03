@@ -600,7 +600,7 @@
     ## notification daemon for Wayland
     mako = {
       enable = pkgs.stdenv.hostPlatform.isLinux;
-      font = config.lib.local.defaultFont.string;
+      settings.font = config.lib.local.defaultFont.string;
     };
 
     screen-locker.lockCmd = "${pkgs.i3lock}/bin/i3lock -n -c 000000";

@@ -169,7 +169,13 @@
               {
                 home-manager.users.example-user = exampleHomeConfiguration;
                 nixpkgs = {inherit hostPlatform;};
-                system.stateVersion = 5;
+                system = {
+                  ## This is temporarily required by some options (for example,
+                  ## `homebrew.enable`) that were previously applied to the user
+                  ## running `darwin-rebuild`.
+                  primaryUser = "example-user";
+                  stateVersion = 5;
+                };
                 users.users.example-user.home = "/tmp/example";
               }
             ];
