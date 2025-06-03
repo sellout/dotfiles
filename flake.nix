@@ -39,6 +39,8 @@
     systems,
     unison-nix,
   }: let
+    stateVersion = "25.05";
+
     supportedSystems = import systems;
 
     exampleHomeConfiguration = {
@@ -62,8 +64,8 @@
       };
       ## These attributes are simply required by home-manager.
       home = {
+        inherit stateVersion;
         homeDirectory = "/tmp/example";
-        stateVersion = "24.05";
         username = "example-user";
       };
     };
@@ -194,7 +196,7 @@
                 fileSystems."/".device = "/dev/vba";
                 home-manager.users.example-user = exampleHomeConfiguration;
                 nixpkgs = {inherit hostPlatform;};
-                system.stateVersion = "24.05";
+                system = {inherit stateVersion;};
                 users = {
                   groups.example-user = {};
                   users.example-user = {
@@ -268,7 +270,7 @@
 
     darwin = {
       inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:LnL7/nix-darwin/nix-darwin-24.11";
+      url = "github:LnL7/nix-darwin/nix-darwin-25.05";
     };
 
     emacs-color-theme-solarized = {
