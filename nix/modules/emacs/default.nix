@@ -359,7 +359,7 @@
       + builtins.readFile ./default.el;
     extraPackages = epkgs: [
       epkgs.ace-window # better `other-window`
-      # epkgs.agda2-mode # fails while linking Agda-2.6.2.2
+      epkgs.agda2-mode
       epkgs.agenix
       epkgs.applescript-mode
       epkgs.auto-dark
