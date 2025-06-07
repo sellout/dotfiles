@@ -71,6 +71,23 @@
       };
     };
 
+    ntfy = let
+      shellIntegration = {
+        foregroundToo = true;
+        longerThan = 30; # seconds
+      };
+    in {
+      enable = true;
+      package = pkgs.ntfy.override {
+        ## In Nixpkgs 25.05, this fails when building the requisite Python
+        ## dependencies.
+        withSlack = false;
+      };
+      bashIntegration = shellIntegration;
+      ignoredCommands = ["emacs" "less" "man" "ssh"];
+      zshIntegration = shellIntegration;
+    };
+
     ## A shell prompt customizer (https://starship.rs/)
     starship = let
       ## Group some of the modules.
