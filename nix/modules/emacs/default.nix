@@ -120,11 +120,6 @@
     emacs-cache-home = "~/${config.lib.local.xdg.cache.rel}/emacs";
     emacs-state-home = "~/${config.lib.local.xdg.state.rel}/emacs";
   in {
-    ## FIXME: The ‘extended-faces’ package is currently not working with emacs30
-    ##       (the default Emacs in Nixpkgs 24.11). See
-    ##        sellout/emacs-extended-faces#13.
-    package = pkgs.emacs29;
-
     enable = true;
     ## enable this if I play with getting dbus working again
     #  = pkgs.emacs.overrideAttrs (old: {
