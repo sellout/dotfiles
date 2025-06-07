@@ -67,7 +67,7 @@
       [
         ## This doesn’t seem to be looked up via gpg-agent.conf, and
         ## `config.services.gpg-agent` doesn’t seem to expose the package.
-        config.services.gpg-agent.pinentryPackage
+        config.services.gpg-agent.pinentry.package
         pkgs.dtach
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
@@ -120,11 +120,6 @@
     emacs-cache-home = "~/${config.lib.local.xdg.cache.rel}/emacs";
     emacs-state-home = "~/${config.lib.local.xdg.state.rel}/emacs";
   in {
-    ## FIXME: The ‘extended-faces’ package is currently not working with emacs30
-    ##       (the default Emacs in Nixpkgs 24.11). See
-    ##        sellout/emacs-extended-faces#13.
-    package = pkgs.emacs29;
-
     enable = true;
     ## enable this if I play with getting dbus working again
     #  = pkgs.emacs.overrideAttrs (old: {
@@ -364,7 +359,7 @@
       + builtins.readFile ./default.el;
     extraPackages = epkgs: [
       epkgs.ace-window # better `other-window`
-      # epkgs.agda2-mode # fails while linking Agda-2.6.2.2
+      epkgs.agda2-mode
       epkgs.agenix
       epkgs.applescript-mode
       epkgs.auto-dark

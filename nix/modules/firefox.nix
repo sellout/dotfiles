@@ -11,11 +11,9 @@ in {
     inherit policies;
 
     enable = pkgs.system != "aarch64-linux";
-    # Nix really wanted to build the default package from scratch.
-    package = pkgs.firefox-bin;
     profiles.default = {
       ## These are ordered to match `about:addons`.
-      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+      extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
         onepassword-password-manager
         # Add to MyRegistry.com Button
         # Add to OmniFocus
