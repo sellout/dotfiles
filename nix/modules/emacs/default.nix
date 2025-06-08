@@ -360,7 +360,9 @@
     extraPackages = epkgs: [
       epkgs.ace-window # better `other-window`
       epkgs.agda2-mode
-      epkgs.agenix
+      ## TODO: The agenix.el tests fail when bootstrapping Eldev, because it
+      ##       requires network access.
+      (epkgs.agenix.overrideAttrs (old: {doCheck = false;}))
       epkgs.applescript-mode
       epkgs.auto-dark
       epkgs.auto-dim-other-buffers
