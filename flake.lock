@@ -50,7 +50,9 @@
         "bash-strict-mode": [
           "bash-strict-mode"
         ],
-        "flake-parts": "flake-parts",
+        "flake-parts": [
+          "flake-parts"
+        ],
         "home-manager": [
           "home-manager"
         ],
@@ -404,37 +406,15 @@
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
-          "agenix-el",
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1748821116,
-        "narHash": "sha256-F82+gS044J1APL0n4hH50GYdPRv/5JWm34oCJYmVKdE=",
+        "lastModified": 1749398372,
+        "narHash": "sha256-tYBdgS56eXYaWVW3fsnPQ/nFlgWi/Z2Ymhyu21zVM98=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "49f0870db23e8c1ca0b5259734a02cd9e1e371a1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hercules-ci",
-        "repo": "flake-parts",
-        "type": "github"
-      }
-    },
-    "flake-parts_2": {
-      "inputs": {
-        "nixpkgs-lib": [
-          "nur",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1733312601,
-        "narHash": "sha256-4pDvzqnegAfRkPwO3wmwBhVi/Sye1mzps0zHWYnP88c=",
-        "owner": "hercules-ci",
-        "repo": "flake-parts",
-        "rev": "205b12d8b7cd4802fbcb8e8ef6a0f1408781a4f9",
+        "rev": "9305fe4e5c2a6fcf5ba6a3ff155720fbe4076569",
         "type": "github"
       },
       "original": {
@@ -895,6 +875,29 @@
         "type": "github"
       }
     },
+    "nix-math": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1746295813,
+        "narHash": "sha256-YrniSl/ouAvfhYxir1ktzw1yzFRKv2gp0F8r9Lrx20E=",
+        "owner": "xddxdd",
+        "repo": "nix-math",
+        "rev": "ad36efbb84b3efe8aa938ded85614b7da119517b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "xddxdd",
+        "repo": "nix-math",
+        "type": "github"
+      }
+    },
     "nixcasks": {
       "inputs": {
         "nixpkgs": [
@@ -1237,7 +1240,9 @@
     },
     "nur": {
       "inputs": {
-        "flake-parts": "flake-parts_2",
+        "flake-parts": [
+          "flake-parts"
+        ],
         "nixpkgs": "nixpkgs_2",
         "treefmt-nix": "treefmt-nix_2"
       },
@@ -1348,6 +1353,7 @@
         "emacs-extended-faces": "emacs-extended-faces",
         "epresent": "epresent",
         "firefox-darwin": "firefox-darwin",
+        "flake-parts": "flake-parts",
         "flake-utils": [
           "flaky",
           "flake-utils"
@@ -1358,6 +1364,7 @@
           "home-manager"
         ],
         "mkalias": "mkalias",
+        "nix-math": "nix-math",
         "nixcasks": "nixcasks",
         "nixpkgs": [
           "flaky",

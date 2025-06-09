@@ -26,10 +26,12 @@
     emacs-extended-faces,
     epresent,
     firefox-darwin,
+    flake-parts, # unused, but unifies inputs
     flake-utils,
     flaky,
     home-manager,
     mkalias,
+    nix-math,
     nixcasks,
     nixpkgs,
     nixpkgs-master,
@@ -78,6 +80,7 @@
           emacs-color-theme-solarized
           flaky
           home-manager
+          nix-math
           nixpkgs
           org-invoice
           self
@@ -262,6 +265,7 @@
     agenix-el = {
       inputs = {
         bash-strict-mode.follows = "bash-strict-mode";
+        flake-parts.follows = "flake-parts";
         home-manager.follows = "home-manager";
         nixpkgs.follows = "nixpkgs";
       };
@@ -300,10 +304,23 @@
       url = "github:bandithedoge/nixpkgs-firefox-darwin";
     };
 
+    flake-parts = {
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+      url = "github:hercules-ci/flake-parts";
+    };
+
     ## Avoids the need to give `Finder` access to make aliases on MacOS.
     mkalias = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:reckenrode/mkalias";
+    };
+
+    nix-math = {
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs";
+      };
+      url = "github:xddxdd/nix-math";
     };
 
     nixcasks = {
@@ -316,7 +333,10 @@
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     # nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-    nur.url = "github:nix-community/nur";
+    nur = {
+      inputs.flake-parts.follows = "flake-parts";
+      url = "github:nix-community/nur";
+    };
 
     org-invoice = {
       flake = false;
