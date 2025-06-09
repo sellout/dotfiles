@@ -13,11 +13,16 @@
 in {
   config = flaky.lib.multiConfig options {
     homeConfig = {
-      ## TODO: Only set these if the locale is available on the system.
-      home.language = {
-        base = fullLocale;
-        time = timeLocale;
-      };
+      ## FIXME: macOS doesn’t support the `en_DK` locale.
+      home.language =
+        if pkgs.stdenv.isDarwin
+        then {
+          base = fullLocale;
+        }
+        else {
+          base = fullLocale;
+          time = timeLocale;
+        };
 
       targets.darwin.defaults.NSGlobalDomain = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         AppleFirstWeekday.gregorian = 2; # Monday
