@@ -315,7 +315,7 @@
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         pkgs._1password-gui # doesn’t get installed in the correct location on Darwin
         pkgs.bitcoin # doesn’t contain darwin GUI
-        # pkgs.github-desktop # not supported on darwin # in 23.05, still uses OpenSSL 1.1.1u
+        pkgs.github-desktop # not supported on darwin
         pkgs.hdhomerun-config-gui # not supported on darwin
         pkgs.plex # (server) not supported on darwin
         pkgs.powertop # not supported on darwin
