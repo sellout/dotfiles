@@ -317,8 +317,7 @@
         pkgs.bitcoin # doesn’t contain darwin GUI
         # pkgs.github-desktop # not supported on darwin # in 23.05, still uses OpenSSL 1.1.1u
         pkgs.hdhomerun-config-gui # not supported on darwin
-        pkgs.plex # not supported on darwin
-        pkgs.plex-media-player # fails to build on darwin
+        pkgs.plex # (server) not supported on darwin
         pkgs.powertop # not supported on darwin
         pkgs.racket # doesn’t contain darwin GUI
       ]
@@ -327,6 +326,8 @@
         pkgs.eagle # not supported on darwin
         pkgs.ferdium # not supported on darwin
         pkgs.keybase-gui # not supported on darwin
+        ## fails to build on darwin, qtwebengine fails to build on aarch64-linux
+        pkgs.plex-media-player
         pkgs.signal-desktop # not supported on darwin
         pkgs.tor-browser-bundle-bin # not supported on darwin
       ];
