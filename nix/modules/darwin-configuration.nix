@@ -154,15 +154,16 @@
   ## `homebrew.masApps`).
   system.defaults.CustomSystemPreferences."com.apple.commerce".AutoUpdate = false;
   ## TODO: Build this incrementally from arbitrarily-named scripts.
-  system.activationScripts.postUserActivation.text = ''
+  system.activationScripts.postActivation.text = ''
     echo "checking for un-managed apps ..."
-    mas list | sort >installed-packages
+    installed_packages=$(mktemp --tmpdir installed-packages.XXXXXX)
+    ${lib.getExe' pkgs.mas "mas"} list | sort >"$installed_packages"
     echo "App Store apps that are installed, but not in the nix-darwin configuration:"
-    join -v1 -1 1 installed-packages - <<EOF
+    join -v1 -1 1 "$installed_packages" - <<EOF
     ${lib.concatStringsSep "\n"
       (lib.sort (a: b: a <= b) (map toString (lib.attrValues config.homebrew.masApps)))}
     EOF
-    rm installed-packages
+    rm "$installed_packages"
 
     ## The “default” profile is created by the original Nix install. It can be
     ## dangerous to remove it, and some things reference it explicitly,
@@ -222,17 +223,13 @@
     };
   };
 
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
-  services = {
-    nix-daemon.enable = true;
-
-    tailscale = {
-      enable = true;
-      ## TODO: Remove this (from nix-darwin, too) once tailscale/tailscale#8436
-      ##       is fixed.
-      overrideLocalDns = true;
-    };
+  services.tailscale = {
+    enable = true;
+    ## TODO: Remove this (from nix-darwin, too) once tailscale/tailscale#8436 is
+    ##       fixed.
+    overrideLocalDns = true;
   };
 
   ## For any of this to work, we need to enable automatic updates in general.

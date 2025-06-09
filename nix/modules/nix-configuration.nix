@@ -1,5 +1,6 @@
 {
   lib,
+  math,
   nixpkgs,
   pkgs,
   ...
@@ -25,6 +26,14 @@
       ## subshells, remote machines, etc. that’s not there, so this gives us
       ## _something_.
       bash-prompt-prefix = "❄️";
+      ## Avoid stalling downloads by increasing the download buffer from the
+      ## default 64 MiB
+      ## (https://nix.dev/manual/nix/2.29/command-ref/conf-file.html#conf-download-buffer-size).
+      ## This is likely caused by the buffer being used (incorrectly) when
+      ## pulling substitutes, even locally (see NixOS/nix#11728). It could be
+      ## possible to optimize this by scaling it inversely to the CPU speed on a
+      ## given machine, but it doesn’t seem worth the effort.
+      download-buffer-size = math.pow 2 29; # 512 MiB
       extra-experimental-features = [
         "flakes"
         "nix-command"

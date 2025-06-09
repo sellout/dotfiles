@@ -152,27 +152,19 @@
     ## • the package has its own GUI that we prefer over any Emacs interface.
     packages = let
       fonts = [
-        {package = pkgs.fira;}
-        {
-          package = pkgs.fira-code;
-          nerdfont = "FiraCode";
-        }
-        {package = pkgs.fira-code-symbols;}
-        {
-          package = pkgs.fira-mono;
-          nerdfont = "FiraMono";
-        }
-        {package = pkgs.lexica-ultralegible;}
-        # https://github.com/liberationfonts
-        {
-          package = pkgs.liberation_ttf;
-          nerdfont = "LiberationMono";
-        }
-        # https://opendyslexic.org/
-        {
-          package = pkgs.open-dyslexic;
-          nerdfont = "OpenDyslexic";
-        }
+        pkgs.fira
+        pkgs.fira-code
+        pkgs.nerd-fonts.fira-code
+        pkgs.fira-code-symbols
+        pkgs.fira-mono
+        pkgs.nerd-fonts.fira-mono
+        pkgs.lexica-ultralegible
+        ## https://github.com/liberationfonts
+        pkgs.liberation_ttf
+        pkgs.nerd-fonts.liberation
+        ## https://opendyslexic.org/
+        pkgs.open-dyslexic
+        pkgs.nerd-fonts.open-dyslexic
       ];
 
       ## For packages that should be gotten from nixcasks on darwin. The second
@@ -210,15 +202,6 @@
         pkgs.magic-wormhole
         ## not available on darwin via Nix
         (maybeNixcask "mumble" null)
-        (pkgs.nerdfonts.override {
-          fonts =
-            lib.concatMap
-            (font:
-              if font ? nerdfont
-              then [font.nerdfont]
-              else [])
-            fonts;
-        })
         ## not available on darwin via Nix
         (maybeNixcask "obs-studio" "obs")
         pkgs.python3Packages.opentype-feature-freezer
@@ -229,7 +212,7 @@
         # pkgs.wire-desktop # currently subsumed by ferdium
         pkgs.xdg-ninja # home directory complaining
       ]
-      ++ map (font: font.package) fonts
+      ++ fonts
       ++ lib.optionals (pkgs.system != "aarch64-linux") [
         (maybeNixcask "simplex-chat-desktop" "simplex")
         pkgs.spotify
@@ -332,10 +315,9 @@
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         pkgs._1password-gui # doesn’t get installed in the correct location on Darwin
         pkgs.bitcoin # doesn’t contain darwin GUI
-        # pkgs.github-desktop # not supported on darwin # in 23.05, still uses OpenSSL 1.1.1u
+        pkgs.github-desktop # not supported on darwin
         pkgs.hdhomerun-config-gui # not supported on darwin
-        pkgs.plex # not supported on darwin
-        pkgs.plex-media-player # fails to build on darwin
+        pkgs.plex # (server) not supported on darwin
         pkgs.powertop # not supported on darwin
         pkgs.racket # doesn’t contain darwin GUI
       ]
@@ -344,6 +326,8 @@
         pkgs.eagle # not supported on darwin
         pkgs.ferdium # not supported on darwin
         pkgs.keybase-gui # not supported on darwin
+        ## fails to build on darwin, qtwebengine fails to build on aarch64-linux
+        pkgs.plex-media-player
         pkgs.signal-desktop # not supported on darwin
         pkgs.tor-browser-bundle-bin # not supported on darwin
       ];
@@ -617,7 +601,7 @@
     ## notification daemon for Wayland
     mako = {
       enable = pkgs.stdenv.hostPlatform.isLinux;
-      font = config.lib.local.defaultFont.string;
+      settings.font = config.lib.local.defaultFont.string;
     };
 
     screen-locker.lockCmd = "${pkgs.i3lock}/bin/i3lock -n -c 000000";

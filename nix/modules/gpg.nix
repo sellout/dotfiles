@@ -54,7 +54,7 @@ in {
       "debug ipc" # required for `debug-pinentry` to have an effect
       "log-file ${gpgXdg.stateDir}/agent.log"
     ];
-    pinentryPackage = pkgs.pinentry.tty;
+    pinentry.package = pkgs.pinentry.tty;
   };
 
   ## Ensure the state directory for GPG exists.
@@ -84,8 +84,8 @@ in {
         "max-cache-ttl ${toString cfg.maxCacheTtl}"
         ++ lib.optional (cfg.maxCacheTtlSsh != null)
         "max-cache-ttl-ssh ${toString cfg.maxCacheTtlSsh}"
-        ++ lib.optional (cfg.pinentryPackage != null)
-        "pinentry-program ${lib.getExe cfg.pinentryPackage}"
+        ++ lib.optional (cfg.pinentry.package != null)
+        "pinentry-program ${lib.getExe cfg.pinentry.package}"
         ++ [cfg.extraConfig]);
   };
 }

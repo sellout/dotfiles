@@ -4,10 +4,13 @@
   emacs-color-theme-solarized,
   flaky,
   home-manager,
+  nix-math,
   nixpkgs,
   org-invoice,
   self,
 }: let
+  math = nix-math.lib.math;
+
   ## Recursively merges a list of values.
   ##
   ## NB: Stolen from https://stackoverflow.com/a/54505212
@@ -28,7 +31,7 @@
 
   ## For Home Manager configurations (both standalone and as a system module).
   extraSpecialArgs = {
-    inherit agenix emacs-color-theme-solarized flaky nixpkgs org-invoice;
+    inherit agenix emacs-color-theme-solarized flaky math nixpkgs org-invoice;
     dotfiles = self;
   };
 in {
@@ -43,7 +46,7 @@ in {
           {home-manager = {inherit extraSpecialArgs;};}
         ];
         specialArgs = {
-          inherit flaky nixpkgs;
+          inherit flaky math nixpkgs;
           dotfiles = self;
         };
       }
@@ -69,7 +72,7 @@ in {
           {home-manager = {inherit extraSpecialArgs;};}
         ];
         specialArgs = {
-          inherit agenix flaky nixpkgs;
+          inherit agenix flaky math nixpkgs;
           dotfiles = self;
         };
       }

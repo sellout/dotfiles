@@ -26,10 +26,12 @@
     emacs-extended-faces,
     epresent,
     firefox-darwin,
+    flake-parts, # unused, but unifies inputs
     flake-utils,
     flaky,
     home-manager,
     mkalias,
+    nix-math,
     nixcasks,
     nixpkgs,
     nixpkgs-master,
@@ -39,6 +41,8 @@
     systems,
     unison-nix,
   }: let
+    stateVersion = "25.05";
+
     supportedSystems = import systems;
 
     exampleHomeConfiguration = {
@@ -62,8 +66,8 @@
       };
       ## These attributes are simply required by home-manager.
       home = {
+        inherit stateVersion;
         homeDirectory = "/tmp/example";
-        stateVersion = "24.05";
         username = "example-user";
       };
     };
@@ -76,6 +80,7 @@
           emacs-color-theme-solarized
           flaky
           home-manager
+          nix-math
           nixpkgs
           org-invoice
           self
@@ -167,7 +172,13 @@
               {
                 home-manager.users.example-user = exampleHomeConfiguration;
                 nixpkgs = {inherit hostPlatform;};
-                system.stateVersion = 5;
+                system = {
+                  ## This is temporarily required by some options (for example,
+                  ## `homebrew.enable`) that were previously applied to the user
+                  ## running `darwin-rebuild`.
+                  primaryUser = "example-user";
+                  stateVersion = 5;
+                };
                 users.users.example-user.home = "/tmp/example";
               }
             ];
@@ -194,7 +205,7 @@
                 fileSystems."/".device = "/dev/vba";
                 home-manager.users.example-user = exampleHomeConfiguration;
                 nixpkgs = {inherit hostPlatform;};
-                system.stateVersion = "24.05";
+                system = {inherit stateVersion;};
                 users = {
                   groups.example-user = {};
                   users.example-user = {
@@ -254,6 +265,7 @@
     agenix-el = {
       inputs = {
         bash-strict-mode.follows = "bash-strict-mode";
+        flake-parts.follows = "flake-parts";
         home-manager.follows = "home-manager";
         nixpkgs.follows = "nixpkgs";
       };
@@ -268,7 +280,7 @@
 
     darwin = {
       inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:LnL7/nix-darwin/nix-darwin-24.11";
+      url = "github:LnL7/nix-darwin/nix-darwin-25.05";
     };
 
     emacs-color-theme-solarized = {
@@ -292,10 +304,23 @@
       url = "github:bandithedoge/nixpkgs-firefox-darwin";
     };
 
+    flake-parts = {
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+      url = "github:hercules-ci/flake-parts";
+    };
+
     ## Avoids the need to give `Finder` access to make aliases on MacOS.
     mkalias = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:reckenrode/mkalias";
+    };
+
+    nix-math = {
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs";
+      };
+      url = "github:xddxdd/nix-math";
     };
 
     nixcasks = {
@@ -308,7 +333,10 @@
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     # nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-    nur.url = "github:nix-community/nur";
+    nur = {
+      inputs.flake-parts.follows = "flake-parts";
+      url = "github:nix-community/nur";
+    };
 
     org-invoice = {
       flake = false;
