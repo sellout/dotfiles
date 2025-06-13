@@ -5,7 +5,10 @@
   flaky,
   home-manager,
   nix-math,
+  nixcasks,
   nixpkgs,
+  nixpkgs-master,
+  nixpkgs-unstable,
   org-invoice,
   self,
 }: let
@@ -31,7 +34,17 @@
 
   ## For Home Manager configurations (both standalone and as a system module).
   extraSpecialArgs = {
-    inherit agenix emacs-color-theme-solarized flaky math nixpkgs org-invoice;
+    inherit
+      agenix
+      emacs-color-theme-solarized
+      flaky
+      math
+      nixcasks
+      nixpkgs
+      nixpkgs-master
+      nixpkgs-unstable
+      org-invoice
+      ;
     dotfiles = self;
   };
 in {
@@ -46,7 +59,7 @@ in {
           {home-manager = {inherit extraSpecialArgs;};}
         ];
         specialArgs = {
-          inherit flaky math nixpkgs;
+          inherit flaky math nixcasks nixpkgs nixpkgs-master nixpkgs-unstable;
           dotfiles = self;
         };
       }
@@ -72,7 +85,15 @@ in {
           {home-manager = {inherit extraSpecialArgs;};}
         ];
         specialArgs = {
-          inherit agenix flaky math nixpkgs;
+          inherit
+            agenix
+            flaky
+            math
+            nixcasks
+            nixpkgs
+            nixpkgs-master
+            nixpkgs-unstable
+            ;
           dotfiles = self;
         };
       }
