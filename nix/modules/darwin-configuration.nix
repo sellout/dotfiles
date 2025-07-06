@@ -138,6 +138,10 @@
       "Prime Video" = 545519333;
       reMarkable = 1276493162;
       "Remote Mouse" = 403195710;
+      ## NB: Evernote has killed Skitch, and it’s subsequently been removed from
+      ##     Homebrew (https://github.com/orgs/Homebrew/discussions/6243).
+      ##     However, we can still get it from the App store, so do so for now.
+      Skitch = 425955336;
       SoundCloud = 412754595;
       Xcode = 497799835;
     };
