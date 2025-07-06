@@ -301,7 +301,6 @@
         pkgs.nixcasks.screenflow
         pkgs.nixcasks.scrivener
         pkgs.nixcasks.signal # not available on darwin via Nix
-        pkgs.nixcasks.skitch
         pkgs.nixcasks.skype # doesn't respect appdir
         pkgs.nixcasks.squeak # not available on darwin via Nix
         pkgs.nixcasks.stellarium
