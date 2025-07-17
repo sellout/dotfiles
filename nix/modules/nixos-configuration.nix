@@ -15,6 +15,7 @@
     ./locale.nix
     ./nix-configuration.nix
     ./nixpkgs-configuration.nix
+    ./storage.nix
     ./vcs
   ];
 
