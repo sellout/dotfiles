@@ -1,11 +1,16 @@
 {
   flaky,
   options,
+  pkgs,
   ...
 }: {
   config = flaky.lib.multiConfig options {
     homeConfig = {
-      services.udiskie.enable = true;
+      services.udiskie = {
+        enable = pkgs.stdenv.isLinux;
+        ## This is a workaround for nix-community/home-manager#632.
+        settings.program_options.file_manager = "${pkgs.xdg-utils}/bin/xdg-open";
+      };
     };
 
     nixosConfig = {
