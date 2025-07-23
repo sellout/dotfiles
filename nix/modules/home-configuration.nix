@@ -18,6 +18,7 @@
     ./input-devices.nix
     ./locale.nix
     ./nix-configuration.nix
+    ./nixos-wiki.nix
     ./nixpkgs-configuration.nix
     ./programming
     ./shell.nix
