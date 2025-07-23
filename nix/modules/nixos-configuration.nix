@@ -9,14 +9,7 @@
   imports = [
     agenix.nixosModules.age
     ./date-time.nix
-    ./games.nix
-    ./garnix-cache.nix
-    ./input-devices.nix
-    ./locale.nix
-    ./nix-configuration.nix
-    ./nixpkgs-configuration.nix
-    ./storage.nix
-    ./vcs
+    ./system-configuration.nix
   ];
 
   # TODO: Fix upstream. We shouldn’t need this, but it only has the correct
@@ -37,22 +30,6 @@
 
   console.font = "Lat2-Terminus16";
 
-  environment = {
-    extraOutputsToInstall = ["devdoc" "doc" "man"];
-    systemPackages = [
-      ## Nix
-      pkgs.home-manager
-      pkgs.nix-du
-      pkgs.nox
-      ## system
-      pkgs.cacert
-      pkgs.coreutils
-      pkgs.gnupg
-      pkgs.yubikey-manager
-      pkgs.yubikey-personalization
-    ];
-  };
-
   fonts = {
     # Just to have something to fall back on, don’t rely on specific entries.
     enableDefaultPackages = true;
@@ -61,49 +38,23 @@
       sansSerif = ["Lexica Ultralegible"];
     };
     fontDir.enable = true;
-    packages = [
-      pkgs.fira
-      pkgs.fira-code
-      pkgs.fira-code-symbols
-      pkgs.fira-mono
-      pkgs.inconsolata
-      pkgs.lexica-ultralegible
-    ];
   };
 
-  garnix.cache.enable = true;
-
-  hardware = {
-    bluetooth.enable = true;
-    pulseaudio.enable = false;
-  };
+  hardware.bluetooth.enable = true;
 
   networking = {
     # Strict reverse path filtering breaks Tailscale exit node use and some
     # subnet routing setups.
     firewall.checkReversePath = "loose";
-    # The global useDHCP flag is deprecated, therefore explicitly set to false here.
-    # Per-interface useDHCP will be mandatory in the future, so this generated config
-    # replicates the default behavior.
+    # The global useDHCP flag is deprecated, therefore explicitly set to false
+    # here. Per-interface useDHCP will be mandatory in the future, so this
+    # generated config replicates the default behavior.
     useDHCP = false;
     wireless = {
       enable = !config.networking.networkmanager.enable;
       userControlled.enable = true;
     };
   };
-
-  nix = {
-    ## Remove old-style tools & configs, preferring flakes.
-    channel.enable = false;
-    gc = {
-      automatic = true;
-      options = "--delete-older-than 30d";
-    };
-    ## Runs `nix-store --optimise` on a timer.
-    optimise.automatic = true;
-  };
-
-  nixpkgs.overlays = [dotfiles.overlays.nixos];
 
   powerManagement = {
     # cpuFreqGovernor = "ondemand";
@@ -133,8 +84,6 @@
 
     blueman.enable = true;
 
-    openssh.enable = false; # subsumed by tailscale
-
     pipewire = {
       alsa = {
         enable = true;
@@ -152,6 +101,8 @@
       ## since printing isn’t enabled all the time.
       startWhenNeeded = true;
     };
+
+    pulseaudio.enable = false;
 
     tailscale.enable = true;
 

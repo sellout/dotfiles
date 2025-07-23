@@ -38,8 +38,6 @@
   ##       expands to a path in the shell. See ryantm/agenix#300.
   age.secretsDir = "${config.lib.local.xdg.runtimeDir}/agenix";
 
-  fonts.fontconfig.enable = true;
-
   garnix.cache = {
     enable = true;
     config = "on";
@@ -152,22 +150,6 @@
     ##   to); or
     ## • the package has its own GUI that we prefer over any Emacs interface.
     packages = let
-      fonts = [
-        pkgs.fira
-        pkgs.fira-code
-        pkgs.nerd-fonts.fira-code
-        pkgs.fira-code-symbols
-        pkgs.fira-mono
-        pkgs.nerd-fonts.fira-mono
-        pkgs.lexica-ultralegible
-        ## https://github.com/liberationfonts
-        pkgs.liberation_ttf
-        pkgs.nerd-fonts.liberation
-        ## https://opendyslexic.org/
-        pkgs.open-dyslexic
-        pkgs.nerd-fonts.open-dyslexic
-      ];
-
       ## For packages that should be gotten from nixcasks on darwin. The second
       ## argument may be null, but if the nixcast package name differs from the
       ## Nixpkgs name, then it needs to be set.
@@ -213,7 +195,6 @@
         # pkgs.wire-desktop # currently subsumed by ferdium
         pkgs.xdg-ninja # home directory complaining
       ]
-      ++ fonts
       ++ lib.optionals (pkgs.system != "aarch64-linux") [
         (maybeNixcask "simplex-chat-desktop" "simplex")
         pkgs.spotify
