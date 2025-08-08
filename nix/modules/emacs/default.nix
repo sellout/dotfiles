@@ -482,7 +482,7 @@
           owner = "LionyxML";
           repo = "auto-dark-emacs";
           rev = "development"; # since I’m a contributor
-          hash = "sha256-hyiNSuUVoW3+A9wpUR5eu905okXW/2L7n/CnGc/4QYI=";
+          hash = "sha256-T/xymwFFTiQCnve3a0tGs3R7DnVtSgZdYbMNSVO4bNI=";
         };
       });
       envrc = prev.envrc.overrideAttrs (old: {
