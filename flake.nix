@@ -141,31 +141,31 @@
       };
 
       darwinModules = {
-        darwin = import ./nix/modules/darwin-configuration.nix;
-        garnix-cache = import ./nix/modules/garnix-cache.nix;
-        nix-configuration = import ./nix/modules/nix-configuration.nix;
-        nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
+        darwin = ./nix/modules/darwin-configuration.nix;
+        garnix-cache = ./nix/modules/garnix-cache.nix;
+        nix-configuration = ./nix/modules/nix-configuration.nix;
+        nixpkgs-configuration = ./nix/modules/nixpkgs-configuration.nix;
       };
 
       homeModules = {
-        emacs = import ./nix/modules/emacs;
-        garnix-cache = import ./nix/modules/garnix-cache.nix;
-        home = import ./nix/modules/home-configuration.nix;
-        i3 = import ./nix/modules/i3.nix;
-        nix-configuration = import ./nix/modules/nix-configuration.nix;
-        nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
-        programming = import ./nix/modules/programming;
-        shell = import ./nix/modules/shell.nix;
-        ssh = import ./nix/modules/ssh.nix;
-        tex = import ./nix/modules/tex.nix;
-        vcs = import ./nix/modules/vcs;
+        emacs = ./nix/modules/emacs;
+        garnix-cache = ./nix/modules/garnix-cache.nix;
+        home = ./nix/modules/home-configuration.nix;
+        i3 = ./nix/modules/i3.nix;
+        nix-configuration = ./nix/modules/nix-configuration.nix;
+        nixpkgs-configuration = ./nix/modules/nixpkgs-configuration.nix;
+        programming = ./nix/modules/programming;
+        shell = ./nix/modules/shell.nix;
+        ssh = ./nix/modules/ssh.nix;
+        tex = ./nix/modules/tex.nix;
+        vcs = ./nix/modules/vcs;
       };
 
       nixosModules = {
-        garnix-cache = import ./nix/modules/garnix-cache.nix;
-        nix-configuration = import ./nix/modules/nix-configuration.nix;
-        nixos = import ./nix/modules/nixos-configuration.nix;
-        nixpkgs-configuration = import ./nix/modules/nixpkgs-configuration.nix;
+        garnix-cache = ./nix/modules/garnix-cache.nix;
+        nix-configuration = ./nix/modules/nix-configuration.nix;
+        nixos = ./nix/modules/nixos-configuration.nix;
+        nixpkgs-configuration = ./nix/modules/nixpkgs-configuration.nix;
       };
 
       darwinConfigurations = builtins.listToAttrs (map (hostPlatform: {
