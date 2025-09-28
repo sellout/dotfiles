@@ -8,3 +8,5 @@
 /.vale.ini linguist-generated
 /.github/workflows/flakehub-publish.yml linguist-generated
 /garnix.yaml linguist-generated
+/nix-ci.nix linguist-generated
+/.github/workflows/switch-pm-generation.yml linguist-generated
