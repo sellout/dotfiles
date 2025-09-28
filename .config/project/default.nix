@@ -33,6 +33,7 @@
         "./home/.local/bin/*"
         "./nix/modules/edit"
         "./nix/modules/emacs-pager"
+        "./nix/modules/programming/envrc"
         "./nix/modules/programming/javascript/npmrc"
         "./nix/modules/vcs/git-bare"
         "./nix/modules/vcs/git-gc-branches"
