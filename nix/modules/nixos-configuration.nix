@@ -73,10 +73,7 @@
 
   garnix.cache.enable = true;
 
-  hardware = {
-    bluetooth.enable = true;
-    pulseaudio.enable = false;
-  };
+  hardware.bluetooth.enable = true;
 
   networking = {
     # Strict reverse path filtering breaks Tailscale exit node use and some
@@ -152,6 +149,8 @@
       ## since printing isn’t enabled all the time.
       startWhenNeeded = true;
     };
+
+    pulseaudio.enable = false;
 
     tailscale.enable = true;
 
