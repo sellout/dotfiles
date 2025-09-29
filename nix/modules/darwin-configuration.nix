@@ -8,6 +8,7 @@
   ...
 }: {
   imports = [
+    ./direnv.nix
     ./games.nix
     ./garnix-cache.nix
     ./input-devices.nix
