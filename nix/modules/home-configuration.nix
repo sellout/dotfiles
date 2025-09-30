@@ -351,8 +351,10 @@
     enable = true;
     dictionaries = {
       en = [
+        "affine"
         "arity"
         "boulderers"
+        "bugfix"
         "coroplast"
         "cortado"
         "coöperating"
@@ -365,12 +367,15 @@
         "dozenal"
         "duoid"
         "duoids"
+        "formatter"
         "freedive"
         "freediving"
+        "intricacies"
         "kell"
         "kells"
         "palantir"
         "parametricity"
+        "pessimize"
         "tenkara"
         "topo"
       ];
@@ -667,6 +672,8 @@
       frequency = "daily";
     };
 
+    ## NB: On a new user account, it’s important to run `keybase login` to avoid
+    ##   > ▶ [WARN keybase kbfs_pin_tlfs.go:161] 062 TLF Pin operation failed: Login required: no sessionArgs available since no login path worked [tags:PIN=IMq0lVNJdY1P]
     keybase.enable = pkgs.stdenv.hostPlatform.isLinux;
 
     ## notification daemon for Wayland
