@@ -152,9 +152,9 @@
     ## • the package has its own GUI that we prefer over any Emacs interface.
     packages = let
       ## For packages that should be gotten from nixcasks on darwin. The second
-      ## argument may be null, but if the nixcast package name differs from the
+      ## argument may be null, but if the nixcasks package name differs from the
       ## Nixpkgs name, then it needs to be set.
-      maybeNixcask = pkg: nixcastPkg:
+      maybeCask = pkg: nixcastPkg:
         if pkgs.stdenv.hostPlatform.isDarwin
         then let
           realNixcastPkg =
@@ -169,13 +169,13 @@
         pkgs.age
         pkgs.agenix
         ## doesn’t contain darwin GUI
-        (maybeNixcask "anki" null)
+        (maybeCask "anki" null)
         pkgs.awscli
         pkgs.bash-strict-mode
         ## marked broken on darwin
-        (maybeNixcask "calibre" null)
+        (maybeCask "calibre" null)
         ## DOS game emulator # fails to build on darwin # x86 game emulator
-        (maybeNixcask "dosbox" null)
+        (maybeCask "dosbox" null)
         # pkgs.discord # currently subsumed by ferdium
         # pkgs.element-desktop # currently subsumed by ferdium
         pkgs.ghostscript
@@ -185,9 +185,9 @@
         pkgs.jekyll
         pkgs.magic-wormhole
         ## not available on darwin via Nix
-        (maybeNixcask "mumble" null)
+        (maybeCask "mumble" null)
         ## not available on darwin via Nix
-        (maybeNixcask "obs-studio" "obs")
+        (maybeCask "obs-studio" "obs")
         pkgs.python3Packages.opentype-feature-freezer
         # pkgs.slack # currently subsumed by ferdium
         pkgs.synergy
@@ -197,7 +197,7 @@
         pkgs.xdg-ninja # home directory complaining
       ]
       ++ lib.optionals (pkgs.system != "aarch64-linux") [
-        (maybeNixcask "simplex-chat-desktop" "simplex")
+        (maybeCask "simplex-chat-desktop" "simplex")
         pkgs.spotify
         pkgs.unison-ucm # Unison dev tooling
         pkgs.zoom-us
