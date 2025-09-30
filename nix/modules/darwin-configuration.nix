@@ -224,4 +224,6 @@
   ## doesn’t manage the OS.
   system.defaults.CustomSystemPreferences."com.apple.commerce".AutoUpdateRestartRequired = true;
   system.defaults.SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
+
+  system.startup.chime = false;
 }
