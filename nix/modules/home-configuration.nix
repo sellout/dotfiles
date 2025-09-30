@@ -138,7 +138,7 @@
     ## rather than installed globally. This allows for, say, the correct
     ## compiler version to be used for each project. However, some things are
     ## useful outside of a project, and those get installed more broadly (see
-    ## ./darwin-configuration.nix#homebrew for where to install various
+    ## ./darwin/default.nix#homebrew for where to install various
     ## packages, including here). Between those two extremes, there is
     ## ./emacs/, which is where most packages are managed, behind an Emacs
     ## interface, but there are exceptions for a few reasons: (inexhaustive)
@@ -152,9 +152,9 @@
     ## • the package has its own GUI that we prefer over any Emacs interface.
     packages = let
       ## For packages that should be gotten from nixcasks on darwin. The second
-      ## argument may be null, but if the nixcast package name differs from the
+      ## argument may be null, but if the nixcasks package name differs from the
       ## Nixpkgs name, then it needs to be set.
-      maybeNixcask = pkg: nixcastPkg:
+      maybeCask = pkg: nixcastPkg:
         if pkgs.stdenv.hostPlatform.isDarwin
         then let
           realNixcastPkg =
@@ -169,13 +169,13 @@
         pkgs.age
         pkgs.agenix
         ## doesn’t contain darwin GUI
-        (maybeNixcask "anki" null)
+        (maybeCask "anki" null)
         pkgs.awscli
         pkgs.bash-strict-mode
         ## marked broken on darwin
-        (maybeNixcask "calibre" null)
+        (maybeCask "calibre" null)
         ## DOS game emulator # fails to build on darwin # x86 game emulator
-        (maybeNixcask "dosbox" null)
+        (maybeCask "dosbox" null)
         # pkgs.discord # currently subsumed by ferdium
         # pkgs.element-desktop # currently subsumed by ferdium
         pkgs.ghostscript
@@ -185,9 +185,9 @@
         pkgs.jekyll
         pkgs.magic-wormhole
         ## not available on darwin via Nix
-        (maybeNixcask "mumble" null)
+        (maybeCask "mumble" null)
         ## not available on darwin via Nix
-        (maybeNixcask "obs-studio" "obs")
+        (maybeCask "obs-studio" "obs")
         pkgs.python3Packages.opentype-feature-freezer
         # pkgs.slack # currently subsumed by ferdium
         pkgs.synergy
@@ -197,7 +197,7 @@
         pkgs.xdg-ninja # home directory complaining
       ]
       ++ lib.optionals (pkgs.system != "aarch64-linux") [
-        (maybeNixcask "simplex-chat-desktop" "simplex")
+        (maybeCask "simplex-chat-desktop" "simplex")
         pkgs.spotify
         pkgs.unison-ucm # Unison dev tooling
         pkgs.zoom-us
@@ -351,8 +351,10 @@
     enable = true;
     dictionaries = {
       en = [
+        "affine"
         "arity"
         "boulderers"
+        "bugfix"
         "coroplast"
         "cortado"
         "coöperating"
@@ -365,12 +367,15 @@
         "dozenal"
         "duoid"
         "duoids"
+        "formatter"
         "freedive"
         "freediving"
+        "intricacies"
         "kell"
         "kells"
         "palantir"
         "parametricity"
+        "pessimize"
         "tenkara"
         "topo"
       ];
@@ -662,11 +667,25 @@
   };
 
   services = {
-    home-manager.autoUpgrade = {
-      enable = pkgs.stdenv.hostPlatform.isLinux;
-      frequency = "daily";
+    home-manager = {
+      ## This helps keep the size of the Nix store down by periodically expiring
+      ## old generations then running `nix-collect-garbage`.
+      autoExpire = {
+        # Can change this to `true` once
+        # https://github.com/nix-community/home-manager/commit/20974416338898f0725a87832e4cd9bd82cbdaad
+        # is on the version of Home Manager we use (probably 25.11).
+        enable = pkgs.stdenv.hostPlatform.isLinux;
+        frequency = "weekly";
+        store.cleanup = true;
+      };
+      autoUpgrade = {
+        enable = pkgs.stdenv.hostPlatform.isLinux;
+        frequency = "daily";
+      };
     };
 
+    ## NB: On a new user account, it’s important to run `keybase login` to avoid
+    ##   > ▶ [WARN keybase kbfs_pin_tlfs.go:161] 062 TLF Pin operation failed: Login required: no sessionArgs available since no login path worked [tags:PIN=IMq0lVNJdY1P]
     keybase.enable = pkgs.stdenv.hostPlatform.isLinux;
 
     ## notification daemon for Wayland

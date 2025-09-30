@@ -22,11 +22,6 @@
   environment = {
     extraOutputsToInstall = ["devdoc" "doc" "man"];
     systemPackages = [
-      ## Nix
-      pkgs.home-manager
-      pkgs.nix-du
-      pkgs.nox
-      ## system
       pkgs.cacert
       pkgs.coreutils
       pkgs.gnupg
@@ -34,6 +29,9 @@
       pkgs.yubikey-personalization
     ];
   };
+
+  ## Don’t let Home Manager conflicts get in the way of system updates.
+  home-manager.backupFileExtension = "before-home-manager";
 
   garnix.cache.enable = true;
 

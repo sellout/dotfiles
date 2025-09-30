@@ -5,7 +5,11 @@
   ...
 }: let
   ## These are defined in https://mozilla.github.io/policy-templates/.
-  policies.DisableAppUpdate = true;
+  policies = {
+    DisableAppUpdate = true;
+    # See https://mastodon.social/@mcc/114869357468477091
+    DisableFirefoxStudies = true;
+  };
 in {
   programs.firefox = {
     inherit policies;
@@ -43,9 +47,17 @@ in {
         defaultFont = config.lib.local.defaultFont;
       in {
         "browser.aboutConfig.showWarning" = false;
+        "browser.display.use_system_colors" = true;
         "browser.contentblocking.category" = "strict";
-        ## Disable AI chat
+        ## Disable AI features
         "browser.ml.chat.enabled" = false;
+        "browser.ml.chat.shortcuts" = false;
+        "browser.ml.chat.shortcuts.custom" = false;
+        "browser.ml.chat.sidebar" = false;
+        "browser.ml.enable" = false;
+        "browser.tabs.groups.smart.enabled" = false;
+        "browser.tabs.groups.smart.optin" = false;
+        "browser.tabs.groups.smart.userEnabled" = false;
         ## Disable ads for Mozilla products
         "browser.preferences.moreFromMozilla" = false;
         "browser.startup.homepage" = "https://github.com/pulls/review-requested";
@@ -53,6 +65,7 @@ in {
         "browser.urlbar.suggest.quicksuggest.sponsored" = false;
         ## Automatically enable newly-installed extensions.
         "extensions.autoDisableScopes" = 0;
+        ## fonts
         "font.default.x-unicode" = "sans-serif";
         "font.default.x-western" = "sans-serif";
         "font.name.monospace.x-unicode" = defaultFont.monoFamily;
@@ -63,9 +76,13 @@ in {
         "font.size.monospace.x-western" = defaultFont.size;
         "font.size.variable.x-unicode" = defaultFont.size;
         "font.size.variable.x-western" = builtins.floor defaultFont.size;
+        ## printing
+        "print.prefer_system_dialog" = true;
+        ## privacy
         "privacy.globalprivacycontrol.enabled" = true;
         "privacy.globalprivacycontrol.functionality.enabled" = true;
         "privacy.globalprivacycontrol.pbmode.enabled" = true;
+        ## Mozilla Sync account
         "services.sync.username" =
           config.lib.local.primaryEmailAccount.address;
       };
