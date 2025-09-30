@@ -7,7 +7,12 @@
   nixpkgs-unstable,
   pkgs,
   ...
-}: {
+}: let
+  ## We pull the preferred Cachix information from the Nix CI configuration.
+  ## TODO: We should be able to get this from the project configuration that
+  ##       generates this file.
+  cachix = (import ../../nix-ci.nix).cachix;
+in {
   nix = {
     registry = {
       ## Set the registry’s Nixpkgs to match this flake’s.
@@ -51,10 +56,8 @@
         "flakes"
         "nix-command"
       ];
-      extra-trusted-public-keys = [
-        "sellout.cachix.org-1:v37cTpWBEycnYxSPAgSQ57Wiqd3wjljni2aC0Xry1DE="
-      ];
-      extra-trusted-substituters = ["https://sellout.cachix.org"];
+      extra-trusted-public-keys = [cachix.public-key];
+      extra-trusted-substituters = ["https://${cachix.name}.cachix.org"];
       ## NIX_PATH is still used by many useful tools, so we set it to the same
       ## value as the one used by this flake. For more information, see
       ## https://nixos-and-flakes.thiscute.world/best-practices/nix-path-and-flake-registry
