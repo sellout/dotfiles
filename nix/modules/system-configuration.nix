@@ -30,6 +30,9 @@
     ];
   };
 
+  ## Don’t let Home Manager conflicts get in the way of system updates.
+  home-manager.backupFileExtension = "before-home-manager";
+
   garnix.cache.enable = true;
 
   nix = {
