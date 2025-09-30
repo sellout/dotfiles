@@ -444,6 +444,12 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
   :custom
   (flyspell-issue-message-flag nil)
   (flyspell-mode-line-string "¶")
+  ;; remap to the right mouse button, stolen from
+  ;; https://stackoverflow.com/a/10997845/5090651
+  :bind
+  (:map flyspell-mouse-map
+        ([down-mouse-3] . flyspell-correct-word)
+        ([mouse-3] . undefined))
   :delight
   (flyspell-mode
    (flyspell-mode-line-string
@@ -559,6 +565,14 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
 
 (use-package haskell-mode
   :after paredit
+  :config
+  ;; Remove once haskell/haskell-mode#1880 is merged.
+  (add-hook 'haskell-cabal-mode-hook
+            (lambda ()
+              (font-lock-add-keywords nil
+                                      '(("^[ \t]*\\(--\\)\\(.*\\)"
+                                         (1 font-lock-comment-delimiter-face)
+                                         (2 font-lock-comment-face))))))
   :delight
   '(:eval
     (concat
@@ -713,10 +727,31 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
 (use-package locate
   :custom (locate-header-face 'level-1))
 
+;; TODO: This currently requires `project-manager` to be installed. Would be
+;;       good to conditionalize this to use `nix fmt --` if `project-manager`
+;;       isn’t found.
+(defvar project-manager-format-command
+  ["project-manager"
+   "fmt"
+   ;; NB: These arguments are specific to `treefmt`.
+   "virtual.nix"
+   "--stdin"]
+  "The command to run to format specific files with Project Manager. This
+intentionally uses a bare command name so that it picks up the Project Manager
+in the project environment it’s being run from.")
+
 (use-package eglot
   :config
+  ;; Stolen from
+  ;; https://jeffkreeftmeijer.com/emacs-configuration/#outline-container-automatically-format-files-on-save-in-eglot-enabled-buffers
+  (defun maybe-eglot-format-buffer ()
+    (when (bound-and-true-p eglot-managed-p)
+      (eglot-format-buffer)))
+
   (mapc (lambda (server) (add-to-list 'eglot-server-programs server))
-        '((nix-mode "nil")
+        '((nix-mode "nil"
+                    :initializationOptions
+                    (:formatting (:command ,project-manager-format-command)))
           (rust-mode "rust-analyzer"
                      :initializationOptions ( :cargo (:buildScripts (:enable t))
                                               :procMacro (:enable t)))
@@ -726,6 +761,7 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
   (eglot-menu-string "↹")
   :disabled (not (eq sellout-lsp-package 'eglot))
   :hook
+  (after-save . maybe-eglot-format-buffer)
   ((nix-mode haskell-mode rust-mode rustic-mode unison-ts-mode unisonlang-mode)
    . eglot-ensure))
 
@@ -793,9 +829,7 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
     :ignore-messages nil
     :server-id 'nil-remote))
   :custom
-  ;; TODO: This should be the default. See oxalica/nil#70 for why it’s not yet.
-  ;;       If formatting is taking too long, switch this to ‘["alejandra"]’.
-  (lsp-nix-nil-formatter ["nix" "fmt" "--" "--"])
+  (lsp-nix-nil-formatter project-manager-format-command)
   :disabled (not (eq sellout-lsp-package 'lsp-mode))
   :hook (nix-mode . lsp-deferred))
 
