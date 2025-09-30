@@ -1,10 +1,12 @@
 {
+  flaky,
   lib,
   math,
   nixcasks,
   nixpkgs,
   nixpkgs-master,
   nixpkgs-unstable,
+  options,
   pkgs,
   ...
 }: let
@@ -12,7 +14,7 @@
   ## TODO: We should be able to get this from the project configuration that
   ##       generates this file.
   cachix = (import ../../nix-ci.nix).cachix;
-in {
+
   nix = {
     registry = {
       ## Set the registry’s Nixpkgs to match this flake’s.
@@ -66,6 +68,40 @@ in {
       sandbox = !pkgs.stdenv.hostPlatform.isDarwin;
       show-trace = true;
       use-xdg-base-directories = true;
+    };
+  };
+
+  packages = [
+    ## Make it easy to figure out why derivations are being built.
+    ## https://github.com/Gabriella439/nix-diff#readme
+    pkgs.nix-diff
+    ## Figure out which roots are eating up your disk.
+    ## https://github.com/symphorien/nix-du#readme
+    pkgs.nix-du
+    ## Various tools to simplify Nix usage.
+    ## https://github.com/madjar/nox#readme
+    pkgs.nox
+  ];
+
+  systemPackages =
+    packages
+    ++ [
+      ## Allow users to manage their home directory with Home Manager.
+      pkgs.home-manager
+    ];
+in {
+  config = flaky.lib.multiConfig options {
+    darwinConfig = {
+      inherit nix;
+      environment = {inherit systemPackages;};
+    };
+    homeConfig = {
+      inherit nix;
+      home = {inherit packages;};
+    };
+    nixosConfig = {
+      inherit nix;
+      environment = {inherit systemPackages;};
     };
   };
 }

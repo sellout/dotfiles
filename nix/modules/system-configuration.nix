@@ -22,11 +22,6 @@
   environment = {
     extraOutputsToInstall = ["devdoc" "doc" "man"];
     systemPackages = [
-      ## Nix
-      pkgs.home-manager
-      pkgs.nix-du
-      pkgs.nox
-      ## system
       pkgs.cacert
       pkgs.coreutils
       pkgs.gnupg
