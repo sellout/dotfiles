@@ -1,7 +1,10 @@
 {
   lib,
   math,
+  nixcasks,
   nixpkgs,
+  nixpkgs-master,
+  nixpkgs-unstable,
   pkgs,
   ...
 }: {
@@ -9,6 +12,10 @@
     registry = {
       ## Set the registry’s Nixpkgs to match this flake’s.
       nixpkgs.flake = nixpkgs;
+      ## These allow for quick checks against newer Nixpkgs (e.g., `nix shell
+      ## nixpkgs-master#rustup`)
+      nixpkgs-master.flake = nixpkgs-master;
+      nixpkgs-unstable.flake = nixpkgs-unstable;
       ## Allows `env#` to reference the templates, devShells, etc. from Flaky
       ## environments.
       env.to = {
@@ -16,9 +23,15 @@
         owner = "sellout";
         repo = "flaky-environments";
       };
+      ## To make it easy to try Homebrew packages without modifying the
+      ## configuration.
+      nixcasks.flake = nixcasks;
     };
 
     settings = {
+      ## Require flakes to be explicit about IFD, and encourage the use of
+      ## Project Manager to avoid it.
+      allow-import-from-derivation = false;
       ## This causes builds to optimize after themselves, incrementally.
       ## TODO: Make this `true` once NixOS/nix#7273 is fixed.
       auto-optimise-store = !pkgs.stdenv.hostPlatform.isDarwin;

@@ -39,6 +39,7 @@
     nixcasks,
     nixpkgs,
     nixpkgs-master,
+    nixpkgs-unstable,
     nur,
     org-invoice,
     self,
@@ -85,7 +86,10 @@
           flaky
           home-manager
           nix-math
+          nixcasks
           nixpkgs
+          nixpkgs-master
+          nixpkgs-unstable
           org-invoice
           self
           ;
@@ -332,10 +336,8 @@
       url = "github:jacekszymanski/nixcasks";
     };
 
-    ## NB: These are very helpful when they’re needed, but otherwise keep them
-    ##     commented out, because they’re big and slow.
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
-    # nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs-unstable.follows = "flaky/project-manager/nixpkgs-unstable";
 
     nur = {
       inputs.flake-parts.follows = "flake-parts";

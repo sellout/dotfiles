@@ -82,20 +82,15 @@ in {
       eval "$(ntfy shell-integration ${lib.escapeShellArgs args})"
     '';
   in {
-    ## NB: ntfy currently uses the deprecated
-    ##     [appdirs](https://github.com/ActiveState/appdirs/issues/188) Python
-    ##     library for config locations, which doesn’t respect XDG on darwin.
-    ##     Neither of the two contenders to replace it
-    ##     ([platformdirs](https://github.com/tox-dev/platformdirs/issues/4) and
-    ##     [config-path](https://github.com/barry-scott/config-path)) do either,
-    ##     so it’s not worth advocating for ntfy to switch until a library steps
-    ##     up.
     home = {
-      file."${
-        if pkgs.stdenv.isDarwin
-        then "Library/Application Support"
-        else config.xdg.configHome
-      }/ntfy/ntfy.yml" = lib.mkIf (cfg.settings != null) {
+      ## NB: ntfy currently uses the deprecated
+      ##     [appdirs](ActiveState/appdirs#188) Python library for config
+      ##     locations, which doesn’t respect XDG on darwin. Neither of the two
+      ##     contenders to replace it ([platformdirs](tox-dev/platformdirs#4)
+      ##     and [config-path](https://github.com/barry-scott/config-path)) do
+      ##     either, so it’s not worth advocating for ntfy to switch until a
+      ##     library steps up.
+      file."${config.lib.local.darwinXdg pkgs.system "config" null}/ntfy/ntfy.yml" = lib.mkIf (cfg.settings != null) {
         source = yamlFormat.generate "ntfy config" cfg.settings;
       };
       packages = [cfg.package];

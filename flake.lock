@@ -1370,6 +1370,11 @@
           "nixpkgs"
         ],
         "nixpkgs-master": "nixpkgs-master",
+        "nixpkgs-unstable": [
+          "flaky",
+          "project-manager",
+          "nixpkgs-unstable"
+        ],
         "nur": "nur",
         "org-invoice": "org-invoice",
         "systems": "systems_2",

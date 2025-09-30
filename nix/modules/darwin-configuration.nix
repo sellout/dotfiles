@@ -7,19 +7,17 @@
   pkgs,
   ...
 }: {
-  imports = [
-    ./direnv.nix
-    ./games.nix
-    ./garnix-cache.nix
-    ./input-devices.nix
-    ./nix-configuration.nix
-    ./nixpkgs-configuration.nix
-    ./vcs
-  ];
+  imports = [./system-configuration.nix];
 
   environment = {
-    etc.hosts.source = ../../root/etc/hosts;
-    extraOutputsToInstall = ["devdoc" "doc"];
+    etc.hosts.text = config.lib.local.toHostsFile {
+      # localhost is used to configure the loopback interface when the system is
+      # booting. Do not change this entry.
+      "127.0.0.1" = ["localhost"];
+      "255.255.255.255" = ["broadcasthost"];
+      "::1" = ["localhost"];
+      "fe80::1%lo0" = ["localhost"];
+    };
     pathsToLink = ["/share/fonts"];
     ## TODO: This is a workaround for LnL7/nix-darwin#947.
     profiles = lib.mkOrder 801 [
@@ -28,32 +26,13 @@
     ];
     systemPackages = [
       ## remote connections
-      pkgs.mosh
-      ## Nix
-      pkgs.home-manager
-      pkgs.nix-du
-      pkgs.nox
-      ## system
-      pkgs.cacert
-      pkgs.coreutils
-      pkgs.gnupg
-      pkgs.yubikey-manager
-      pkgs.yubikey-personalization
-      ## TODO: This is a work around for LnL7/nix-darwin#1314
-      pkgs.mas
+      pkgs.mosh # NixOS has a module for this, nix-darwin doesn’t.
     ];
     systemPath = [
       # TODO: Support this via the homebrew module.
       config.homebrew.brewPrefix
     ];
   };
-
-  fonts.packages = [
-    pkgs.inconsolata
-    pkgs.lexica-ultralegible
-  ];
-
-  garnix.cache.enable = true;
 
   # The preferred location of applications is, in order:
   # 1. home.nix#home.packages (~/Applications/Home Manager Apps)
@@ -179,18 +158,22 @@
     ##     the profile with ones from the nixpkgs flake.
     echo "upgrading default nix profile ..."
     sudo nix profile upgrade --all --profile /nix/var/nix/profiles/default
+
+    ## List manual tasks that happen after activating a new configuration.
+    echo "Now that a new configuration is activated, there are some steps that need to be"
+    echo "performed manually:"
+    echo "• enable alacritty & Emacs in Settings → Privacy & Security → App Management"
   '';
 
-  nix = {
-    gc = {
-      automatic = true;
-      options = "--delete-older-than 30d";
-    };
-    ## Runs `nix-store --optimise` on a timer.
-    optimise.automatic = true;
+  lib.local = {
+    ## Converts a NixOS `networking.hosts` value to lines suitable for writing to
+    ## /etc/hosts (which is the format required by nix-darwin).
+    toHostsFile = hosts:
+      lib.concatLines
+      (lib.mapAttrsToList
+        (ip: domains: ip + " " + lib.concatStringsSep " " domains)
+        (lib.filterAttrs (_: v: v != []) hosts));
   };
-
-  nixpkgs.overlays = [dotfiles.overlays.darwin];
 
   programs = {
     bash = {
@@ -231,12 +214,9 @@
 
   security.pam.services.sudo_local.touchIdAuth = true;
 
-  services.tailscale = {
-    enable = true;
-    ## TODO: Remove this (from nix-darwin, too) once tailscale/tailscale#8436 is
-    ##       fixed.
-    overrideLocalDns = true;
-  };
+  ## TODO: Remove this (from nix-darwin, too) once tailscale/tailscale#8436 is
+  ##       fixed.
+  services.tailscale.overrideLocalDns = true;
 
   ## For any of this to work, we need to enable automatic updates in general.
   system.defaults.CustomSystemPreferences."com.apple.SoftwareUpdate".AutomaticCheckEnabled = true;

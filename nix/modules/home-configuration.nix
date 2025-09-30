@@ -18,6 +18,7 @@
     ./input-devices.nix
     ./locale.nix
     ./nix-configuration.nix
+    ./nixos-wiki.nix
     ./nixpkgs-configuration.nix
     ./programming
     ./shell.nix
@@ -37,8 +38,6 @@
   ## TODO: The default for this isn’t actually a path, but rather
   ##       expands to a path in the shell. See ryantm/agenix#300.
   age.secretsDir = "${config.lib.local.xdg.runtimeDir}/agenix";
-
-  fonts.fontconfig.enable = true;
 
   garnix.cache = {
     enable = true;
@@ -152,22 +151,6 @@
     ##   to); or
     ## • the package has its own GUI that we prefer over any Emacs interface.
     packages = let
-      fonts = [
-        pkgs.fira
-        pkgs.fira-code
-        pkgs.nerd-fonts.fira-code
-        pkgs.fira-code-symbols
-        pkgs.fira-mono
-        pkgs.nerd-fonts.fira-mono
-        pkgs.lexica-ultralegible
-        ## https://github.com/liberationfonts
-        pkgs.liberation_ttf
-        pkgs.nerd-fonts.liberation
-        ## https://opendyslexic.org/
-        pkgs.open-dyslexic
-        pkgs.nerd-fonts.open-dyslexic
-      ];
-
       ## For packages that should be gotten from nixcasks on darwin. The second
       ## argument may be null, but if the nixcast package name differs from the
       ## Nixpkgs name, then it needs to be set.
@@ -213,7 +196,6 @@
         # pkgs.wire-desktop # currently subsumed by ferdium
         pkgs.xdg-ninja # home directory complaining
       ]
-      ++ fonts
       ++ lib.optionals (pkgs.system != "aarch64-linux") [
         (maybeNixcask "simplex-chat-desktop" "simplex")
         pkgs.spotify
@@ -523,6 +505,96 @@
         };
       };
     };
+
+    /**
+      Returns a path relative to `HOME` that points to either the appropriate XDG
+      dir or the corresponding darwin-specific location.
+
+      Some tools (e.g., anything that relies on the
+      [platformdirs](tox-dev/platformdirs#4) Python libray) don’t respect (or
+      allow us to explicitly set) [XDG base
+      directory](https://specifications.freedesktop.org/basedir-spec/) vars on
+      darwin. This uses appropriate macOS directories in those cases.
+
+    # Examples
+
+    ``` nix
+    darwinXdg "x86_64-darwin" "cache" null
+    =>
+    "Library/Caches"
+    ```
+
+    ``` nix
+    darwinXdg "x86_64-linux" "cache" null
+    =>
+    ".cache"
+    ```
+
+    ``` nix
+    darwinXdg "x86_64-darwin" "config" null
+    =>
+    "Library/Application Support"
+    ```
+
+    ``` nix
+    darwinXdg "x86_64-linux" "config" null
+    =>
+    ".config"
+    ```
+
+    However, some applications want to write to "Library/Preferences", despite
+    that being reserved for `NSUserDefaults`. In that case, you can set an
+    explicit override, which will only be respected on darwin:
+
+    ``` nix
+    darwinXdg "x86_64-darwin" "config" "Library/Preferences"
+    =>
+    "Library/Preferences"
+    ```
+
+    ``` nix
+    darwinXdg "x86_64-linux" "config" "Library/Preferences"
+    =>
+    ".config"
+    ```
+
+    # Type
+
+    ```
+    darwinXdg :: String -> String -> Optional String -> String
+    ```
+
+    # Arguments
+
+    system
+    : The Nix system string
+
+    var
+    : The XDG variable type. E.g., For `XDG_DATA_HOME`, use `"data"`.
+
+    darwinOverride
+    : A relative path to use on darwin. If this is `null`, it uses a default
+      path corresponding to the XDG variable name, but some applications have
+      their own ideas where files should live, so you can pass the relative path
+      explicitly in that case. The most common scenario is `… "config"
+      "Library/Preferences"`.
+    */
+    darwinXdg = system: var: darwinOverride:
+      if lib.hasSuffix "-darwin" system
+      then
+        if darwinOverride == null
+        then
+          if var == "cache"
+          then "Library/Caches"
+          # NB: “Library/Preferences” is another option for `config`, but
+          #     https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/MacOSXDirectories/MacOSXDirectories.html#//apple_ref/doc/uid/20002282-101001
+          #     says, “You should never create files in [Library/Preferences]
+          #     yourself. To get or set preference values, you should always use
+          #     the `NSUserDefaults` class or an equivalent system-provided
+          #     interface.”
+          else "Library/Application Support"
+        else darwinOverride
+      else config.lib.local.xdg.${var}.rel;
 
     ## Show a list of all files under `path` that are neither managed by Nix
     ## nor excluded by the `whitelist` of allowed unmanaged paths (relative to

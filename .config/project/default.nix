@@ -39,7 +39,6 @@
         "./nix/modules/vcs/git-gc-branches"
         "./nix/modules/vcs/git-ls-subtrees"
         "./nix/modules/vcs/git/template/hooks/post-checkout"
-        "./root/etc/hosts"
       ];
       vocab.${config.project.name}.accept = [
         "dotfiles"

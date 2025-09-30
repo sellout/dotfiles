@@ -10,8 +10,9 @@ in {
     enable = lib.mkEnableOption "garnix cache";
 
     config = lib.mkOption {
-      type = lib.types.str;
+      type = lib.types.enum ["on" "trusted" "off"];
       default = "trusted";
+      example = "on";
       description = ''
         Whether the garnix cache should be `"on"`, `"trusted"`, or `"off"` in
         the Nix config.
