@@ -6,6 +6,7 @@
   ...
 }: {
   imports = [
+    ./direnv.nix
     ./fonts.nix
     ./games.nix
     ./garnix-cache.nix

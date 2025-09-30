@@ -240,8 +240,10 @@
             (nix-nixfmt-bin "${pkgs.nixfmt-classic}/bin/nixfmt")
             (nix-shell-executable "${pkgs.nix}/bin/nix-shell")
             (nix-store-executable "${pkgs.nix}/bin/nix-store"))
-          '(ob-mermaid
-            (ob-mermaid-cli-path "${pkgs.mermaid-cli}/bin/mmdc"))
+          ;; FIXME: This pulls in a version of Chromium that has to be built
+          ;;        from source.
+          ;; '(ob-mermaid
+          ;;   (ob-mermaid-cli-path "''${pkgs.mermaid-cli}/bin/mmdc"))
           ;; NB: This (and probably plenty of other settings currently in here) is
           ;;     project-specific, and should inherit whatever’s in the context of
           ;;     the project, rather than some global value.
@@ -481,8 +483,8 @@
         src = pkgs.fetchFromGitHub {
           owner = "LionyxML";
           repo = "auto-dark-emacs";
-          rev = "development"; # since I’m a contributor
-          hash = "sha256-hyiNSuUVoW3+A9wpUR5eu905okXW/2L7n/CnGc/4QYI=";
+          tag = "v0.13.6";
+          hash = "sha256-RKq2gruVKyxWYZ/xWwNO6U0c0fXcZfDeZfH0RQXTPDU=";
         };
       });
       envrc = prev.envrc.overrideAttrs (old: {

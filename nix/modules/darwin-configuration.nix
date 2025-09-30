@@ -83,6 +83,7 @@
       # "delicious-library" # perhaps removed?
       "eagle" # doesn't respect appdir # not available on darwin via Nix
       "google-drive" # doesn't respect appdir
+      "powerphotos"
       "psi"
       "r" # doesn't respect appdir
       "racket"

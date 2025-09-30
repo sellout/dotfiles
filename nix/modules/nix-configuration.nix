@@ -51,6 +51,10 @@
         "flakes"
         "nix-command"
       ];
+      extra-trusted-public-keys = [
+        "sellout.cachix.org-1:v37cTpWBEycnYxSPAgSQ57Wiqd3wjljni2aC0Xry1DE="
+      ];
+      extra-trusted-substituters = ["https://sellout.cachix.org"];
       ## NIX_PATH is still used by many useful tools, so we set it to the same
       ## value as the one used by this flake. For more information, see
       ## https://nixos-and-flakes.thiscute.world/best-practices/nix-path-and-flake-registry

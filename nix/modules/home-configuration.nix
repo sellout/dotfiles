@@ -261,7 +261,6 @@
         pkgs.nixcasks.kiibohd-configurator
         pkgs.nixcasks.kindle
         pkgs.nixcasks.lastfm
-        pkgs.nixcasks.mendeley
         pkgs.nixcasks.netnewswire
         (pkgs.nixcasks.omnifocus.overrideAttrs (old: let
           version = "3.15.8"; # version I have a license for
