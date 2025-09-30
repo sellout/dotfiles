@@ -16,6 +16,9 @@
   ## Since the automatic time-zone setting doesn’t seem to be working, this
   ## allows `tzupdate` to bring the time zone in sync with the current location.
   ## See NixOS/nixpkgs#127984 for more context.
-  environment.shellAliases.tzupdate = "timedatectl set-timezone $(${lib.getExe pkgs.tzupdate} --print-only)";
+  services.tzupdate = {
+    enable = true;
+    timer.enable = true;
+  };
   time.timeZone = null;
 }
