@@ -7,7 +7,7 @@
   pkgs,
   ...
 }: {
-  imports = [./system-configuration.nix];
+  imports = [../system-configuration.nix];
 
   environment = {
     etc.hosts.text = config.lib.local.toHostsFile {
@@ -179,36 +179,16 @@
     bash = {
       enable = true;
       completion.enable = true;
-      interactiveShellInit = ''
-        # System-wide .bashrc file for interactive bash(1) shells.
-        if [ -z "$PS1" ]; then
-          return
-        fi
-
-        PS1='\h:\W \u\$ '
-        # Make bash check its window size after a process completes
-        shopt -s checkwinsize
-
-        [ -r "/etc/bashrc_$TERM_PROGRAM" ] && . "/etc/bashrc_$TERM_PROGRAM"
-      '';
+      ## Copied from /etc/bashrc until I know better.
+      interactiveShellInit = lib.readFile ./bashrc;
     };
     zsh = {
       enable = true;
       enableSyntaxHighlighting = true;
-      interactiveShellInit = ''
-        # Correctly display UTF-8 with combining characters.
-        if [ "$TERM_PROGRAM" = "Apple_Terminal" ]; then
-          setopt combiningchars
-        fi
-
-        disable log
-      '';
-      loginShellInit = ''
-        # system-wide environment settings for zsh(1)
-        if [ -x /usr/libexec/path_helper ]; then
-          eval `/usr/libexec/path_helper -s`
-        fi
-      '';
+      ## Copied from /etc/zshrc until I know better.
+      interactiveShellInit = lib.readFile ./zshrc;
+      ## Copied from /etc/zprofile until I know better.
+      loginShellInit = lib.readFile ./zprofile;
     };
   };
 

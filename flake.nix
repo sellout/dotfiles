@@ -145,7 +145,7 @@
       };
 
       darwinModules = {
-        darwin = ./nix/modules/darwin-configuration.nix;
+        darwin = ./nix/modules/darwin/default.nix;
         garnix-cache = ./nix/modules/garnix-cache.nix;
         nix-configuration = ./nix/modules/nix-configuration.nix;
         nixpkgs-configuration = ./nix/modules/nixpkgs-configuration.nix;

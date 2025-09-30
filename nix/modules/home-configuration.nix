@@ -138,7 +138,7 @@
     ## rather than installed globally. This allows for, say, the correct
     ## compiler version to be used for each project. However, some things are
     ## useful outside of a project, and those get installed more broadly (see
-    ## ./darwin-configuration.nix#homebrew for where to install various
+    ## ./darwin/default.nix#homebrew for where to install various
     ## packages, including here). Between those two extremes, there is
     ## ./emacs/, which is where most packages are managed, behind an Emacs
     ## interface, but there are exceptions for a few reasons: (inexhaustive)
