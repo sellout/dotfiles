@@ -85,7 +85,7 @@
       "google-drive" # doesn't respect appdir
       "powerphotos"
       "psi"
-      "r" # doesn't respect appdir
+      "r-app" # doesn't respect appdir
       "racket"
       "timemachineeditor"
       # "virtualbox" # requires Intel architecture
