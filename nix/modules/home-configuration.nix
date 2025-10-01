@@ -44,46 +44,12 @@
     config = "on";
   };
 
-  # FIXME: This and `config.home.activation.aliasApplications` below _may_ be
-  #        needed because the alias (rather than symlink) things into
-  #        ~/Applications/Home Manager Apps. If that turns out to be the case,
-  #        we should open an issue against home-manager to switch to aliasing on
-  #        darwin.
-  disabledModules = ["targets/darwin/linkapps.nix"];
-
   home = {
     activation = {
       ## TODO: Should move a version of this to Home Manager itself.
       setUpErrorTrap = lib.hm.dag.entryBefore ["checkLaunchAgents"] ''
         trap '_iError "Home Manager activation failed with $? at $(basename $0):$LINENO"; exit 1' ERR
       '';
-
-      # TODO: This should be removed once
-      #       https://github.com/nix-community/home-manager/issues/1341 is
-      #       closed.
-      aliasApplications =
-        lib.mkIf pkgs.stdenv.hostPlatform.isDarwin
-        (lib.hm.dag.entryAfter ["writeBoundary"] ''
-          IFS=$'\n'
-          app_folder="Home Manager Apps"
-          app_path="$(echo ~/Applications)/$app_folder"
-          tmp_path="$(mktemp -dt "$app_folder.XXXXXXXXXX")" || exit 1
-          # NB: aliasing ".../home-path/Applications" to
-          #    "~/Applications/Home Manager Apps" doesn't work (presumably
-          #     because the individual apps are symlinked in that directory, not
-          #     aliased). So this makes "Home Manager Apps" a normal directory
-          #     and then aliases each application into there directly from its
-          #     location in the nix store.
-          for app in \
-            $(find "$newGenPath/home-path/Applications" -type l -exec \
-              readlink -f {} \;)
-          do
-            $DRY_RUN_CMD ${pkgs.mkalias}/bin/mkalias "$app" "$tmp_path/$(basename "$app")"
-          done
-          # TODO: Wish this was atomic, but it’s only tossing symlinks
-          $DRY_RUN_CMD [ -e "$app_path" ] && rm -r "$app_path"
-          $DRY_RUN_CMD mv "$tmp_path" "$app_path"
-        '');
 
       # Stolen from https://twitter.com/volpegabriel87/status/1585204086240346112
       reportChanges = let

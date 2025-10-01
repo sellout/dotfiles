@@ -34,7 +34,6 @@
     flake-utils,
     flaky,
     home-manager,
-    mkalias,
     nix-math,
     nixcasks,
     nixpkgs,
@@ -112,7 +111,6 @@
           inherit
             flake-utils
             home-manager
-            mkalias
             nixpkgs
             nixpkgs-master
             ;
@@ -315,12 +313,6 @@
     flake-parts = {
       inputs.nixpkgs-lib.follows = "nixpkgs";
       url = "github:hercules-ci/flake-parts";
-    };
-
-    ## Avoids the need to give `Finder` access to make aliases on MacOS.
-    mkalias = {
-      inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:reckenrode/mkalias";
     };
 
     nix-math = {
