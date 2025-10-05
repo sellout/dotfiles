@@ -1,21 +1,95 @@
 #!/usr/bin/env bash
-
+## TODO: Report this to ShellCheck – strict-mode.bash is on PATH. ShellCheck
+##       should be able to find it (or can it not because my environment editing
+##       the file is different from the one running it? I don’t think so).
+# shellcheck disable=SC1091
 source strict-mode.bash
 
-## This will attempt to run `project-manager` whenever a branch is checked out.
-## It will also run it when a repo is initially cloned.
+## The arguments provided by Git.
+## https://git-scm.com/docs/githooks#_post_checkout
+previous_HEAD=$1
+new_HEAD=$2
+is_branch_checkout=$3
 
-## TODO: See if we can get this from flaky, or even from Project Manager (if
-##       that starts providing it somehow) rather than duplicating the content.
+## This attempts to set up a Nix environment whenever a branch is checked out
+## (including during intial cloning of a repo). It prefers `project-manager`,
+## but falls back to `direnv`. If the project doesn’t use Nix, it infers a
+## common devShell to use. If `nix` isn’t installed, it exits with a warning.
 
-## TODO: This should also check if `project-manager` _should_ exist, and
-##       if so do some more heroic things, e.g,
-##     • `nix run github:sellout/project-manager -- switch`.
-if command -v nix
-then nix develop .#project-manager --command project-manager switch
-elif command -v project-manager
-then
-    echo >&2 "Couldn’t find ‘project-manager’ in project, so running global installation."
-    project-manager switch
-else echo >&2 "Couldn’t find a ‘project-manager’ to run, so skipping."
+## TODO: See if we can get this script from flaky, or even from Project Manager
+##       (if that starts providing it somehow) rather than duplicating the
+##       content.
+
+function templates-dir() {
+  if command -v xdg-user-dir >/dev/null 2>&1; then
+    xdg-user-dir TEMPLATES
+  else
+    echo >&2 "Wanted to install default .envrc, but ‘xdg-user-dir’ isn’t available to find"
+    echo >&2 "source directory."
+    exit 127
+  fi
+}
+
+function set-up-envrc() {
+  if command -v direnv >/dev/null 2>&1; then
+    if ! [ -e .envrc ]; then
+      ## This installs a `lorri`/`use flake` .envrc
+      envrc_path=${1:-$(templates-dir)/.envrc}
+      if [ -r "$envrc_path" ]; then
+        cp "$envrc_path" ./
+        gitignore=$(git rev-parse --git-path info/exclude)
+        if ! [ -e "$gitignore" ]; then
+          mkdir -p "$(git rev-parse --git-path info)"
+          touch "$gitignore"
+        fi
+        if [ -w "$gitignore" ]; then
+          echo /.envrc >> "$gitignore"
+        else
+          echo >&2 "Couldn’t ignore $envrc_path."
+        fi
+      else
+        echo >&2 "$envrc_path doesn’t exist, so couldn’t set up Direnv."
+        exit 1
+      fi
+    fi
+    direnv allow
+  else
+    echo >&2 "The project doesn’t use Project Manager, and ‘direnv’ isn’t installed, so doing"
+    echo >&2 "nothing."
+  fi
+}
+
+## Only do this if we’re switching branches.
+if [[ $previous_HEAD != "$new_HEAD" && $is_branch_checkout -eq 1 ]]; then
+  if command -v nix >/dev/null 2>&1; then
+    if [ -r flake.nix ]; then
+      if ! nix develop .#project-manager --command project-manager switch 2>/dev/null; then
+        if command -v project-manager >/dev/null 2>&1; then
+          if project-manager switch; then
+            echo >&2 "Couldn’t find ‘project-manager’ in project, so ran global installation."
+          else
+            echo >&2 "‘project-manager’ failed, so using Nix flake-based .envrc."
+            set-up-envrc
+          fi
+        elif [ -r .config/project/default.nix ]; then
+          if nix run github:sellout/project-manager -- switch 2>/dev/null; then
+            echo >&2 "Couldn’t find ‘project-manager’ on system, so used ‘nix run’."
+          else
+            echo >&2 "‘project-manager’ failed, so using Nix flake-based .envrc."
+            set-up-envrc
+          fi
+        else
+          echo >&2 "No ‘project-manager’ found, so using Nix flake-based .envrc."
+          set-up-envrc
+        fi
+      fi
+    else
+      echo >&2 "No flake found, so using non-Nix .envrc."
+      ## TODO: This should be one that refers to flaky-environments … somehow
+      ##       guessing the project type.
+      set-up-envrc "$(xdg-user-dir TEMPLATES)/.envrc"
+    fi
+  else
+    echo >&2 "No ‘nix’ installed, so not setting up an automatic .envrc."
+  fi
 fi
