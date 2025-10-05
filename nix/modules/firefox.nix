@@ -42,7 +42,44 @@ in {
         ## Disabled
         foxytab
       ];
-      # search.default = "DuckDuckGo";
+      search = {
+        default = "ddg";
+        engines = {
+          nix-packages = {
+            name = "Nix Packages";
+            urls = [
+              {
+                template = "https://search.nixos.org/packages";
+                params = [
+                  {
+                    name = "type";
+                    value = "packages";
+                  }
+                  {
+                    name = "query";
+                    value = "{searchTerms}";
+                  }
+                ];
+              }
+            ];
+
+            icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+            definedAliases = ["@np"];
+          };
+
+          amazon.metaData.alias = "@amazon";
+          bing.metaData.hidden = true;
+          ebay.metaData.hidden = true;
+          google.metaData = {
+            alias = "@google";
+            hidden = true;
+          };
+          wikipedia.metaData.alias = "@wikipedia";
+        };
+        force = true;
+        order = ["ddg" "wikipedia" "nw" "np" "amazon"];
+      };
+      ## You can explore the settings at the URL `about:config` in Firefox.
       settings = let
         defaultFont = config.lib.local.defaultFont;
       in {
