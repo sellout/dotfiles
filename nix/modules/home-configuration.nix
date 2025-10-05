@@ -27,6 +27,7 @@
     ./tex.nix
     ./vcs
     ./wakatime.nix
+    ./xdg.nix
   ];
 
   accounts = {
@@ -44,46 +45,12 @@
     config = "on";
   };
 
-  # FIXME: This and `config.home.activation.aliasApplications` below _may_ be
-  #        needed because the alias (rather than symlink) things into
-  #        ~/Applications/Home Manager Apps. If that turns out to be the case,
-  #        we should open an issue against home-manager to switch to aliasing on
-  #        darwin.
-  disabledModules = ["targets/darwin/linkapps.nix"];
-
   home = {
     activation = {
       ## TODO: Should move a version of this to Home Manager itself.
       setUpErrorTrap = lib.hm.dag.entryBefore ["checkLaunchAgents"] ''
         trap '_iError "Home Manager activation failed with $? at $(basename $0):$LINENO"; exit 1' ERR
       '';
-
-      # TODO: This should be removed once
-      #       https://github.com/nix-community/home-manager/issues/1341 is
-      #       closed.
-      aliasApplications =
-        lib.mkIf pkgs.stdenv.hostPlatform.isDarwin
-        (lib.hm.dag.entryAfter ["writeBoundary"] ''
-          IFS=$'\n'
-          app_folder="Home Manager Apps"
-          app_path="$(echo ~/Applications)/$app_folder"
-          tmp_path="$(mktemp -dt "$app_folder.XXXXXXXXXX")" || exit 1
-          # NB: aliasing ".../home-path/Applications" to
-          #    "~/Applications/Home Manager Apps" doesn't work (presumably
-          #     because the individual apps are symlinked in that directory, not
-          #     aliased). So this makes "Home Manager Apps" a normal directory
-          #     and then aliases each application into there directly from its
-          #     location in the nix store.
-          for app in \
-            $(find "$newGenPath/home-path/Applications" -type l -exec \
-              readlink -f {} \;)
-          do
-            $DRY_RUN_CMD ${pkgs.mkalias}/bin/mkalias "$app" "$tmp_path/$(basename "$app")"
-          done
-          # TODO: Wish this was atomic, but it’s only tossing symlinks
-          $DRY_RUN_CMD [ -e "$app_path" ] && rm -r "$app_path"
-          $DRY_RUN_CMD mv "$tmp_path" "$app_path"
-        '');
 
       # Stolen from https://twitter.com/volpegabriel87/status/1585204086240346112
       reportChanges = let
@@ -486,31 +453,6 @@
       };
     };
 
-    # Variables that `config.xdg` doesn’t provide, but that I wish it would.
-    xdg = {
-      bin = {
-        home = config.lib.local.addHome config.lib.local.xdg.bin.rel;
-        rel = "${config.lib.local.xdg.local.rel}/bin";
-      };
-      cache.rel = config.lib.local.removeHome config.xdg.cacheHome;
-      config.rel = config.lib.local.removeHome config.xdg.configHome;
-      data.rel = config.lib.local.removeHome config.xdg.dataHome;
-      local = {
-        home = config.lib.local.addHome config.lib.local.xdg.local.rel;
-        rel = lib.removeSuffix "/state" config.lib.local.xdg.state.rel;
-      };
-      state.rel = config.lib.local.removeHome config.xdg.stateHome;
-      # Don’t know why this one isn’t in the `xdg` module.
-      runtimeDir = config.home.sessionVariables.XDG_RUNTIME_DIR;
-      userDirs = {
-        projects = {
-          home =
-            config.lib.local.addHome config.lib.local.xdg.userDirs.projects.rel;
-          rel = "Projects";
-        };
-      };
-    };
-
     /**
       Returns a path relative to `HOME` that points to either the appropriate XDG
       dir or the corresponding darwin-specific location.
@@ -808,17 +750,6 @@
       "org.hammerspoon.Hammerspoon".MJConfigFile = "${config.xdg.configHome}/hammerspoon/init.lua";
     };
     search = "DuckDuckGo";
-  };
-
-  xdg = {
-    enable = true;
-    userDirs = {
-      createDirectories = true;
-      enable = pkgs.stdenv.hostPlatform.isLinux;
-      videos =
-        lib.mkIf pkgs.stdenv.hostPlatform.isDarwin
-        (config.lib.local.addHome "Movies");
-    };
   };
 
   xresources.path = "${config.xdg.configHome}/x/resources";

@@ -1,7 +1,6 @@
 {
   flake-utils,
   home-manager,
-  mkalias,
   nixpkgs,
   nixpkgs-master,
 }: final: prev: let
@@ -25,8 +24,6 @@ in {
   # karabiner-elements = master.karabiner-elements;
 
   lexica-ultralegible = final.callPackage ./packages/lexica-ultralegible.nix {};
-
-  mkalias = mkalias.packages.${final.system}.mkalias;
 
   ## These tests are failing on aarch64-darwin with Nixpkgs 24.11, so disable
   ## them for now.

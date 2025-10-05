@@ -834,26 +834,6 @@
         "type": "github"
       }
     },
-    "mkalias": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1678761502,
-        "narHash": "sha256-tL3C/b2BPOGQpV287wECDCDWmKwwPvezAAN3qz7N07M=",
-        "owner": "reckenrode",
-        "repo": "mkalias",
-        "rev": "8a5478cdb646f137ebc53cb9d235f8e5892ea00a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "reckenrode",
-        "repo": "mkalias",
-        "type": "github"
-      }
-    },
     "nix": {
       "inputs": {
         "lowdown-src": "lowdown-src",
@@ -1362,7 +1342,6 @@
           "flaky",
           "home-manager"
         ],
-        "mkalias": "mkalias",
         "nix-math": "nix-math",
         "nixcasks": "nixcasks",
         "nixpkgs": [

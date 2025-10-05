@@ -2,6 +2,9 @@
   description = "Sellout’s general configuration";
 
   nixConfig = {
+    ## NB: This is a consequence of using `self.pkgsLib.runEmptyCommand`, which
+    ##     allows us to sandbox derivations that otherwise can’t be.
+    allow-import-from-derivation = true;
     ## https://github.com/NixOS/rfcs/blob/master/rfcs/0045-deprecate-url-syntax.md
     extra-experimental-features = ["no-url-literals"];
     extra-substituters = [
@@ -34,7 +37,6 @@
     flake-utils,
     flaky,
     home-manager,
-    mkalias,
     nix-math,
     nixcasks,
     nixpkgs,
@@ -112,7 +114,6 @@
           inherit
             flake-utils
             home-manager
-            mkalias
             nixpkgs
             nixpkgs-master
             ;
@@ -315,12 +316,6 @@
     flake-parts = {
       inputs.nixpkgs-lib.follows = "nixpkgs";
       url = "github:hercules-ci/flake-parts";
-    };
-
-    ## Avoids the need to give `Finder` access to make aliases on MacOS.
-    mkalias = {
-      inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:reckenrode/mkalias";
     };
 
     nix-math = {

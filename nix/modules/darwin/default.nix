@@ -194,10 +194,6 @@
 
   security.pam.services.sudo_local.touchIdAuth = true;
 
-  ## TODO: Remove this (from nix-darwin, too) once tailscale/tailscale#8436 is
-  ##       fixed.
-  services.tailscale.overrideLocalDns = true;
-
   ## For any of this to work, we need to enable automatic updates in general.
   system.defaults.CustomSystemPreferences."com.apple.SoftwareUpdate".AutomaticCheckEnabled = true;
   ## This will automatically install macOS updates, which we want because Nix

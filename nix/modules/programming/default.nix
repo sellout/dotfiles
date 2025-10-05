@@ -152,9 +152,12 @@
       '';
     };
 
-    # I used to store these in `$XDG_DOCUMENTS_DIR`, but that directory is often
-    # synced (like Dropbox, iCloud, etc.), so this is a parallel directory for
-    # things that shouldn’t be synced – like version-controlled directories.
+    ## I used to store these in `DOCUMENTS`, but that directory is often synced
+    ## (like Dropbox, iCloud, etc.), so this is a parallel directory for things
+    ## that shouldn’t be synced – like version-controlled directories.
+    ##
+    ## TODO: Replace with `PROJECTS` once  nix-community/home-manager#7937 is in
+    ##       a release.
     userDirs.extraConfig.XDG_PROJECTS_DIR =
       config.lib.local.xdg.userDirs.projects.home;
   };
