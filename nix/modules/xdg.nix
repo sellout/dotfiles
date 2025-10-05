@@ -34,6 +34,21 @@
 
   xdg = {
     enable = true;
+    ## TODO: Remove once nix-community/home-manager#7937 is in a release.
+    configFile = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+      "user-dirs.conf".text = "enabled=False";
+      "user-dirs.dirs".text = ''
+        XDG_DESKTOP_DIR="$HOME/Desktop"
+        XDG_DOCUMENTS_DIR="$HOME/Documents"
+        XDG_DOWNLOAD_DIR="$HOME/Downloads"
+        XDG_MUSIC_DIR="$HOME/Music"
+        XDG_PICTURES_DIR="$HOME/Pictures"
+        XDG_PROJECTS_DIR="$HOME/Projects"
+        XDG_PUBLICSHARE_DIR="$HOME/Public"
+        XDG_TEMPLATES_DIR="$HOME/Templates"
+        XDG_VIDEOS_DIR="$HOME/Movies"
+      '';
+    };
     userDirs = {
       ## TODO: Use `true` once  nix-community/home-manager#7937 is in a release.
       enable = pkgs.stdenv.hostPlatform.isLinux;
