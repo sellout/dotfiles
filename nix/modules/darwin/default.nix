@@ -157,7 +157,7 @@
     ## NB: For this to work, I had to initially replace the original packages in
     ##     the profile with ones from the nixpkgs flake.
     echo "upgrading default nix profile ..."
-    sudo nix profile upgrade --all --profile /nix/var/nix/profiles/default
+    sudo nix profile upgrade --all --profile /nix/var/nix/profiles/default >/dev/null
 
     ## List manual tasks that happen after activating a new configuration.
     echo "Now that a new configuration is activated, there are some steps that need to be"
