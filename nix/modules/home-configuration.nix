@@ -27,6 +27,7 @@
     ./tex.nix
     ./vcs
     ./wakatime.nix
+    ./xdg.nix
   ];
 
   accounts = {
@@ -452,31 +453,6 @@
       };
     };
 
-    # Variables that `config.xdg` doesn’t provide, but that I wish it would.
-    xdg = {
-      bin = {
-        home = config.lib.local.addHome config.lib.local.xdg.bin.rel;
-        rel = "${config.lib.local.xdg.local.rel}/bin";
-      };
-      cache.rel = config.lib.local.removeHome config.xdg.cacheHome;
-      config.rel = config.lib.local.removeHome config.xdg.configHome;
-      data.rel = config.lib.local.removeHome config.xdg.dataHome;
-      local = {
-        home = config.lib.local.addHome config.lib.local.xdg.local.rel;
-        rel = lib.removeSuffix "/state" config.lib.local.xdg.state.rel;
-      };
-      state.rel = config.lib.local.removeHome config.xdg.stateHome;
-      # Don’t know why this one isn’t in the `xdg` module.
-      runtimeDir = config.home.sessionVariables.XDG_RUNTIME_DIR;
-      userDirs = {
-        projects = {
-          home =
-            config.lib.local.addHome config.lib.local.xdg.userDirs.projects.rel;
-          rel = "Projects";
-        };
-      };
-    };
-
     /**
       Returns a path relative to `HOME` that points to either the appropriate XDG
       dir or the corresponding darwin-specific location.
@@ -774,17 +750,6 @@
       "org.hammerspoon.Hammerspoon".MJConfigFile = "${config.xdg.configHome}/hammerspoon/init.lua";
     };
     search = "DuckDuckGo";
-  };
-
-  xdg = {
-    enable = true;
-    userDirs = {
-      createDirectories = true;
-      enable = pkgs.stdenv.hostPlatform.isLinux;
-      videos =
-        lib.mkIf pkgs.stdenv.hostPlatform.isDarwin
-        (config.lib.local.addHome "Movies");
-    };
   };
 
   xresources.path = "${config.xdg.configHome}/x/resources";
