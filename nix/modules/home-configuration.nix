@@ -8,6 +8,7 @@
 }: {
   imports = [
     agenix.homeManagerModules.age
+    ./audio.nix
     ./direnv.nix
     ./emacs
     ./firefox.nix
@@ -171,16 +172,6 @@
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
         pkgs.mas
-        # (pkgs.nixcasks.ableton-live-standard.overrideAttrs (old: let
-        #   version = "6.0.1"; # version I have a license for
-        # in {
-        #   inherit version;
-        #   src = pkgs.fetchurl {
-        #     url = "https://cdn-downloads.ableton.com/channels/${version}/ableton_live_standard_${version}_64.dmg";
-        #     hash = "";
-
-        #   };
-        # }))
         pkgs.nixcasks.acorn
         pkgs.nixcasks.adium
         pkgs.nixcasks.alfred
@@ -270,7 +261,6 @@
         pkgs.racket # doesn’t contain darwin GUI
       ]
       ++ lib.optionals (pkgs.system == "x86_64-linux") [
-        pkgs.cider # we have Music.app on darwin
         pkgs.eagle # not supported on darwin
         pkgs.ferdium # not supported on darwin
         pkgs.keybase-gui # not supported on darwin
@@ -664,7 +654,6 @@
             "with" = "(╯°□°)╯︵ ┻━┻";
           }
         ];
-        "com.apple.sound.beep.flash" = 1;
       };
 
       ## Opt out of Apple Intelligence.

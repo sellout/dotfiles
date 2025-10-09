@@ -102,10 +102,6 @@
       startWhenNeeded = true;
     };
 
-    pulseaudio.enable = false;
-
-    tailscale.enable = true;
-
     syslogd.enable = true;
 
     xserver = {
