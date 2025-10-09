@@ -468,6 +468,7 @@
       pkgs.cargo
       epkgs.sbt-mode
       epkgs.scala-mode
+      epkgs.scratch # https://codeberg.org/emacs-weirdware/scratch#readme
       epkgs.undo-tree
       epkgs.unison-ts-mode
       epkgs.vc-darcs
