@@ -1,5 +1,10 @@
 ## source control – good to have globally, so users can fetch initial
 ## configurations
+##
+## TODO: Package some repository analysis tooling like
+##     • [Git of
+##       Theseus](https://erikbern.com/2016/12/05/the-half-life-of-code.html) or
+##     • [Hercules](https://github.com/src-d/hercules#readme)
 {
   config,
   flaky,
@@ -78,7 +83,10 @@ in {
         packages =
           commonPackages
           ++ [
+            pkgs.difftastic
             pkgs.git-revise # unfortunately not supported by magit
+            pkgs.git-standup
+            pkgs.mergiraf
           ];
         sessionVariables.BRZ_LOG = "${config.xdg.stateHome}/breezy/log";
         shellAliases.svn = "svn --config-dir '${config.xdg.configHome}/subversion'";
@@ -103,20 +111,38 @@ in {
             ## Log output that approximates Magit under Solarized.
             lg = "log --color --graph --pretty=format:\"%Cblue%h%Creset %Cgreen%D%Creset %s %>|($((\"$COLUMNS\" - 7)))%C(cyan)%an%Creset %>(6,trunc)%cr\"";
           };
-          attributes = ["*.lisp diff=lisp"];
+          attributes = [
+            "* merge=mergiraf"
+            "*.lisp diff=lisp"
+          ];
           enable = true;
           extraConfig = {
-            diff.algorithm = "histogram";
+            diff = {
+              algorithm = "histogram";
+              external = "difft";
+              tool = "difftastic";
+            };
+            difftool = {
+              difftastic.cmd = "difft \"$MERGED\" \"$LOCAL\" \"abcdef1\" \"100644\" \"$REMOTE\" \"abcdef2\" \"100644\"";
+              prompt = false;
+            };
             init = {
               defaultBranch = "main";
               templateDir = "${./git/template}";
             };
             log.showSignatures = true;
-            merge.conflictStyle = "diff3";
+            merge = {
+              conflictStyle = "diff3";
+              mergiraf = {
+                name = "mergiraf";
+                driver = "mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P -l %L";
+              };
+            };
+            pager.difftool = true;
             rebase.autosquash = true;
             sendemail.identity = config.lib.local.primaryEmailAccountName;
             ## TODO: Stuff from my old .gitconfig that needs to be reviewed
-            diff."lisp".xfuncname = "^(\\((def|test).*)$";
+            diff.lisp.xfuncname = "^(\\((def|test).*)$";
             filter = {
               "hawser" = {
                 clean = "git hawser clean %f";

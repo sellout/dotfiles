@@ -147,7 +147,6 @@
         # pkgs.discord # currently subsumed by ferdium
         # pkgs.element-desktop # currently subsumed by ferdium
         pkgs.ghostscript
-        pkgs.git-standup
         # pkgs.gitter # currently subsumed by ferdium
         pkgs.imagemagick
         pkgs.jekyll
