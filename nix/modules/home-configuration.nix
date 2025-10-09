@@ -122,15 +122,15 @@
       ## For packages that should be gotten from nixcasks on darwin. The second
       ## argument may be null, but if the nixcasks package name differs from the
       ## Nixpkgs name, then it needs to be set.
-      maybeCask = pkg: nixcastPkg:
+      maybeCask = pkg: nixcaskPkg:
         if pkgs.stdenv.hostPlatform.isDarwin
         then let
-          realNixcastPkg =
-            if nixcastPkg == null
+          realNixcaskPkg =
+            if nixcaskPkg == null
             then pkg
-            else nixcastPkg;
+            else nixcaskPkg;
         in
-          pkgs.nixcasks.${realNixcastPkg}
+          pkgs.nixcasks.${realNixcaskPkg}
         else pkgs.${pkg};
     in
       [
