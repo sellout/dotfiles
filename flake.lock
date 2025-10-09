@@ -114,6 +114,22 @@
         "type": "github"
       }
     },
+    "bitbar-solar-time": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1590849768,
+        "narHash": "sha256-vuh4vMH4y5/8jZBzvnaO9Z4t7zPPuic3ul4HfDz3Eaw=",
+        "owner": "XanderLeaDaren",
+        "repo": "bitbar-solar-time",
+        "rev": "dae583a50c2f1828fb885c49e2b0df16cb589701",
+        "type": "github"
+      },
+      "original": {
+        "owner": "XanderLeaDaren",
+        "repo": "bitbar-solar-time",
+        "type": "github"
+      }
+    },
     "bradix": {
       "inputs": {
         "elisp-reader": "elisp-reader",
@@ -1326,6 +1342,7 @@
           "flaky",
           "bash-strict-mode"
         ],
+        "bitbar-solar-time": "bitbar-solar-time",
         "bradix": "bradix",
         "darwin": "darwin",
         "emacs-color-theme-solarized": "emacs-color-theme-solarized",

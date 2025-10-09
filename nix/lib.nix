@@ -1,5 +1,6 @@
 {
   agenix,
+  bitbar-solar-time,
   darwin,
   emacs-color-theme-solarized,
   flaky,
@@ -36,6 +37,7 @@
   extraSpecialArgs = {
     inherit
       agenix
+      bitbar-solar-time
       emacs-color-theme-solarized
       flaky
       math
