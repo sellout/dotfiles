@@ -29,14 +29,6 @@
   pkgs,
   ...
 }: {
-  ## FIXME: The ‘extended-faces’ package is currently not working with emacs30
-  ##       (the default Emacs in Nixpkgs 24.11). See
-  ##        sellout/emacs-extended-faces#13.
-  nixpkgs.config.permittedInsecurePackages = [
-    "emacs-29.4"
-    "emacs-with-packages-29.4"
-  ];
-
   home = {
     ## Some packages, even if only used by Emacs, need to be installed outside
     ## `programs.emacs.extraPackages`. This is due to a few reasons:
@@ -468,6 +460,8 @@
       pkgs.cargo
       epkgs.sbt-mode
       epkgs.scala-mode
+      epkgs.scratch # https://codeberg.org/emacs-weirdware/scratch#readme
+      epkgs.treesit-fold # code folding for treesitter modes
       epkgs.undo-tree
       epkgs.unison-ts-mode
       epkgs.vc-darcs

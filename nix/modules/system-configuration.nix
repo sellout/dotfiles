@@ -6,6 +6,7 @@
   ...
 }: {
   imports = [
+    ./audio.nix
     ./direnv.nix
     ./fonts.nix
     ./games.nix

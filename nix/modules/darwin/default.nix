@@ -75,7 +75,7 @@
         name = "1password";
         ## Doesn’t integrate with browsers properly if moved. Search email for
         ## #PKL-58745-842 for more info.
-        args = {appdir = "/Applications";};
+        args.appdir = "/Applications";
         greedy = true;
       }
       "bitcoin-core"
@@ -99,7 +99,6 @@
       # "wire" # currently subsumed by ferdium
       # not available on darwin via Nix, but seems like it should be
       "xquartz" # doesn't respect appdir # broken in Nix
-      "yousician"
     ];
     enable = true;
     global.brewfile = true;
@@ -110,7 +109,6 @@
       "Clozure CL" = 489900618;
       Deliveries = 290986013;
       FocusMask = 435999818;
-      GarageBand = 682658836;
       iMovie = 408981434;
       Keynote = 409183694;
       Numbers = 409203825;
@@ -123,7 +121,6 @@
       ##     Homebrew (https://github.com/orgs/Homebrew/discussions/6243).
       ##     However, we can still get it from the App store, so do so for now.
       Skitch = 425955336;
-      SoundCloud = 412754595;
       Xcode = 497799835;
     };
     ## NB: These settings unfortunately make `darwin-rebuild switch`
@@ -157,7 +154,7 @@
     ## NB: For this to work, I had to initially replace the original packages in
     ##     the profile with ones from the nixpkgs flake.
     echo "upgrading default nix profile ..."
-    sudo nix profile upgrade --all --profile /nix/var/nix/profiles/default
+    sudo nix profile upgrade --all --profile /nix/var/nix/profiles/default &>/dev/null
 
     ## List manual tasks that happen after activating a new configuration.
     echo "Now that a new configuration is activated, there are some steps that need to be"
@@ -200,6 +197,4 @@
   ## doesn’t manage the OS.
   system.defaults.CustomSystemPreferences."com.apple.commerce".AutoUpdateRestartRequired = true;
   system.defaults.SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
-
-  system.startup.chime = false;
 }

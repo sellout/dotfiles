@@ -15,9 +15,15 @@
     };
 
     homeConfig = {
+      ## See https://github.com/direnv/direnv/wiki/Quiet-or-Silence-direnv for
+      ## an approach that could be better, but I don’t know how to set ANSI
+      ## escape codes in `home.sessionVariables`.
+      home.sessionVariables.DIRENV_LOG_FORMAT = "";
       programs.direnv = {
         enable = true;
         config.global = {
+          # Don’t spit out all of the changed variables.
+          hide_env_diff = true;
           # Ideally could set this for specific projects, see direnv/direnv#793.
           strict_env = true;
           # Nix flakes tend to take a while. This is probably still too short.

@@ -27,6 +27,7 @@
     agenix,
     agenix-el,
     bash-strict-mode,
+    bitbar-solar-time,
     bradix,
     darwin,
     emacs-color-theme-solarized,
@@ -83,6 +84,7 @@
       lib = import ./nix/lib.nix {
         inherit
           agenix
+          bitbar-solar-time
           darwin
           emacs-color-theme-solarized
           flaky
@@ -160,7 +162,7 @@
         nix-configuration = ./nix/modules/nix-configuration.nix;
         nixpkgs-configuration = ./nix/modules/nixpkgs-configuration.nix;
         programming = ./nix/modules/programming;
-        shell = ./nix/modules/shell.nix;
+        shell = ./nix/modules/shell;
         ssh = ./nix/modules/ssh.nix;
         tex = ./nix/modules/tex.nix;
         vcs = ./nix/modules/vcs;
@@ -280,6 +282,11 @@
       };
       ## TODO: Switch back to upstream once bash-strict-mode is updated there.
       url = "github:sellout/agenix.el/update-bash-strict-mode";
+    };
+
+    bitbar-solar-time = {
+      flake = false;
+      url = "github:XanderLeaDaren/bitbar-solar-time";
     };
 
     bradix = {

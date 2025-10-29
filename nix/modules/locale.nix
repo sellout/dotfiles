@@ -1,5 +1,6 @@
 ## TODO: Replace this with a general module for locales.
 {
+  bitbar-solar-time,
   flaky,
   lib,
   options,
@@ -23,6 +24,28 @@ in {
           base = fullLocale;
           time = timeLocale;
         };
+
+      ## Display apparent solar time in the macOS menu bar.
+      home.file = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+        ## The file name indicates the refresh rate. Since the font isn’t
+        ## `tnum`, setting it to `1m` avoids constant menubar jitter as the
+        ## seconds change. (And we also rewrite the format string to hide the
+        ## seconds.)
+        "Library/Application Support/xbar/plugins/solar-time.1m.py" = {
+          executable = true;
+          ## TODO: There’s probably a nicer way to do this without making a
+          ##       derivation just for this one file.
+          text =
+            lib.replaceStrings
+            ["#!/usr/bin/env python" "\"☀️ \" + sun_time.strftime('%H:%M:%S"]
+            ["#!${pkgs.python2}/bin/python" "sun_time.strftime('%H:%M"]
+            (builtins.readFile "${bitbar-solar-time}/solar-time.1s.py");
+        };
+      };
+      home.packages = lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+        pkgs.xbar
+      ];
+      nixpkgs.config.permittedInsecurePackages = ["python-2.7.18.8"];
 
       targets.darwin.defaults.NSGlobalDomain = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         AppleFirstWeekday.gregorian = 2; # Monday

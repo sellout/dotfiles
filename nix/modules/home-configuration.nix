@@ -8,6 +8,7 @@
 }: {
   imports = [
     agenix.homeManagerModules.age
+    ./audio.nix
     ./direnv.nix
     ./emacs
     ./firefox.nix
@@ -21,7 +22,7 @@
     ./nixos-wiki.nix
     ./nixpkgs-configuration.nix
     ./programming
-    ./shell.nix
+    ./shell
     ./ssh.nix
     ./storage.nix
     ./tex.nix
@@ -121,15 +122,15 @@
       ## For packages that should be gotten from nixcasks on darwin. The second
       ## argument may be null, but if the nixcasks package name differs from the
       ## Nixpkgs name, then it needs to be set.
-      maybeCask = pkg: nixcastPkg:
+      maybeCask = pkg: nixcaskPkg:
         if pkgs.stdenv.hostPlatform.isDarwin
         then let
-          realNixcastPkg =
-            if nixcastPkg == null
+          realNixcaskPkg =
+            if nixcaskPkg == null
             then pkg
-            else nixcastPkg;
+            else nixcaskPkg;
         in
-          pkgs.nixcasks.${realNixcastPkg}
+          pkgs.nixcasks.${realNixcaskPkg}
         else pkgs.${pkg};
     in
       [
@@ -146,7 +147,6 @@
         # pkgs.discord # currently subsumed by ferdium
         # pkgs.element-desktop # currently subsumed by ferdium
         pkgs.ghostscript
-        pkgs.git-standup
         # pkgs.gitter # currently subsumed by ferdium
         pkgs.imagemagick
         pkgs.jekyll
@@ -171,16 +171,6 @@
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
         pkgs.mas
-        # (pkgs.nixcasks.ableton-live-standard.overrideAttrs (old: let
-        #   version = "6.0.1"; # version I have a license for
-        # in {
-        #   inherit version;
-        #   src = pkgs.fetchurl {
-        #     url = "https://cdn-downloads.ableton.com/channels/${version}/ableton_live_standard_${version}_64.dmg";
-        #     hash = "";
-
-        #   };
-        # }))
         pkgs.nixcasks.acorn
         pkgs.nixcasks.adium
         pkgs.nixcasks.alfred
@@ -270,7 +260,6 @@
         pkgs.racket # doesn’t contain darwin GUI
       ]
       ++ lib.optionals (pkgs.system == "x86_64-linux") [
-        pkgs.cider # we have Music.app on darwin
         pkgs.eagle # not supported on darwin
         pkgs.ferdium # not supported on darwin
         pkgs.keybase-gui # not supported on darwin
@@ -664,7 +653,6 @@
             "with" = "(╯°□°)╯︵ ┻━┻";
           }
         ];
-        "com.apple.sound.beep.flash" = 1;
       };
 
       ## Opt out of Apple Intelligence.
