@@ -1192,6 +1192,9 @@ Committer: %cN <%cE>
 (use-package treemacs
   :custom (treemacs-space-between-root-nodes nil))
 
+(use-package treesit-fold
+  :custom (global-treesit-fold-mode t))
+
 (use-package uniquify
   :custom
   (uniquify-buffer-name-style 'post-forward)
