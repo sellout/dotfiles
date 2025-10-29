@@ -162,7 +162,7 @@
         nix-configuration = ./nix/modules/nix-configuration.nix;
         nixpkgs-configuration = ./nix/modules/nixpkgs-configuration.nix;
         programming = ./nix/modules/programming;
-        shell = ./nix/modules/shell.nix;
+        shell = ./nix/modules/shell;
         ssh = ./nix/modules/ssh.nix;
         tex = ./nix/modules/tex.nix;
         vcs = ./nix/modules/vcs;

@@ -22,7 +22,7 @@
     ./nixos-wiki.nix
     ./nixpkgs-configuration.nix
     ./programming
-    ./shell.nix
+    ./shell
     ./ssh.nix
     ./storage.nix
     ./tex.nix
