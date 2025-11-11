@@ -16,11 +16,8 @@
       "sellout.cachix.org-1:v37cTpWBEycnYxSPAgSQ57Wiqd3wjljni2aC0Xry1DE="
     ];
     ## Isolate the build.
+    sandbox = "relaxed";
     use-registries = false;
-    ## Enable once NixOS/nix#4119 is fixed. This is commented out rather than
-    ## set to `false` because the default is `true` on some systems, and we want
-    ## to maintain that.
-    # sandbox = true;
   };
 
   outputs = {
@@ -245,8 +242,9 @@
       };
 
       devShells =
-        {default = flaky.lib.devShells.default system self [] "";}
-        // self.projectConfigurations.${system}.devShells;
+        self.projectConfigurations.${system}.devShells
+        // {default = flaky.lib.devShells.default system self [] "";};
+
       checks = self.projectConfigurations.${system}.checks;
       formatter = self.projectConfigurations.${system}.formatter;
     });

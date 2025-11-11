@@ -1,0 +1,10 @@
+{
+  "project":
+    {
+      "description": "The non-personal bits of Sellout’s configuration, suitable for all to see.",
+      "name": "dotfiles",
+      "repo": "sellout/dotfiles",
+      "summary": "Sellout’s general configuration",
+    },
+  "type": { "name": "nix" },
+}
