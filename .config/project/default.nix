@@ -18,6 +18,9 @@
   project.file.".dir-locals.el".source = lib.mkForce ../emacs/.dir-locals.el;
   programs = {
     direnv.enable = true;
+    # This should default by whether there is a .git file/dir (and whether it’s
+    # a file (worktree) or dir determines other things – like where hooks
+    # are installed.
     git.enable = true;
   };
 
