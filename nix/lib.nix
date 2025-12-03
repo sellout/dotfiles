@@ -5,6 +5,7 @@
   emacs-color-theme-solarized,
   flaky,
   home-manager,
+  nix-index-database,
   nix-math,
   nixcasks,
   nixpkgs,
@@ -49,6 +50,9 @@
       ;
     dotfiles = self;
   };
+
+  ## Modules to be provided to every Home Manager user on every system.
+  sharedModules = [nix-index-database.homeModules.nix-index];
 in {
   ## Just like upstream `darwinSystem`, but adds all of the `specialArgs`
   ## required by the configuration in this repo (and the `extraSpecialArgs`
@@ -58,7 +62,7 @@ in {
       {
         modules = [
           home-manager.darwinModules.default
-          {home-manager = {inherit extraSpecialArgs;};}
+          {home-manager = {inherit extraSpecialArgs sharedModules;};}
         ];
         specialArgs = {
           inherit flaky math nixcasks nixpkgs nixpkgs-master nixpkgs-unstable;
@@ -72,7 +76,10 @@ in {
   ## `extraSpecialArgs` required by the configuration in this repo.
   homeManagerConfiguration = attrs:
     home-manager.lib.homeManagerConfiguration (recursiveMerge [
-      {inherit extraSpecialArgs;}
+      {
+        inherit extraSpecialArgs;
+        modules = sharedModules;
+      }
       attrs
     ]);
 
@@ -84,7 +91,7 @@ in {
       {
         modules = [
           home-manager.nixosModules.default
-          {home-manager = {inherit extraSpecialArgs;};}
+          {home-manager = {inherit extraSpecialArgs sharedModules;};}
         ];
         specialArgs = {
           inherit

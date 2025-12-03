@@ -595,6 +595,17 @@
 
     ## Declarative management of VCS repos
     mr.enable = true;
+
+    ## Tools for exploring Nixpkgs
+    ## • `nix-locate` – figure out which derivations provide files
+    ## • `,` – run commands without installing them
+    ## • shell integration to report which package to install when a command
+    ##   isn’t found
+    ##
+    ## TODO: At least the shell integration (and probably nix-locate) should be
+    ##       installed system-wide.
+    nix-index.enable = true;
+    nix-index-database.comma.enable = true;
   };
 
   services = {
