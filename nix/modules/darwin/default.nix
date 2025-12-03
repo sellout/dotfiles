@@ -79,14 +79,8 @@
         greedy = true;
       }
       "bitcoin-core"
-      "bowtie"
-      # "delicious-library" # perhaps removed?
-      "eagle" # doesn't respect appdir # not available on darwin via Nix
       "google-drive" # doesn't respect appdir
       "powerphotos"
-      "psi"
-      "r-app" # doesn't respect appdir
-      "racket"
       "timemachineeditor"
       # "virtualbox" # requires Intel architecture
       {
@@ -104,16 +98,11 @@
     global.brewfile = true;
     masApps = {
       "1Password for Safari" = 1569813296;
-      BaseCamp = 411052274; # Garmin, not DHH
-      "Blink Lite" = 431473881;
-      "Clozure CL" = 489900618;
       Deliveries = 290986013;
-      FocusMask = 435999818;
       iMovie = 408981434;
       Keynote = 409183694;
       Numbers = 409203825;
       Pages = 409201541;
-      "Picture Window" = 507262984;
       "Prime Video" = 545519333;
       reMarkable = 1276493162;
       "Remote Mouse" = 403195710;
@@ -121,7 +110,6 @@
       ##     Homebrew (https://github.com/orgs/Homebrew/discussions/6243).
       ##     However, we can still get it from the App store, so do so for now.
       Skitch = 425955336;
-      Xcode = 497799835;
     };
     ## NB: These settings unfortunately make `darwin-rebuild switch`
     ##     non-idempotent, but the alternative is having Homebrew just be
