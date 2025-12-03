@@ -35,6 +35,7 @@
     flake-utils,
     flaky,
     home-manager,
+    nix-index-database,
     nix-math,
     nixcasks,
     nixpkgs,
@@ -86,6 +87,7 @@
           emacs-color-theme-solarized
           flaky
           home-manager
+          nix-index-database
           nix-math
           nixcasks
           nixpkgs
@@ -321,6 +323,11 @@
     flake-parts = {
       inputs.nixpkgs-lib.follows = "nixpkgs";
       url = "github:hercules-ci/flake-parts";
+    };
+
+    nix-index-database = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-community/nix-index-database";
     };
 
     nix-math = {
