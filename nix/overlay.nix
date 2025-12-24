@@ -42,6 +42,15 @@ in {
   python = final.python3;
   pythonPackages = final.python3Packages;
 
+  ## The derivations claim to not work on darwin, but it seems to?
+  # supercolliderPlugins.sc3-plugins =
+  #   prev.supercolliderPlugins.sc3-plugins.overrideAttrs (old: {
+  #     meta = old.meta // {platforms = final.lib.platforms.unix;};
+  #   });
+  # supercollider = prev.supercollider.overrideAttrs (old: {
+  #   meta = old.meta // {platforms = final.lib.platforms.unix;};
+  # });
+
   ## The install checks for unison-nix’s UCM derivation can’t be sandboxed, so
   ## we disable them in order to use Garnix.
   unison-ucm = prev.unison-ucm.overrideAttrs (old: {doInstallCheck = false;});

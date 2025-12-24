@@ -247,6 +247,8 @@
             (rustic-rustfmt-bin "${pkgs.rustfmt}/bin/rustfmt"))
           '(sbt-mode
             (sbt:program-name "${pkgs.sbt}/bin/sbt"))
+          '(tidal
+            (tidal-interpreter "${pkgs.tidal}/bin/tidal"))
           '(treemacs
             (treemacs-python-executable "${pkgs.python}/bin/python"))
           '(vc-pijul
@@ -461,6 +463,7 @@
       epkgs.sbt-mode
       epkgs.scala-mode
       epkgs.scratch # https://codeberg.org/emacs-weirdware/scratch#readme
+      epkgs.tidal # https://tidalcycles.org/ integration
       epkgs.treesit-fold # code folding for treesitter modes
       epkgs.undo-tree
       epkgs.unison-ts-mode

@@ -8,17 +8,30 @@
   config = flaky.lib.multiConfig options {
     darwinConfig = {
       homebrew = {
-        casks = ["yousician"];
+        casks = [
+          "supercollider" # to support Tidal Cycles
+          "yousician"
+        ];
         masApps = {
           GarageBand = 682658836;
           SoundCloud = 412754595;
         };
       };
-      system.startup.chime = false;
+      system = {
+        activationScripts.postActivation.text = ''
+          echo "Setting up SuperDirt for SuperCollider ..."
+          ${pkgs.superdirt-install}/bin/superdirt-install
+        '';
+        startup.chime = false;
+      };
     };
     homeConfig = {
       home.packages =
-        lib.optionals (pkgs.system != "aarch64-linux") [
+        [
+          # pkgs.superdirt-start # requires linux
+          pkgs.tidal
+        ]
+        ++ lib.optionals (pkgs.system != "aarch64-linux") [
           pkgs.spotify
         ]
         ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [

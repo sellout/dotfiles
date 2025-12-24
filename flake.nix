@@ -45,6 +45,7 @@
     org-invoice,
     self,
     systems,
+    tidalcycles,
     unison-nix,
   }: let
     stateVersion = "25.05";
@@ -137,6 +138,7 @@
               prev
             else {})
           nur.overlays.default
+          tidalcycles.overlays.default
           unison-nix.overlays.default
           self.overlays.default
         ];
@@ -354,6 +356,11 @@
     org-invoice = {
       flake = false;
       url = "github:sellout/org-invoice";
+    };
+
+    tidalcycles = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:mitchmindtree/tidalcycles.nix";
     };
 
     unison-nix = {
