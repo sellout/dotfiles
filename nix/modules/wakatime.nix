@@ -9,7 +9,7 @@ in {
   options.programs.wakatime = {
     enable = lib.mkEnableOption "[Wakatime](https://wakatime.com/)";
 
-    package = lib.mkPackageOption pkgs "Wakatime" {default = ["wakatime"];};
+    package = lib.mkPackageOption pkgs "Wakatime" {default = ["wakatime-cli"];};
 
     apiKeyFile = lib.mkOption {
       type = lib.types.nullOr lib.types.str;

@@ -67,7 +67,7 @@
       };
       home.sessionVariables.XDG_RUNTIME_DIR = "/tmp/example/runtime";
       programs.git = {
-        extraConfig.github.user = "example-user";
+        settings.github.user = "example-user";
         signing.key = "";
       };
       ## These attributes are simply required by home-manager.
@@ -101,9 +101,11 @@
       overlays = let
         nixcasks-overlay = final: prev: {
           nixcasks =
-            (nixcasks.output {osVersion = "sonoma";})
+            ## TODO: Set the `osVersion` per-host (or per-account), rather than
+            ##       hardcoding here.
+            (nixcasks.output {osVersion = "tahoe";})
             .packages
-            .${final.system};
+            .${final.stdenv.hostPlatform.system};
         };
       in {
         darwin = nixpkgs.lib.composeManyExtensions [
@@ -296,7 +298,7 @@
 
     darwin = {
       inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:LnL7/nix-darwin/nix-darwin-25.05";
+      url = "github:LnL7/nix-darwin/nix-darwin-25.11";
     };
 
     emacs-color-theme-solarized = {

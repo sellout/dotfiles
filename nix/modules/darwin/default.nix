@@ -50,6 +50,7 @@
   #
   # NB: Ideally this would be managed in home.nix, but that's not yet supported.
   homebrew = {
+    enable = true;
     ## TODO: This is a workaround for LnL7/nix-darwin#1314.
     brews = lib.mkForce [];
     caskArgs = {
@@ -94,10 +95,10 @@
       # not available on darwin via Nix, but seems like it should be
       "xquartz" # doesn't respect appdir # broken in Nix
     ];
-    enable = true;
     global.brewfile = true;
     masApps = {
       "1Password for Safari" = 1569813296;
+      "Amazon Kindle" = 302584613;
       Deliveries = 290986013;
       iMovie = 408981434;
       Keynote = 409183694;

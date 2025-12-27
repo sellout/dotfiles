@@ -14,7 +14,7 @@ in {
   programs.firefox = {
     inherit policies;
 
-    enable = pkgs.system != "aarch64-linux";
+    enable = pkgs.stdenv.hostPlatform.system != "aarch64-linux";
     profiles.default = {
       ## These are ordered to match `about:addons`.
       extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [

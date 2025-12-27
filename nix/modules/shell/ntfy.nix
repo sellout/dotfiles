@@ -90,7 +90,7 @@ in {
       ##     and [config-path](https://github.com/barry-scott/config-path)) do
       ##     either, so it’s not worth advocating for ntfy to switch until a
       ##     library steps up.
-      file."${config.lib.local.darwinXdg pkgs.system "config" null}/ntfy/ntfy.yml" = lib.mkIf (cfg.settings != null) {
+      file."${config.lib.local.darwinXdg pkgs.stdenv.hostPlatform.system "config" null}/ntfy/ntfy.yml" = lib.mkIf (cfg.settings != null) {
         source = yamlFormat.generate "ntfy config" cfg.settings;
       };
       packages = [cfg.package];

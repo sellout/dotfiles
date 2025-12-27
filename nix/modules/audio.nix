@@ -18,7 +18,7 @@
     };
     homeConfig = {
       home.packages =
-        lib.optionals (pkgs.system != "aarch64-linux") [
+        lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
           pkgs.spotify
         ]
         ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
@@ -33,7 +33,11 @@
           # }))
           pkgs.nixcasks.tidal
         ]
-        ++ lib.optionals (pkgs.system == "x86_64-linux") [
+        ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+          ## TODO: Lilypond derivation stopped building on darwin in Nixpkgs 25.11.
+          pkgs.lilypond
+        ]
+        ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
           pkgs.cider # we have Music.app on darwin
           pkgs.tidal-hifi # only supports x86_linux
         ];

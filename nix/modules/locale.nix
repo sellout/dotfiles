@@ -45,7 +45,7 @@ in {
       home.packages = lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
         pkgs.xbar
       ];
-      nixpkgs.config.permittedInsecurePackages = ["python-2.7.18.8"];
+      nixpkgs.config.permittedInsecurePackages = ["python-2.7.18.12"];
 
       targets.darwin.defaults.NSGlobalDomain = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         AppleFirstWeekday.gregorian = 2; # Monday

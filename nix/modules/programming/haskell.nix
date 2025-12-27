@@ -35,7 +35,7 @@
         author-name = config.lib.local.primaryEmailAccount.realName;
         author-email = config.lib.local.primaryEmailAccount.address;
         copyright = config.lib.local.primaryEmailAccount.realName;
-        github-username = config.programs.git.extraConfig.github.user;
+        github-username = config.programs.git.settings.github.user;
       };
     };
   };

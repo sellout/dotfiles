@@ -105,18 +105,23 @@ in {
           ];
         };
         git = {
-          aliases = {
-            ## List contributors ordered by number of commits.
-            brag-commits = "shortlog --numbered --summary";
-            ## Log output that approximates Magit under Solarized.
-            lg = "log --color --graph --pretty=format:\"%Cblue%h%Creset %Cgreen%D%Creset %s %>|($((\"$COLUMNS\" - 7)))%C(cyan)%an%Creset %>(6,trunc)%cr\"";
-          };
+          enable = true;
+          ## NB: not doing `git = super.gitFull` in the overlay, because then
+          ##     everything gets rebuilt, but want it here for email support.
+          package = gitPackage;
           attributes = [
             "* merge=mergiraf"
             "*.lisp diff=lisp"
           ];
-          enable = true;
-          extraConfig = {
+          ignores = ignores;
+          lfs.enable = true;
+          settings = {
+            alias = {
+              ## List contributors ordered by number of commits.
+              brag-commits = "shortlog --numbered --summary";
+              ## Log output that approximates Magit under Solarized.
+              lg = "log --color --graph --pretty=format:\"%Cblue%h%Creset %Cgreen%D%Creset %s %>|($((\"$COLUMNS\" - 7)))%C(cyan)%an%Creset %>(6,trunc)%cr\"";
+            };
             diff = {
               algorithm = "histogram";
               external = "difft";
@@ -141,6 +146,10 @@ in {
             pager.difftool = true;
             rebase.autosquash = true;
             sendemail.identity = config.lib.local.primaryEmailAccountName;
+            user = {
+              email = config.lib.local.primaryEmailAccount.address;
+              name = config.lib.local.primaryEmailAccount.realName;
+            };
             ## TODO: Stuff from my old .gitconfig that needs to be reviewed
             diff.lisp.xfuncname = "^(\\((def|test).*)$";
             filter = {
@@ -157,14 +166,7 @@ in {
             };
             mergetool.keepBackup = false;
           };
-          ignores = ignores;
-          lfs.enable = true;
-          # NB: not doing `git = super.gitFull` in the overlay, because then
-          #     everything gets rebuilt, but want it here for email support.
-          package = gitPackage;
           signing.signByDefault = true;
-          userEmail = config.lib.local.primaryEmailAccount.address;
-          userName = config.lib.local.primaryEmailAccount.realName;
         };
 
         mercurial = {

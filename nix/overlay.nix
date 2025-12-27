@@ -6,14 +6,14 @@
 }: final: prev: let
   # On aarch64-darwin, this gives us a Rosetta fallback, otherwise, it’s a NOP.
   x86_64 =
-    if final.system == flake-utils.lib.system.aarch64-darwin
+    if final.stdenv.hostPlatform.system == flake-utils.lib.system.aarch64-darwin
     then import nixpkgs {localSystem = flake-utils.lib.system.x86_64-darwin;}
     else prev;
-  master = nixpkgs-master.legacyPackages.${final.system};
+  master = nixpkgs-master.legacyPackages.${final.stdenv.hostPlatform.system};
 in {
   ## Use the home-manager from our inputs (but it doesn’t provide an overlay
   ## itself).
-  home-manager = home-manager.packages.${final.system}.home-manager;
+  home-manager = home-manager.packages.${final.stdenv.hostPlatform.system}.home-manager;
 
   ## Idris 1 doesn’t build on Nixpkgs 23.11.
   idris = final.idris2;
