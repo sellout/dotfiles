@@ -153,6 +153,7 @@
         pkgs.magic-wormhole
         ## not available on darwin via Nix
         (maybeCask "mumble" null)
+        pkgs.nix-output-monitor # prettier Nix build output
         ## not available on darwin via Nix
         (maybeCask "obs-studio" "obs")
         pkgs.python3Packages.opentype-feature-freezer

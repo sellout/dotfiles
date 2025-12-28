@@ -166,7 +166,10 @@ in {
             };
             mergetool.keepBackup = false;
           };
-          signing.signByDefault = true;
+          signing = {
+            format = "openpgp";
+            signByDefault = true;
+          };
         };
 
         mercurial = {

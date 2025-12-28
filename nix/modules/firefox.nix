@@ -86,15 +86,26 @@ in {
         "browser.aboutConfig.showWarning" = false;
         "browser.display.use_system_colors" = true;
         "browser.contentblocking.category" = "strict";
-        ## Disable AI features
+        ## Disable AI features (See https://buc.ci/abucci/p/1763845084.289082)
+        "browser.aiwindow.enabled" = false;
         "browser.ml.chat.enabled" = false;
+        "browser.ml.chat.menu" = false;
+        "browser.ml.chat.page" = false;
+        "browser.ml.chat.page.footerBadge" = false;
+        "browser.ml.chat.page.menuBadge" = false;
         "browser.ml.chat.shortcuts" = false;
         "browser.ml.chat.shortcuts.custom" = false;
         "browser.ml.chat.sidebar" = false;
+        ## NB: This might be the only one that’s required.
         "browser.ml.enable" = false;
+        "browser.ml.linkPreview.enabled" = false;
+        "browser.ml.pageAssist.enabled" = false;
+        "browser.ml.smartAssist.enabled" = false;
         "browser.tabs.groups.smart.enabled" = false;
         "browser.tabs.groups.smart.optin" = false;
         "browser.tabs.groups.smart.userEnabled" = false;
+        "extensions.ml.enabled" = false;
+        "sidebar.notification.badge.aichat" = false;
         ## Disable ads for Mozilla products
         "browser.preferences.moreFromMozilla" = false;
         "browser.startup.homepage" = "https://github.com/pulls/review-requested";

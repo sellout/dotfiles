@@ -80,28 +80,28 @@ in {
         ## See
         ## https://heipei.github.io/2015/02/26/SSH-Agent-Forwarding-considered-harmful/
         forwardAgent = false;
+        userKnownHostsFile = let
+          entries =
+            (
+              if cfg.knownHosts != null
+              then
+                builtins.concatLists (lib.mapAttrsToList
+                  (name: value:
+                    map
+                    (key: "${lib.concatStringsSep "," value.names or [name]} ${key.format} ${key.data}")
+                    value.keys)
+                  cfg.knownHosts)
+              else []
+            )
+            ++ (
+              if lib.isList cfg.extraKnownHosts
+              then cfg.extraKnownHosts
+              else []
+            );
+        in
+          lib.mkIf (entries != [])
+          (toString (pkgs.writeText "known_hosts" (lib.concatLines entries)));
       };
-      userKnownHostsFile = let
-        entries =
-          (
-            if cfg.knownHosts != null
-            then
-              builtins.concatLists (lib.mapAttrsToList
-                (name: value:
-                  map
-                  (key: "${lib.concatStringsSep "," value.names or [name]} ${key.format} ${key.data}")
-                  value.keys)
-                cfg.knownHosts)
-            else []
-          )
-          ++ (
-            if lib.isList cfg.extraKnownHosts
-            then cfg.extraKnownHosts
-            else []
-          );
-      in
-        lib.mkIf (entries != [])
-        (toString (pkgs.writeText "known_hosts" (lib.concatLines entries)));
     };
   };
 }
