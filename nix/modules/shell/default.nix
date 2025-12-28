@@ -110,7 +110,7 @@
     };
 
     zsh = {
-      dotDir = "${config.lib.local.xdg.config.rel}/zsh";
+      dotDir = "${config.xdg.configHome}/zsh";
       enable = true;
       autosuggestion.enable = true;
       enableVteIntegration = true;

@@ -54,7 +54,7 @@ in {
       "debug ipc" # required for `debug-pinentry` to have an effect
       "log-file ${gpgXdg.stateDir}/agent.log"
     ];
-    pinentry.package = pkgs.pinentry.tty;
+    pinentry.package = pkgs.pinentry-tty;
   };
 
   ## Ensure the state directory for GPG exists.

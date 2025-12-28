@@ -62,22 +62,25 @@ in {
     };
 
     programs.ssh = {
-      controlMaster = "auto";
-      # This moves the default `controlPath`, but also changes %n to %h, so we
-      # share the connection even if we typed different hostnames on the
-      # command-line.
-      controlPath = "${runtimeDir}/master-%r@%h:%p";
-      # Don’t kill the socket as soon as the primary connection dies. Give us
-      # 10 minutes to start a new session.
-      controlPersist = "10m";
       enable = true;
+      package = pkgs.openssh;
+      enableDefaultConfig = false;
       extraConfig = ''
         AddKeysToAgent yes
       '';
-      ## See https://heipei.github.io/2015/02/26/SSH-Agent-Forwarding-considered-harmful/
-      forwardAgent = false;
-      package = pkgs.openssh;
-
+      matchBlocks."*" = {
+        controlMaster = "auto";
+        # This moves the default `controlPath`, but also changes %n to %h, so we
+        # share the connection even if we typed different hostnames on the
+        # command-line.
+        controlPath = "${runtimeDir}/master-%r@%h:%p";
+        # Don’t kill the socket as soon as the primary connection dies. Give us
+        # 10 minutes to start a new session.
+        controlPersist = "10m";
+        ## See
+        ## https://heipei.github.io/2015/02/26/SSH-Agent-Forwarding-considered-harmful/
+        forwardAgent = false;
+      };
       userKnownHostsFile = let
         entries =
           (

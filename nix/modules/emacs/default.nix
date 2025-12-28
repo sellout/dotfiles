@@ -167,7 +167,7 @@
           '(flycheck-vale-program "${pkgs.vale}/bin/vale")
           ;; wakatime-mode
           ;; wakatime/wakatime-mode#67
-          '(wakatime-cli-path "${pkgs.wakatime}/bin/wakatime-cli"))
+          '(wakatime-cli-path "${config.programs.wakatime.package}/bin/wakatime-cli"))
 
         ;; This should be moved to an upstream overlay containing settings for full
         ;; Nix-store paths.
@@ -419,8 +419,6 @@
       epkgs.keychain-environment
       epkgs.ligature # enables use of Fira Code, etc. ligatures
       # the Emacs mode is contained in the program’s package.
-      # FIXME: installs but doesn't run on darwin
-      pkgs.lilypond
       epkgs.lsp-haskell
       epkgs.lsp-mode
       # Nix doesn’t recognize that python is a runtime dep of lsp-treemacs

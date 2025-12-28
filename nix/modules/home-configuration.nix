@@ -163,7 +163,7 @@
         # pkgs.wire-desktop # currently subsumed by ferdium
         pkgs.xdg-ninja # home directory complaining
       ]
-      ++ lib.optionals (pkgs.system != "aarch64-linux") [
+      ++ lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
         (maybeCask "simplex-chat-desktop" "simplex")
         pkgs.spotify
         pkgs.unison-ucm # Unison dev tooling
@@ -174,7 +174,7 @@
         pkgs.nixcasks.acorn
         pkgs.nixcasks.adium
         pkgs.nixcasks.alfred
-        pkgs.nixcasks.arduino
+        pkgs.nixcasks.arduino-ide
         pkgs.nixcasks.beamer
         # pkgs.nixcasks.bowtie # broken
         pkgs.nixcasks.controlplane
@@ -216,7 +216,6 @@
         pkgs.nixcasks.imageoptim
         pkgs.nixcasks.keybase # GUI not available on darwin via Nix
         pkgs.nixcasks.kiibohd-configurator
-        pkgs.nixcasks.kindle
         pkgs.nixcasks.lastfm
         pkgs.nixcasks.netnewswire
         (pkgs.nixcasks.omnifocus.overrideAttrs (old: let
@@ -259,14 +258,13 @@
         pkgs.powertop # not supported on darwin
         pkgs.racket # doesn’t contain darwin GUI
       ]
-      ++ lib.optionals (pkgs.system == "x86_64-linux") [
+      ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
         pkgs.eagle # not supported on darwin
         pkgs.ferdium # not supported on darwin
         pkgs.keybase-gui # not supported on darwin
-        ## fails to build on darwin, qtwebengine fails to build on aarch64-linux
-        pkgs.plex-media-player
+        pkgs.plex-desktop # not supported on darwin
         pkgs.signal-desktop # not supported on darwin
-        pkgs.tor-browser-bundle-bin # not supported on darwin
+        pkgs.tor-browser # not supported on darwin
       ];
 
     sessionPath = [
@@ -556,6 +554,7 @@
       "1password-cli"
       "eagle"
       "onepassword-password-manager"
+      "plex-desktop"
       "plexmediaserver"
       "spotify"
       "zoom"
@@ -582,7 +581,16 @@
     };
   };
 
-  nixpkgs.overlays = [dotfiles.overlays.home];
+  nixpkgs = {
+    config.permittedInsecurePackages = [
+      ## FIXME: Duplicated from elsewhere, because this list isn’t being merged
+      ##        correctly or something.
+      "python-2.7.18.12"
+      ## TODO: Not sure what this is a dependency of, but it’s obsolete.
+      "qtwebengine-5.15.19"
+    ];
+    overlays = [dotfiles.overlays.home];
+  };
 
   programs = {
     ## We let Project Manager provide Home Manager to projects that have

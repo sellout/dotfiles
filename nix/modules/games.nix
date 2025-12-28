@@ -32,7 +32,7 @@
         ];
       };
       programs.steam = {
-        enable = pkgs.system == "x86_64-linux";
+        enable = pkgs.stdenv.hostPlatform.system == "x86_64-linux";
         dedicatedServer.openFirewall = true;
         remotePlay.openFirewall = true;
       };

@@ -34,7 +34,7 @@
             # Atreus keyboard customizer
             pkgs.nixcasks.chrysalis # not available on darwin via Nix
           ]
-          ++ lib.optionals (pkgs.system == "x86_64-linux") [
+          ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
             # Atreus keyboard customizer
             pkgs.chrysalis # packaged as x86_64-linux binary
           ];
