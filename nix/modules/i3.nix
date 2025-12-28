@@ -23,6 +23,7 @@ in {
     ws9 = "9";
     ws10 = "10";
   in {
+    enable = true;
     config = {
       bars = [
         {
@@ -195,7 +196,6 @@ in {
       workspaceAutoBackAndForth = true;
     };
 
-    enable = true;
     extraConfig = ''
       workspace "${ws1}" output eDP-1
       workspace "${ws2}" output eDP-1
