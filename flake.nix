@@ -47,8 +47,6 @@
     systems,
     unison-nix,
   }: let
-    stateVersion = "25.05";
-
     supportedSystems = import systems;
 
     exampleHomeConfiguration = {
@@ -72,7 +70,7 @@
       };
       ## These attributes are simply required by home-manager.
       home = {
-        inherit stateVersion;
+        stateVersion = "25.11";
         homeDirectory = "/tmp/example";
         username = "example-user";
       };
@@ -189,7 +187,7 @@
                   ## `homebrew.enable`) that were previously applied to the user
                   ## running `darwin-rebuild`.
                   primaryUser = "example-user";
-                  stateVersion = 5;
+                  stateVersion = 6;
                 };
                 users.users.example-user.home = "/tmp/example";
               }
@@ -217,7 +215,7 @@
                 fileSystems."/".device = "/dev/vba";
                 home-manager.users.example-user = exampleHomeConfiguration;
                 nixpkgs = {inherit hostPlatform;};
-                system = {inherit stateVersion;};
+                system.stateVersion = "25.11";
                 users = {
                   groups.example-user = {};
                   users.example-user = {
