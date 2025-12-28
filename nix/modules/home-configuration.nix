@@ -583,6 +583,9 @@
 
   nixpkgs = {
     config.permittedInsecurePackages = [
+      ## FIXME: Duplicated from elsewhere, because this list isn’t being merged
+      ##        correctly or something.
+      "python-2.7.18.12"
       ## TODO: Not sure what this is a dependency of, but it’s obsolete.
       "qtwebengine-5.15.19"
     ];
