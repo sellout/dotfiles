@@ -56,6 +56,8 @@
     };
   };
 
+  nixpkgs.overlays = [dotfiles.overlays.nixos];
+
   powerManagement = {
     # cpuFreqGovernor = "ondemand";
     powertop.enable = true;

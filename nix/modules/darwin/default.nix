@@ -163,6 +163,8 @@
         (lib.filterAttrs (_: v: v != []) hosts));
   };
 
+  nixpkgs.overlays = [dotfiles.overlays.darwin];
+
   programs = {
     bash = {
       enable = true;
