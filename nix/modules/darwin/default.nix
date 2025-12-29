@@ -80,6 +80,8 @@
         greedy = true;
       }
       "bitcoin-core"
+      ## NB: in nixcasks, but fails in `copyApps` (see jcszymansk/nixcasks#19)
+      "calibre"
       "google-drive" # doesn't respect appdir
       "powerphotos"
       "timemachineeditor"
@@ -160,6 +162,8 @@
         (ip: domains: ip + " " + lib.concatStringsSep " " domains)
         (lib.filterAttrs (_: v: v != []) hosts));
   };
+
+  nixpkgs.overlays = [dotfiles.overlays.darwin];
 
   programs = {
     bash = {

@@ -31,6 +31,7 @@
           #     hash = "";
           #   };
           # }))
+          pkgs.nixcasks.lastfm
           pkgs.nixcasks.tidal
         ]
         ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [

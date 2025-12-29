@@ -140,8 +140,6 @@
         (maybeCask "anki" null)
         pkgs.awscli
         pkgs.bash-strict-mode
-        ## marked broken on darwin
-        (maybeCask "calibre" null)
         ## DOS game emulator # fails to build on darwin # x86 game emulator
         (maybeCask "dosbox" null)
         # pkgs.discord # currently subsumed by ferdium
@@ -157,6 +155,7 @@
         ## not available on darwin via Nix
         (maybeCask "obs-studio" "obs")
         pkgs.python3Packages.opentype-feature-freezer
+        pkgs.signal-desktop-bin # src version not supported on darwin
         # pkgs.slack # currently subsumed by ferdium
         pkgs.synergy
         pkgs.tailscale
@@ -166,7 +165,6 @@
       ]
       ++ lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
         (maybeCask "simplex-chat-desktop" "simplex")
-        pkgs.spotify
         pkgs.unison-ucm # Unison dev tooling
         pkgs.zoom-us
       ]
@@ -217,7 +215,6 @@
         pkgs.nixcasks.imageoptim
         pkgs.nixcasks.keybase # GUI not available on darwin via Nix
         pkgs.nixcasks.kiibohd-configurator
-        pkgs.nixcasks.lastfm
         pkgs.nixcasks.netnewswire
         (pkgs.nixcasks.omnifocus.overrideAttrs (old: let
           version = "3.15.8"; # version I have a license for
@@ -239,12 +236,10 @@
         pkgs.nixcasks.rowmote-helper
         pkgs.nixcasks.screenflow
         pkgs.nixcasks.scrivener
-        pkgs.nixcasks.signal # not available on darwin via Nix
         pkgs.nixcasks.skype # doesn't respect appdir
         pkgs.nixcasks.squeak # not available on darwin via Nix
         pkgs.nixcasks.stellarium
         pkgs.nixcasks.tor-browser # not available on darwin via Nix
-        pkgs.nixcasks.tower
         pkgs.nixcasks.transmission
         pkgs.nixcasks.ukelele
         # pkgs.nixcasks.whatsapp # currently subsumed by ferdium # broken
@@ -253,6 +248,7 @@
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         pkgs._1password-gui # doesn’t get installed in the correct location on Darwin
         pkgs.bitcoin # doesn’t contain darwin GUI
+        pkgs.calibre # marked broken on darwin
         pkgs.github-desktop # not supported on darwin
         pkgs.hdhomerun-config-gui # not supported on darwin
         pkgs.plex # (server) not supported on darwin
@@ -264,7 +260,6 @@
         pkgs.ferdium # not supported on darwin
         pkgs.keybase-gui # not supported on darwin
         pkgs.plex-desktop # not supported on darwin
-        pkgs.signal-desktop # not supported on darwin
         pkgs.tor-browser # not supported on darwin
       ];
 
@@ -557,6 +552,7 @@
       "onepassword-password-manager"
       "plex-desktop"
       "plexmediaserver"
+      "signal-desktop-bin" # actually free – who knows
       "spotify"
       "zoom"
     ];

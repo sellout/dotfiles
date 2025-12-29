@@ -1,10 +1,6 @@
 ## This is configuration shared between various systems (NixOS, nix-darwin,
 ## system-manager, etc.)
-{
-  dotfiles,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ./audio.nix
     ./direnv.nix
@@ -46,8 +42,6 @@
     ## Runs `nix-store --optimise` on a timer.
     optimise.automatic = true;
   };
-
-  nixpkgs.overlays = [dotfiles.overlays.nixos];
 
   services = {
     openssh.enable = false; # subsumed by tailscale
