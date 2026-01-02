@@ -32,7 +32,8 @@
         packages =
           lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
             # Atreus keyboard customizer
-            pkgs.nixcasks.chrysalis # not available on darwin via Nix
+            pkgs.brewCasks.chrysalis # not available on darwin via Nix
+            # pkgs.brewCasks.karabiner-elements
           ]
           ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
             # Atreus keyboard customizer

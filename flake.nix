@@ -26,6 +26,7 @@
     bash-strict-mode,
     bitbar-solar-time,
     bradix,
+    brew,
     darwin,
     emacs-color-theme-solarized,
     emacs-extended-faces,
@@ -81,6 +82,7 @@
         inherit
           agenix
           bitbar-solar-time
+          brew
           darwin
           emacs-color-theme-solarized
           flaky
@@ -130,6 +132,7 @@
             if prev.stdenv.hostPlatform.isDarwin
             then
               nixpkgs.lib.composeManyExtensions [
+                brew.overlays.default
                 firefox-darwin.overlay
                 nixcasks-overlay
               ]
@@ -292,6 +295,14 @@
     bradix = {
       inputs.flaky.follows = "flaky";
       url = "github:sellout/bradix";
+    };
+
+    brew = {
+      url = "github:BatteredBunny/brew-nix";
+      inputs = {
+        nix-darwin.follows = "darwin";
+        nixpkgs.follows = "nixpkgs";
+      };
     };
 
     darwin = {

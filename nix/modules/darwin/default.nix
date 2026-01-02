@@ -79,23 +79,11 @@
         args.appdir = "/Applications";
         greedy = true;
       }
-      "bitcoin-core"
       ## NB: in nixcasks, but fails in `copyApps` (see jcszymansk/nixcasks#19)
       "calibre"
       "google-drive" # doesn't respect appdir
-      "powerphotos"
-      "timemachineeditor"
-      # "virtualbox" # requires Intel architecture
-      {
-        # not available on darwin via Nix
-        name = "vlc";
-        greedy = true;
-      }
+      # # "virtualbox" # requires Intel architecture
       "webex-meetings" # I don’t know how to control auto-update
-      # "whatsapp" # currently subsumed by ferdium
-      # "wire" # currently subsumed by ferdium
-      # not available on darwin via Nix, but seems like it should be
-      "xquartz" # doesn't respect appdir # broken in Nix
     ];
     global.brewfile = true;
     masApps = {

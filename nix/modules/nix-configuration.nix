@@ -1,4 +1,5 @@
 {
+  brew,
   flaky,
   lib,
   math,
@@ -32,6 +33,7 @@
       };
       ## To make it easy to try Homebrew packages without modifying the
       ## configuration.
+      brew.flake = brew;
       nixcasks.flake = nixcasks;
     };
 
