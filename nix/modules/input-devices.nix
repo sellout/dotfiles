@@ -9,8 +9,8 @@
   config = flaky.lib.multiConfig options {
     darwinConfig = {
       homebrew.casks = [
-        # TODO: nix-darwin module doesn’t yet support 15.0 and in nixcasks this
-        #       package is marked as broken.
+        ## TODO: nix-darwin module doesn’t yet support 15.0 and brewCasks
+        ##       package doesn’t work.
         "karabiner-elements"
       ];
       ## NB: Sometimes Karabiner won't work out of the box. Read
@@ -32,7 +32,7 @@
         packages =
           lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
             # Atreus keyboard customizer
-            pkgs.nixcasks.chrysalis # not available on darwin via Nix
+            pkgs.brewCasks.chrysalis # not available on darwin via Nix
           ]
           ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
             # Atreus keyboard customizer

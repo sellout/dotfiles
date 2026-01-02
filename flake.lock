@@ -166,6 +166,46 @@
         "type": "github"
       }
     },
+    "brew": {
+      "inputs": {
+        "brew-api": "brew-api",
+        "nix-darwin": [
+          "darwin"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1764779851,
+        "narHash": "sha256-7WrgeIYBEuFG7DZtS8dio0y9nvRHf3otk7oqsPIoECs=",
+        "owner": "BatteredBunny",
+        "repo": "brew-nix",
+        "rev": "b314426c17667bcebd73ed7e57ecae2bac9755cf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "BatteredBunny",
+        "repo": "brew-nix",
+        "type": "github"
+      }
+    },
+    "brew-api": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1764778687,
+        "narHash": "sha256-yagQkVMSU/ZwyfQzo5mFtC7NyPmemmxuIEM9k/WXJts=",
+        "owner": "BatteredBunny",
+        "repo": "brew-api",
+        "rev": "9c960c9aa52990d1459203d9fe7570ab3a94ec37",
+        "type": "github"
+      },
+      "original": {
+        "owner": "BatteredBunny",
+        "repo": "brew-api",
+        "type": "github"
+      }
+    },
     "cabal-32": {
       "flake": false,
       "locked": {
@@ -914,26 +954,6 @@
         "type": "github"
       }
     },
-    "nixcasks": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1766871616,
-        "narHash": "sha256-mOxMpnWfTQBF27hq8mxrRmugscfnyrxnei2M3qDyPPE=",
-        "owner": "jacekszymanski",
-        "repo": "nixcasks",
-        "rev": "3c4fbd2fdb46faff7f6f36ecbc9dacd66236d561",
-        "type": "github"
-      },
-      "original": {
-        "owner": "jacekszymanski",
-        "repo": "nixcasks",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1766848906,
@@ -1364,6 +1384,7 @@
         ],
         "bitbar-solar-time": "bitbar-solar-time",
         "bradix": "bradix",
+        "brew": "brew",
         "darwin": "darwin",
         "emacs-color-theme-solarized": "emacs-color-theme-solarized",
         "emacs-extended-faces": "emacs-extended-faces",
@@ -1381,7 +1402,6 @@
         ],
         "nix-index-database": "nix-index-database",
         "nix-math": "nix-math",
-        "nixcasks": "nixcasks",
         "nixpkgs": [
           "flaky",
           "nixpkgs"

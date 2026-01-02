@@ -1,7 +1,7 @@
 {lib, ...}: {
   # The preferred location of applications is, in order:
   # 1. home.nix#home.packages (~/Applications/Home Manager Apps)
-  # 1a. pkgs.nixcasks
+  # 1a. pkgs.brewCasks
   # 2. environment.systemPackages (/Applications/Nix Apps)
   # 3. homebrew.casks (/Applications/Homebrew Apps)
   # 4. homebrew.masApps (/Applications)
@@ -44,23 +44,12 @@
         args.appdir = "/Applications";
         greedy = true;
       }
-      "bitcoin-core"
-      ## NB: in nixcasks, but fails in `copyApps` (see jcszymansk/nixcasks#19)
+      ## NB: in brewCasks, but fails in `copyApps` (see jcszymansk/nixcasks#19)
       "calibre"
       "google-drive" # doesn't respect appdir
-      "powerphotos"
-      "timemachineeditor"
+      "tor-browser" # fails on `chmod` in brewCasks
       # "virtualbox" # requires Intel architecture
-      {
-        # not available on darwin via Nix
-        name = "vlc";
-        greedy = true;
-      }
       "webex-meetings" # I don’t know how to control auto-update
-      # "whatsapp" # currently subsumed by ferdium
-      # "wire" # currently subsumed by ferdium
-      # not available on darwin via Nix, but seems like it should be
-      "xquartz" # doesn't respect appdir # broken in Nix
     ];
     global.brewfile = true;
     masApps = {

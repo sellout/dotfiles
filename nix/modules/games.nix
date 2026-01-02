@@ -19,7 +19,7 @@
 
     homeConfig = {
       home.packages = lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-        pkgs.nixcasks.marathon
+        pkgs.brewCasks.marathon
       ];
     };
 

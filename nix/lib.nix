@@ -1,13 +1,13 @@
 {
   agenix,
   bitbar-solar-time,
+  brew,
   darwin,
   emacs-color-theme-solarized,
   flaky,
   home-manager,
   nix-index-database,
   nix-math,
-  nixcasks,
   nixpkgs,
   nixpkgs-master,
   nixpkgs-unstable,
@@ -39,10 +39,10 @@
     inherit
       agenix
       bitbar-solar-time
+      brew
       emacs-color-theme-solarized
       flaky
       math
-      nixcasks
       nixpkgs
       nixpkgs-master
       nixpkgs-unstable
@@ -65,7 +65,14 @@ in {
           {home-manager = {inherit extraSpecialArgs sharedModules;};}
         ];
         specialArgs = {
-          inherit flaky math nixcasks nixpkgs nixpkgs-master nixpkgs-unstable;
+          inherit
+            brew
+            flaky
+            math
+            nixpkgs
+            nixpkgs-master
+            nixpkgs-unstable
+            ;
           dotfiles = self;
         };
       }
@@ -96,9 +103,9 @@ in {
         specialArgs = {
           inherit
             agenix
+            brew
             flaky
             math
-            nixcasks
             nixpkgs
             nixpkgs-master
             nixpkgs-unstable
