@@ -72,12 +72,17 @@
             "Default profile" = {
               selected = true;
 
-              virtual_hid_keyboard.indicate_sticky_modifier_keys_state = true;
+              virtual_hid_keyboard = {
+                indicate_sticky_modifier_keys_state = true;
+                keyboard_type_v2 = "ansi";
+              };
+
               devices = [
                 {
                   identifiers = device.atreus;
                   ignore = false;
                   disable_built_in_keyboard_if_exists = true;
+                  ignore_vendor_events = true;
                   manipulate_caps_lock_led = true;
                 }
                 {
