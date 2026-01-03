@@ -215,6 +215,7 @@
         pkgs.nixcasks.imageoptim
         pkgs.nixcasks.keybase # GUI not available on darwin via Nix
         pkgs.nixcasks.kiibohd-configurator
+        pkgs.nixcasks.libreoffice
         pkgs.nixcasks.netnewswire
         (pkgs.nixcasks.omnifocus.overrideAttrs (old: let
           version = "3.15.8"; # version I have a license for
@@ -227,7 +228,6 @@
         }))
         pkgs.nixcasks.omnigraffle
         pkgs.nixcasks.omnioutliner
-        pkgs.nixcasks.openoffice
         pkgs.nixcasks.plex # not available on darwin via Nix
         pkgs.nixcasks.plex-media-server # not available on darwin via Nix
         pkgs.nixcasks.processing
@@ -251,6 +251,11 @@
         pkgs.calibre # marked broken on darwin
         pkgs.github-desktop # not supported on darwin
         pkgs.hdhomerun-config-gui # not supported on darwin
+        pkgs.hunspell # needed for spellcheck in libreoffice
+        ## TODO: Build lists of these from the configured locales.
+        pkgs.hunspellDicts.en_US # needed for spellcheck in libreoffice
+        pkgs.hyphenDicts.en_US # needed for hyphenation in libreoffice
+        pkgs.libreoffice
         pkgs.plex # (server) not supported on darwin
         pkgs.powertop # not supported on darwin
         pkgs.racket # doesn’t contain darwin GUI
