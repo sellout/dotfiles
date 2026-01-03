@@ -86,12 +86,17 @@
 
     blueman.enable = true;
 
+    displayManager.gdm = {
+      enable = true;
+      autoSuspend = false;
+    };
+
     pipewire = {
+      enable = true;
       alsa = {
         enable = true;
         support32Bit = true;
       };
-      enable = true;
       pulse.enable = true;
     };
 
@@ -107,10 +112,6 @@
     syslogd.enable = true;
 
     xserver = {
-      displayManager.gdm = {
-        autoSuspend = false;
-        enable = true;
-      };
       enable = true;
       windowManager.i3.enable = true;
     };
@@ -133,9 +134,9 @@
     '';
   };
   services = {
-    logind = {
-      lidSwitch = "suspend";
-      lidSwitchExternalPower = "ignore";
+    logind.settings.Login = {
+      HandleLidSwitch = "suspend";
+      HandleLidSwitchExternalPower = "ignore";
     };
   };
 
