@@ -119,18 +119,18 @@
     ##   to); or
     ## • the package has its own GUI that we prefer over any Emacs interface.
     packages = let
-      ## For packages that should be gotten from nixcasks on darwin. The second
-      ## argument may be null, but if the nixcasks package name differs from the
-      ## Nixpkgs name, then it needs to be set.
-      maybeCask = pkg: nixcaskPkg:
+      ## For packages that should be gotten from brewCasks on darwin. The second
+      ## argument may be null, but if the brewCasks package name differs from
+      ## the Nixpkgs name, then it needs to be set.
+      maybeCask = pkg: caskPkg:
         if pkgs.stdenv.hostPlatform.isDarwin
         then let
-          realNixcaskPkg =
-            if nixcaskPkg == null
+          realCaskPkg =
+            if caskPkg == null
             then pkg
-            else nixcaskPkg;
+            else caskPkg;
         in
-          pkgs.nixcasks.${realNixcaskPkg}
+          pkgs.brewCasks.${realCaskPkg}
         else pkgs.${pkg};
     in
       [
@@ -140,6 +140,7 @@
         (maybeCask "anki" null)
         pkgs.awscli
         pkgs.bash-strict-mode
+        (maybeCask "bitcoin" "bitcoin-core")
         ## DOS game emulator # fails to build on darwin # x86 game emulator
         (maybeCask "dosbox" null)
         # pkgs.discord # currently subsumed by ferdium
@@ -169,17 +170,31 @@
         pkgs.zoom-us
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+        # (pkgs.brewCasks.google-drive.overrideAttrs (old: {
+        #   src = pkgs.fetchurl {
+        #     url = builtins.head old.src.urls;
+        #     hash = "sha256-mVzXx09p1oKaF4neQigWxgeIuF1OVPTcP2BG2ILgjrM=";
+        #   };
+        # }))
+        # (pkgs.brewCasks.webex-meetings.overrideAttrs (old: {
+        #   src = pkgs.fetchurl {
+        #     url = builtins.head old.src.urls;
+        #     hash = "sha256-1q3UVzgBcW8iqur1gkM73EMITveg8vjpoYJ5dE0pM6Q=";
+        #   };
+        # }))
+        ## FIXME: Above here should be integrated, once I know they work as well
+        ##        as the actual Homebrew packages.
         pkgs.mas
-        pkgs.nixcasks.acorn
-        pkgs.nixcasks.adium
-        pkgs.nixcasks.alfred
-        pkgs.nixcasks.arduino-ide
-        pkgs.nixcasks.beamer
-        # pkgs.nixcasks.bowtie # broken
-        pkgs.nixcasks.controlplane
-        (pkgs.nixcasks.devonthink.overrideAttrs (old: let
+        pkgs.brewCasks.acorn
+        pkgs.brewCasks.adium
+        (pkgs.brewCasks.alfred.overrideAttrs (old: {
+          ## From BatteredBunny/brew-nix#15
+          unpackPhase = "${lib.getExe pkgs.gnutar} -xvzf $src";
+        }))
+        pkgs.brewCasks.beamer
+        pkgs.brewCasks.controlplane
+        (pkgs.brewCasks.devonthink.overrideAttrs (old: let
           # version I have a license for (and want to migrate off this)
-          app = "DEVONthink Pro.app";
           version = "2.11.3";
         in {
           inherit version;
@@ -187,36 +202,25 @@
             url = "https://s3.amazonaws.com/DTWebsiteSupport/download/devonthink/${version}/DEVONthink_Pro_Office.app.zip";
             hash = "sha256-cHSU08cJ4K+kso3dfBOPOr5bHS0gcVt6hitpgqMH9gs=";
           };
-          installPhase = ''
-            runHook preInstall
-
-            mkdir -p $(dirname $out/Applications/${app})
-            cp -r "${app}" "$out/Applications/${app}"
-
-            mkdir -p $out/bin
-            for bin in $out/Applications/*.app/Contents/MacOS/*; do
-              [[ "$(basename "$bin")" =~ $pname && ! "$bin" =~ \.dylib && -f "$bin" && -x "$bin" ]] &&  makeWrapper "$bin" "$out/bin/$(basename "$bin")"
-            done
-
-            runHook postInstall
-          '';
+          sourceRoot = "DEVONthink Pro.app";
         }))
-        # pkgs.nixcasks.discord # currently subsumed by ferdium
-        pkgs.nixcasks.disk-inventory-x
-        pkgs.nixcasks.dropbox
-        # pkgs.nixcasks.evernote # currently subsumed by ferdium
-        pkgs.nixcasks.fantastical
-        pkgs.nixcasks.ferdium # not available on darwin via Nix
-        pkgs.nixcasks.fertigt-slate # TODO: remove in favor of Hammerspoon?
-        pkgs.nixcasks.freemind
-        pkgs.nixcasks.github
-        pkgs.nixcasks.gotomeeting
-        pkgs.nixcasks.hammerspoon
-        pkgs.nixcasks.imageoptim
-        pkgs.nixcasks.keybase # GUI not available on darwin via Nix
-        pkgs.nixcasks.kiibohd-configurator
-        pkgs.nixcasks.netnewswire
-        (pkgs.nixcasks.omnifocus.overrideAttrs (old: let
+        pkgs.brewCasks.disk-inventory-x
+        pkgs.brewCasks.dropbox
+        pkgs.brewCasks.fantastical
+        pkgs.brewCasks.ferdium # not available on darwin via Nix
+        pkgs.brewCasks.freemind
+        pkgs.brewCasks.github
+        pkgs.brewCasks.gotomeeting
+        pkgs.brewCasks.hammerspoon
+        (pkgs.brewCasks.imageoptim.overrideAttrs (old: {
+          ## From BatteredBunny/brew-nix#15
+          unpackPhase = "${lib.getExe pkgs.gnutar} -xvJf $src";
+        }))
+        pkgs.brewCasks.keybase # GUI not available on darwin via Nix
+        pkgs.brewCasks.kiibohd-configurator
+        pkgs.brewCasks.libreoffice # ostensibly in Nixpkgs, but unpublished
+        pkgs.brewCasks.netnewswire
+        (pkgs.brewCasks.omnifocus.overrideAttrs (old: let
           version = "3.15.8"; # version I have a license for
         in {
           inherit version;
@@ -225,32 +229,48 @@
             hash = "sha256-8P578Pr8NdUKI/4NYUuUA7WN6UOXBKLj2T+9xgKqtmE=";
           };
         }))
-        pkgs.nixcasks.omnigraffle
-        pkgs.nixcasks.omnioutliner
-        pkgs.nixcasks.openoffice
-        pkgs.nixcasks.plex # not available on darwin via Nix
-        pkgs.nixcasks.plex-media-server # not available on darwin via Nix
-        pkgs.nixcasks.processing
-        # pkgs.nixcasks.psi # broken
-        pkgs.nixcasks.quicksilver
-        pkgs.nixcasks.rowmote-helper
-        pkgs.nixcasks.screenflow
-        pkgs.nixcasks.scrivener
-        pkgs.nixcasks.skype # doesn't respect appdir
-        pkgs.nixcasks.squeak # not available on darwin via Nix
-        pkgs.nixcasks.stellarium
-        pkgs.nixcasks.tor-browser # not available on darwin via Nix
-        pkgs.nixcasks.transmission
-        pkgs.nixcasks.ukelele
-        # pkgs.nixcasks.whatsapp # currently subsumed by ferdium # broken
+        pkgs.brewCasks.omnigraffle
+        pkgs.brewCasks.omnioutliner
+        pkgs.brewCasks.plex # not available on darwin via Nix
+        pkgs.brewCasks.plex-media-server # not available on darwin via Nix
+        (pkgs.brewCasks.powerphotos.overrideAttrs (old: {
+          src = pkgs.fetchurl {
+            url = builtins.head old.src.urls;
+            hash = "sha256-ryPaLb2N8y6rkN5swkfhcj2NGWzYmbSehbqqiQoAf1A=";
+          };
+        }))
+        pkgs.brewCasks.processing
+        pkgs.brewCasks.psi
+        pkgs.brewCasks.quicksilver
+        pkgs.brewCasks.rowmote-helper
+        pkgs.brewCasks.screenflow
+        pkgs.brewCasks.scrivener
+        pkgs.brewCasks.skype # doesn't respect appdir
+        pkgs.brewCasks.squeak # not available on darwin via Nix
+        pkgs.brewCasks.stellarium
+        (pkgs.brewCasks.timemachineeditor.overrideAttrs (old: {
+          src = pkgs.fetchurl {
+            url = builtins.head old.src.urls;
+            hash = "sha256-UPd3rClEpo4EpVkgOOWlrc8HcRCzBhE/do0/fLuVvwA=";
+          };
+        }))
+        pkgs.brewCasks.transmission
+        pkgs.brewCasks.ukelele
+        pkgs.brewCasks.vlc
+        pkgs.brewCasks.xquartz
+        # pkgs.brewCasks.whatsapp # currently subsumed by ferdium # broken
         pkgs.terminal-notifier
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         pkgs._1password-gui # doesn’t get installed in the correct location on Darwin
-        pkgs.bitcoin # doesn’t contain darwin GUI
         pkgs.calibre # marked broken on darwin
         pkgs.github-desktop # not supported on darwin
         pkgs.hdhomerun-config-gui # not supported on darwin
+        pkgs.hunspell # needed for spellcheck in libreoffice
+        ## TODO: Build lists of these from the configured locales.
+        pkgs.hunspellDicts.en_US # needed for spellcheck in libreoffice
+        pkgs.hyphenDicts.en_US # needed for hyphenation in libreoffice
+        pkgs.libreoffice
         pkgs.plex # (server) not supported on darwin
         pkgs.powertop # not supported on darwin
         pkgs.racket # doesn’t contain darwin GUI

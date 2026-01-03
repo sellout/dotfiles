@@ -26,6 +26,7 @@
     bash-strict-mode,
     bitbar-solar-time,
     bradix,
+    brew,
     darwin,
     emacs-color-theme-solarized,
     emacs-extended-faces,
@@ -35,9 +36,11 @@
     flake-utils,
     flaky,
     home-manager,
+    homebrew,
+    homebrew-cask,
+    homebrew-core,
     nix-index-database,
     nix-math,
-    nixcasks,
     nixpkgs,
     nixpkgs-master,
     nixpkgs-unstable,
@@ -81,13 +84,16 @@
         inherit
           agenix
           bitbar-solar-time
+          brew
           darwin
           emacs-color-theme-solarized
           flaky
           home-manager
+          homebrew
+          homebrew-cask
+          homebrew-core
           nix-index-database
           nix-math
-          nixcasks
           nixpkgs
           nixpkgs-master
           nixpkgs-unstable
@@ -96,20 +102,8 @@
           ;
       };
 
-      overlays = let
-        nixcasks-overlay = final: prev: {
-          nixcasks =
-            ## TODO: Set the `osVersion` per-host (or per-account), rather than
-            ##       hardcoding here.
-            (nixcasks.output {osVersion = "tahoe";})
-            .packages
-            .${final.stdenv.hostPlatform.system};
-        };
-      in {
-        darwin = nixpkgs.lib.composeManyExtensions [
-          nixcasks-overlay
-          self.overlays.default
-        ];
+      overlays = {
+        darwin = self.overlays.default;
         ## TODO: Split Emacs into its own overlay.
         default = import ./nix/overlay.nix {
           inherit
@@ -130,8 +124,8 @@
             if prev.stdenv.hostPlatform.isDarwin
             then
               nixpkgs.lib.composeManyExtensions [
+                brew.overlays.default
                 firefox-darwin.overlay
-                nixcasks-overlay
               ]
               final
               prev
@@ -294,6 +288,14 @@
       url = "github:sellout/bradix";
     };
 
+    brew = {
+      url = "github:BatteredBunny/brew-nix";
+      inputs = {
+        nix-darwin.follows = "darwin";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
+
     darwin = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:LnL7/nix-darwin/nix-darwin-25.11";
@@ -325,6 +327,18 @@
       url = "github:hercules-ci/flake-parts";
     };
 
+    homebrew.url = "github:zhaofengli/nix-homebrew";
+
+    homebrew-cask = {
+      flake = false;
+      url = "github:homebrew/homebrew-cask";
+    };
+
+    homebrew-core = {
+      flake = false;
+      url = "github:homebrew/homebrew-core";
+    };
+
     nix-index-database = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:nix-community/nix-index-database";
@@ -336,11 +350,6 @@
         nixpkgs.follows = "nixpkgs";
       };
       url = "github:xddxdd/nix-math";
-    };
-
-    nixcasks = {
-      inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:jacekszymanski/nixcasks";
     };
 
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";

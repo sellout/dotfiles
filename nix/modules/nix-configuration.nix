@@ -1,8 +1,8 @@
 {
+  brew,
   flaky,
   lib,
   math,
-  nixcasks,
   nixpkgs,
   nixpkgs-master,
   nixpkgs-unstable,
@@ -32,7 +32,7 @@
       };
       ## To make it easy to try Homebrew packages without modifying the
       ## configuration.
-      nixcasks.flake = nixcasks;
+      brew.flake = brew;
     };
 
     settings = {

@@ -22,7 +22,7 @@
           pkgs.spotify
         ]
         ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-          # (pkgs.nixcasks.ableton-live-standard.overrideAttrs (old: let
+          # (pkgs.brewCasks.ableton-live-standard.overrideAttrs (old: let
           #   version = "6.0.1"; # version I have a license for
           # in {
           #   inherit version;
@@ -31,8 +31,8 @@
           #     hash = "";
           #   };
           # }))
-          pkgs.nixcasks.lastfm
-          pkgs.nixcasks.tidal
+          pkgs.brewCasks.lastfm
+          pkgs.brewCasks.tidal
         ]
         ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
           ## TODO: Lilypond derivation stopped building on darwin in Nixpkgs 25.11.
