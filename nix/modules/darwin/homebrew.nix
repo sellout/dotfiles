@@ -1,4 +1,26 @@
-{lib, ...}: {
+{
+  config,
+  homebrew,
+  homebrew-cask,
+  homebrew-core,
+  lib,
+  pkgs,
+  ...
+}: {
+  imports = [homebrew.darwinModules.nix-homebrew];
+
+  nix-homebrew = {
+    enable = true;
+    autoMigrate = true;
+    enableRosetta = pkgs.stdenv.hostPlatform.isAarch64;
+    mutableTaps = false;
+    taps = {
+      "homebrew/homebrew-cask" = homebrew-cask;
+      "homebrew/homebrew-core" = homebrew-core;
+    };
+    user = config.system.primaryUser;
+  };
+
   # The preferred location of applications is, in order:
   # 1. home.nix#home.packages (~/Applications/Home Manager Apps)
   # 1a. pkgs.brewCasks
@@ -76,6 +98,7 @@
       cleanup = "uninstall";
       upgrade = true;
     };
+    taps = builtins.attrNames config.nix-homebrew.taps;
   };
 
   ## Don’t auto-upgrade from the Mac App Store (this is handled by

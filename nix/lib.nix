@@ -6,6 +6,9 @@
   emacs-color-theme-solarized,
   flaky,
   home-manager,
+  homebrew,
+  homebrew-cask,
+  homebrew-core,
   nix-index-database,
   nix-math,
   nixpkgs,
@@ -68,6 +71,9 @@ in {
           inherit
             brew
             flaky
+            homebrew
+            homebrew-cask
+            homebrew-core
             math
             nixpkgs
             nixpkgs-master

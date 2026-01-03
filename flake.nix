@@ -36,6 +36,9 @@
     flake-utils,
     flaky,
     home-manager,
+    homebrew,
+    homebrew-cask,
+    homebrew-core,
     nix-index-database,
     nix-math,
     nixpkgs,
@@ -86,6 +89,9 @@
           emacs-color-theme-solarized
           flaky
           home-manager
+          homebrew
+          homebrew-cask
+          homebrew-core
           nix-index-database
           nix-math
           nixpkgs
@@ -319,6 +325,18 @@
     flake-parts = {
       inputs.nixpkgs-lib.follows = "nixpkgs";
       url = "github:hercules-ci/flake-parts";
+    };
+
+    homebrew.url = "github:zhaofengli/nix-homebrew";
+
+    homebrew-cask = {
+      flake = false;
+      url = "github:homebrew/homebrew-cask";
+    };
+
+    homebrew-core = {
+      flake = false;
+      url = "github:homebrew/homebrew-core";
     };
 
     nix-index-database = {

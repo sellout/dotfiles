@@ -206,6 +206,23 @@
         "type": "github"
       }
     },
+    "brew-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1763638478,
+        "narHash": "sha256-n/IMowE9S23ovmTkKX7KhxXC2Yq41EAVFR2FBIXPcT8=",
+        "owner": "Homebrew",
+        "repo": "brew",
+        "rev": "fbfdbaba008189499958a7aeb1e2c36ab10c067d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Homebrew",
+        "ref": "5.0.3",
+        "repo": "brew",
+        "type": "github"
+      }
+    },
     "cabal-32": {
       "flake": false,
       "locked": {
@@ -816,6 +833,56 @@
         "type": "github"
       }
     },
+    "homebrew": {
+      "inputs": {
+        "brew-src": "brew-src"
+      },
+      "locked": {
+        "lastModified": 1764473698,
+        "narHash": "sha256-C91gPgv6udN5WuIZWNehp8qdLqlrzX6iF/YyboOj6XI=",
+        "owner": "zhaofengli",
+        "repo": "nix-homebrew",
+        "rev": "6a8ab60bfd66154feeaa1021fc3b32684814a62a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "zhaofengli",
+        "repo": "nix-homebrew",
+        "type": "github"
+      }
+    },
+    "homebrew-cask": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1767458043,
+        "narHash": "sha256-9wRKvEog4Ed3gCfxiDviXUlgH4l5iljc5B9I4yQU/RQ=",
+        "owner": "homebrew",
+        "repo": "homebrew-cask",
+        "rev": "d8970b9f4b6b72992b7e4e3c6a7047c403ade76a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "homebrew",
+        "repo": "homebrew-cask",
+        "type": "github"
+      }
+    },
+    "homebrew-core": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1767465033,
+        "narHash": "sha256-jvB5zWjQMxvGoBnjQBScUtYO8SIhM6HhuzWVxW7Ut7A=",
+        "owner": "homebrew",
+        "repo": "homebrew-core",
+        "rev": "6674823c7e0e790f36d31180513a9175f6834afc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "homebrew",
+        "repo": "homebrew-core",
+        "type": "github"
+      }
+    },
     "hpc-coveralls": {
       "flake": false,
       "locked": {
@@ -1400,6 +1467,9 @@
           "flaky",
           "home-manager"
         ],
+        "homebrew": "homebrew",
+        "homebrew-cask": "homebrew-cask",
+        "homebrew-core": "homebrew-core",
         "nix-index-database": "nix-index-database",
         "nix-math": "nix-math",
         "nixpkgs": [
