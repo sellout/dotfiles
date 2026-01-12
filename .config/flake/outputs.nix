@@ -31,6 +31,10 @@
   supportedSystems = import systems;
 
   exampleHomeConfiguration = {
+    config,
+    lib,
+    ...
+  }: {
     imports = [self.homeModules.default];
 
     ## Attributes that the configuration expects to have set, but
@@ -48,6 +52,16 @@
     programs.git = {
       settings.github.user = "example-user";
       signing.key = "";
+    };
+    ## These ensure that we test the default profile settings.
+    programs = {
+      firefox.profiles.default =
+        lib.recursiveUpdate config.lib.local.firefox.profileDefaults {};
+      thunderbird.profiles.default =
+        lib.recursiveUpdate config.lib.local.thunderbird.profileDefaults
+        {isDefault = true;};
+      vscode.profiles.default =
+        lib.recursiveUpdate config.lib.local.vscode.profileDefaults {};
     };
     ## These attributes are simply required by home-manager.
     home = {
@@ -119,19 +133,23 @@ in
     };
 
     darwinModules = {
+      communication = ../../nix/modules/communication.nix;
       default = ../../nix/modules/darwin/default.nix;
       garnix-cache = ../../nix/modules/garnix-cache.nix;
       nix-configuration = ../../nix/modules/nix-configuration.nix;
       nixpkgs-configuration = ../../nix/modules/nixpkgs-configuration.nix;
+      pim = ../../nix/modules/pim.nix;
     };
 
     homeModules = {
       default = ../../nix/modules/home-configuration.nix;
+      communication = ../../nix/modules/communication.nix;
       emacs = ../../nix/modules/emacs;
       garnix-cache = ../../nix/modules/garnix-cache.nix;
       i3 = ../../nix/modules/i3.nix;
       nix-configuration = ../../nix/modules/nix-configuration.nix;
       nixpkgs-configuration = ../../nix/modules/nixpkgs-configuration.nix;
+      pim = ../../nix/modules/pim.nix;
       programming = ../../nix/modules/programming;
       shell = ../../nix/modules/shell;
       ssh = ../../nix/modules/ssh.nix;

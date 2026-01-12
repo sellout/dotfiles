@@ -3,6 +3,7 @@
 {pkgs, ...}: {
   imports = [
     ./audio.nix
+    ./communication.nix
     ./direnv.nix
     ./fonts.nix
     ./games.nix
@@ -12,6 +13,7 @@
     ./nix-configuration.nix
     ./nixos-wiki.nix
     ./nixpkgs-configuration.nix
+    ./pim.nix
     ./storage.nix
     ./vcs
   ];

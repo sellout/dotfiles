@@ -9,6 +9,7 @@
   imports = [
     agenix.homeManagerModules.age
     ./audio.nix
+    ./communication.nix
     ./direnv.nix
     ./emacs
     ./firefox.nix
@@ -21,6 +22,7 @@
     ./nix-configuration.nix
     ./nixos-wiki.nix
     ./nixpkgs-configuration.nix
+    ./pim.nix
     ./programming
     ./shell
     ./ssh.nix
@@ -30,12 +32,6 @@
     ./wakatime.nix
     ./xdg.nix
   ];
-
-  accounts = {
-    calendar.basePath = "${config.xdg.stateHome}/calendar";
-    contact.basePath = "${config.xdg.stateHome}/contact";
-    email.maildirBasePath = "${config.xdg.stateHome}/Maildir";
-  };
 
   ## TODO: The default for this isn’t actually a path, but rather
   ##       expands to a path in the shell. See ryantm/agenix#300.
@@ -118,117 +114,52 @@
     ##   available so we can pull new versions and build things when we need
     ##   to); or
     ## • the package has its own GUI that we prefer over any Emacs interface.
-    packages = let
-      ## For packages that should be gotten from brewCasks on darwin. The second
-      ## argument may be null, but if the brewCasks package name differs from
-      ## the Nixpkgs name, then it needs to be set.
-      maybeCask = pkg: caskPkg:
-        if pkgs.stdenv.hostPlatform.isDarwin
-        then let
-          realCaskPkg =
-            if caskPkg == null
-            then pkg
-            else caskPkg;
-        in
-          pkgs.brewCasks.${realCaskPkg}
-        else pkgs.${pkg};
-    in
+    packages =
       [
         pkgs.age
         pkgs.agenix
         ## doesn’t contain darwin GUI
-        (maybeCask "anki" null)
+        (config.lib.local.maybeCask "anki" null)
         pkgs.awscli
         pkgs.bash-strict-mode
-        (maybeCask "bitcoin" "bitcoin-core")
+        (config.lib.local.maybeCask "bitcoin" "bitcoin-core")
         ## DOS game emulator # fails to build on darwin # x86 game emulator
-        (maybeCask "dosbox" null)
-        # pkgs.discord # currently subsumed by ferdium
-        # pkgs.element-desktop # currently subsumed by ferdium
+        (config.lib.local.maybeCask "dosbox" null)
         pkgs.ghostscript
-        # pkgs.gitter # currently subsumed by ferdium
         pkgs.imagemagick
         pkgs.jekyll
         pkgs.magic-wormhole
-        ## not available on darwin via Nix
-        (maybeCask "mumble" null)
         pkgs.nix-output-monitor # prettier Nix build output
         ## not available on darwin via Nix
-        (maybeCask "obs-studio" "obs")
+        (config.lib.local.maybeCask "obs-studio" "obs")
         pkgs.python3Packages.opentype-feature-freezer
-        pkgs.signal-desktop-bin # src version not supported on darwin
-        # pkgs.slack # currently subsumed by ferdium
         pkgs.synergy
         pkgs.tailscale
         pkgs.tikzit
-        # pkgs.wire-desktop # currently subsumed by ferdium
         pkgs.xdg-ninja # home directory complaining
       ]
       ++ lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
-        (maybeCask "simplex-chat-desktop" "simplex")
         pkgs.unison-ucm # Unison dev tooling
-        pkgs.zoom-us
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-        # (pkgs.brewCasks.google-drive.overrideAttrs (old: {
-        #   src = pkgs.fetchurl {
-        #     url = builtins.head old.src.urls;
-        #     hash = "sha256-mVzXx09p1oKaF4neQigWxgeIuF1OVPTcP2BG2ILgjrM=";
-        #   };
-        # }))
-        # (pkgs.brewCasks.webex-meetings.overrideAttrs (old: {
-        #   src = pkgs.fetchurl {
-        #     url = builtins.head old.src.urls;
-        #     hash = "sha256-1q3UVzgBcW8iqur1gkM73EMITveg8vjpoYJ5dE0pM6Q=";
-        #   };
-        # }))
-        ## FIXME: Above here should be integrated, once I know they work as well
-        ##        as the actual Homebrew packages.
         pkgs.mas
         pkgs.brewCasks.acorn
-        pkgs.brewCasks.adium
         (pkgs.brewCasks.alfred.overrideAttrs (old: {
           ## From BatteredBunny/brew-nix#15
           unpackPhase = "${lib.getExe pkgs.gnutar} -xvzf $src";
         }))
         pkgs.brewCasks.beamer
         pkgs.brewCasks.controlplane
-        (pkgs.brewCasks.devonthink.overrideAttrs (old: let
-          # version I have a license for (and want to migrate off this)
-          version = "2.11.3";
-        in {
-          inherit version;
-          src = pkgs.fetchurl {
-            url = "https://s3.amazonaws.com/DTWebsiteSupport/download/devonthink/${version}/DEVONthink_Pro_Office.app.zip";
-            hash = "sha256-cHSU08cJ4K+kso3dfBOPOr5bHS0gcVt6hitpgqMH9gs=";
-          };
-          sourceRoot = "DEVONthink Pro.app";
-        }))
         pkgs.brewCasks.disk-inventory-x
         pkgs.brewCasks.dropbox
-        pkgs.brewCasks.fantastical
-        pkgs.brewCasks.ferdium # not available on darwin via Nix
         pkgs.brewCasks.freemind
         pkgs.brewCasks.github
-        pkgs.brewCasks.gotomeeting
         pkgs.brewCasks.hammerspoon
         (pkgs.brewCasks.imageoptim.overrideAttrs (old: {
           ## From BatteredBunny/brew-nix#15
           unpackPhase = "${lib.getExe pkgs.gnutar} -xvJf $src";
         }))
-        pkgs.brewCasks.keybase # GUI not available on darwin via Nix
         pkgs.brewCasks.kiibohd-configurator
-        pkgs.brewCasks.libreoffice # ostensibly in Nixpkgs, but unpublished
-        pkgs.brewCasks.netnewswire
-        (pkgs.brewCasks.omnifocus.overrideAttrs (old: let
-          version = "3.15.8"; # version I have a license for
-        in {
-          inherit version;
-          src = pkgs.fetchurl {
-            url = "https://downloads.omnigroup.com/software/macOS/11/OmniFocus-${version}.dmg";
-            hash = "sha256-8P578Pr8NdUKI/4NYUuUA7WN6UOXBKLj2T+9xgKqtmE=";
-          };
-        }))
         pkgs.brewCasks.omnigraffle
         pkgs.brewCasks.omnioutliner
         pkgs.brewCasks.plex # not available on darwin via Nix
@@ -240,12 +171,10 @@
           };
         }))
         pkgs.brewCasks.processing
-        pkgs.brewCasks.psi
         pkgs.brewCasks.quicksilver
         pkgs.brewCasks.rowmote-helper
         pkgs.brewCasks.screenflow
         pkgs.brewCasks.scrivener
-        pkgs.brewCasks.skype # doesn't respect appdir
         pkgs.brewCasks.squeak # not available on darwin via Nix
         pkgs.brewCasks.stellarium
         (pkgs.brewCasks.timemachineeditor.overrideAttrs (old: {
@@ -258,27 +187,17 @@
         pkgs.brewCasks.ukelele
         pkgs.brewCasks.vlc
         pkgs.brewCasks.xquartz
-        # pkgs.brewCasks.whatsapp # currently subsumed by ferdium # broken
         pkgs.terminal-notifier
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-        pkgs._1password-gui # doesn’t get installed in the correct location on Darwin
-        pkgs.calibre # marked broken on darwin
         pkgs.github-desktop # not supported on darwin
         pkgs.hdhomerun-config-gui # not supported on darwin
-        pkgs.hunspell # needed for spellcheck in libreoffice
-        ## TODO: Build lists of these from the configured locales.
-        pkgs.hunspellDicts.en_US # needed for spellcheck in libreoffice
-        pkgs.hyphenDicts.en_US # needed for hyphenation in libreoffice
-        pkgs.libreoffice
         pkgs.plex # (server) not supported on darwin
         pkgs.powertop # not supported on darwin
         pkgs.racket # doesn’t contain darwin GUI
       ]
       ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
         pkgs.eagle # not supported on darwin
-        pkgs.ferdium # not supported on darwin
-        pkgs.keybase-gui # not supported on darwin
         pkgs.plex-desktop # not supported on darwin
         pkgs.tor-browser # not supported on darwin
       ];
@@ -361,9 +280,10 @@
   lib.local = {
     defaultFont = {
       # NB: These faces need to be listed in `home.packages`.
-      monoFamily = "Fira Mono";
-      programmingFamily = "Fira Code";
+      monoFamily = "FiraMono Nerd Font";
+      programmingFamily = "FiraCode Nerd Font";
       sansFamily = "Lexica Ultralegible";
+      serifFamily = "Times New Roman";
       size = 12.0;
       string =
         config.lib.local.defaultFont.sansFamily
@@ -371,19 +291,19 @@
         + builtins.toString config.lib.local.defaultFont.size;
     };
 
-    ## Holds the name of the (first) account designated as `primary`, or `null`
-    ## (which shouldn’t happen).
-    primaryEmailAccountName =
-      lib.foldlAttrs
-      (acc: key: val:
-        if acc == null && val.primary == true
-        then key
-        else acc)
-      null
-      config.accounts.email.accounts;
-
-    primaryEmailAccount =
-      config.accounts.email.accounts.${config.lib.local.primaryEmailAccountName};
+    ## For packages that should be gotten from brewCasks on darwin. The second
+    ## argument may be null, but if the brewCasks package name differs from
+    ## the Nixpkgs name, then it needs to be set.
+    maybeCask = pkg: caskPkg:
+      if pkgs.stdenv.hostPlatform.isDarwin
+      then let
+        realCaskPkg =
+          if caskPkg == null
+          then pkg
+          else caskPkg;
+      in
+        pkgs.brewCasks.${realCaskPkg}
+      else pkgs.${pkg};
 
     supportedOn = plat: pkg:
       if pkg.meta ? platforms
@@ -566,15 +486,9 @@
   local.nixpkgs = {
     enable = true;
     allowedUnfreePackages = [
-      "1password"
-      "1password-cli"
       "eagle"
-      "onepassword-password-manager"
       "plex-desktop"
       "plexmediaserver"
-      "signal-desktop-bin" # actually free – who knows
-      "spotify"
-      "zoom"
     ];
   };
 

@@ -1,4 +1,5 @@
 {
+  config,
   flaky,
   lib,
   options,
@@ -20,6 +21,8 @@
       home.packages =
         lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
           pkgs.spotify
+          ## not actually the same app, but access the same service
+          (config.lib.local.maybeCask "tidal-hifi" "tidal")
         ]
         ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
           # (pkgs.brewCasks.ableton-live-standard.overrideAttrs (old: let
@@ -32,7 +35,6 @@
           #   };
           # }))
           pkgs.brewCasks.lastfm
-          pkgs.brewCasks.tidal
         ]
         ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
           ## TODO: Lilypond derivation stopped building on darwin in Nixpkgs 25.11.
@@ -40,11 +42,12 @@
         ]
         ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
           pkgs.cider # we have Music.app on darwin
-          pkgs.tidal-hifi # only supports x86_linux
         ];
 
-      ## Needed by `pkgs.tidal-hifi`.
-      local.nixpkgs.allowedUnfreePackages = ["castlabs-electron"];
+      local.nixpkgs.allowedUnfreePackages = [
+        "castlabs-electron" # Needed by `pkgs.tidal-hifi`
+        "spotify"
+      ];
 
       targets.darwin.defaults.NSGlobalDomain."com.apple.sound.beep.flash" =
         lib.mkIf pkgs.stdenv.hostPlatform.isDarwin true;
