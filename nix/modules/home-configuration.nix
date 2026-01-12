@@ -280,9 +280,10 @@
   lib.local = {
     defaultFont = {
       # NB: These faces need to be listed in `home.packages`.
-      monoFamily = "Fira Mono";
-      programmingFamily = "Fira Code";
+      monoFamily = "FiraMono Nerd Font";
+      programmingFamily = "FiraCode Nerd Font";
       sansFamily = "Lexica Ultralegible";
+      serifFamily = "Times New Roman";
       size = 12.0;
       string =
         config.lib.local.defaultFont.sansFamily

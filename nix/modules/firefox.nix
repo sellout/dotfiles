@@ -119,11 +119,13 @@ in {
       "font.default.x-western" = "sans-serif";
       "font.name.monospace.x-unicode" = defaultFont.monoFamily;
       "font.name.monospace.x-western" = defaultFont.monoFamily;
-      "font.name.sans-serif.x-unicode" = defaultFont.string;
-      "font.name.sans-serif.x-western" = defaultFont.string;
+      "font.name.sans-serif.x-unicode" = defaultFont.sansFamily;
+      "font.name.sans-serif.x-western" = defaultFont.sansFamily;
+      "font.name.serif.x-unicode" = defaultFont.serifFamily;
+      "font.name.serif.x-western" = defaultFont.serifFamily;
       "font.size.monospace.x-unicode" = builtins.floor defaultFont.size;
-      "font.size.monospace.x-western" = defaultFont.size;
-      "font.size.variable.x-unicode" = defaultFont.size;
+      "font.size.monospace.x-western" = builtins.floor defaultFont.size;
+      "font.size.variable.x-unicode" = builtins.floor defaultFont.size;
       "font.size.variable.x-western" = builtins.floor defaultFont.size;
       ## printing
       "print.prefer_system_dialog" = true;
