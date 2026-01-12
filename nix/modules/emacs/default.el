@@ -108,7 +108,7 @@ FILENAME and NOERROR behave the same as for ‘require‘."
 
 ;; This is a escape hatch for loading non-Nix-managed configuration local to the
 ;; user account. See the contents of ‘user-init-file’ for more information.
-(require-config 'local nil nil)
+(require-config 'local nil t)
 
 (use-package abbrev
   :delight "…")
