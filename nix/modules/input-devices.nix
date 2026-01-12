@@ -29,15 +29,11 @@
           options = ["ctrl:nocaps"];
           variant = "dvorak";
         };
-        packages =
-          lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-            # Atreus keyboard customizer
-            pkgs.brewCasks.chrysalis # not available on darwin via Nix
-          ]
-          ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
-            # Atreus keyboard customizer
-            pkgs.chrysalis # packaged as x86_64-linux binary
-          ];
+        packages = lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
+          ## Atreus keyboard customizer
+          ## packaged in Nixpkgs as x86_64-linux binary
+          (config.lib.local.maybeCask "chrysalis" null)
+        ];
       };
       ## TODO: This should symlink the directory, not the file (see
       ##       https://karabiner-elements.pqrs.org/docs/manual/misc/configuration-file-path/#about-symbolic-link).

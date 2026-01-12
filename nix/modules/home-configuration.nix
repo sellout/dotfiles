@@ -118,32 +118,18 @@
     ##   available so we can pull new versions and build things when we need
     ##   to); or
     ## • the package has its own GUI that we prefer over any Emacs interface.
-    packages = let
-      ## For packages that should be gotten from brewCasks on darwin. The second
-      ## argument may be null, but if the brewCasks package name differs from
-      ## the Nixpkgs name, then it needs to be set.
-      maybeCask = pkg: caskPkg:
-        if pkgs.stdenv.hostPlatform.isDarwin
-        then let
-          realCaskPkg =
-            if caskPkg == null
-            then pkg
-            else caskPkg;
-        in
-          pkgs.brewCasks.${realCaskPkg}
-        else pkgs.${pkg};
-    in
+    packages =
       [
         pkgs.age
         pkgs.agenix
         ## doesn’t contain darwin GUI
-        (maybeCask "anki" null)
+        (config.lib.local.maybeCask "anki" null)
         pkgs.awscli
         pkgs.bash-strict-mode
-        (maybeCask "bitcoin" "bitcoin-core")
-        ## DOS game emulator # fails to build on darwin # x86 game emulator
-        (maybeCask "dosbox" null)
+        (config.lib.local.maybeCask "bitcoin" "bitcoin-core")
         # pkgs.discord # currently subsumed by ferdium
+        ## DOS game emulator # fails to build on darwin # x86 game emulator
+        (config.lib.local.maybeCask "dosbox" null)
         # pkgs.element-desktop # currently subsumed by ferdium
         pkgs.ghostscript
         # pkgs.gitter # currently subsumed by ferdium
@@ -151,10 +137,10 @@
         pkgs.jekyll
         pkgs.magic-wormhole
         ## not available on darwin via Nix
-        (maybeCask "mumble" null)
+        (config.lib.local.maybeCask "mumble" null)
         pkgs.nix-output-monitor # prettier Nix build output
         ## not available on darwin via Nix
-        (maybeCask "obs-studio" "obs")
+        (config.lib.local.maybeCask "obs-studio" "obs")
         pkgs.python3Packages.opentype-feature-freezer
         pkgs.signal-desktop-bin # src version not supported on darwin
         # pkgs.slack # currently subsumed by ferdium
@@ -165,7 +151,7 @@
         pkgs.xdg-ninja # home directory complaining
       ]
       ++ lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
-        (maybeCask "simplex-chat-desktop" "simplex")
+        (config.lib.local.maybeCask "simplex-chat-desktop" "simplex")
         pkgs.unison-ucm # Unison dev tooling
         pkgs.zoom-us
       ]
@@ -371,6 +357,20 @@
     primaryEmailAccount =
       config.accounts.email.accounts.${config.lib.local.primaryEmailAccountName};
 
+    ## For packages that should be gotten from brewCasks on darwin. The second
+    ## argument may be null, but if the brewCasks package name differs from
+    ## the Nixpkgs name, then it needs to be set.
+    maybeCask = pkg: caskPkg:
+      if pkgs.stdenv.hostPlatform.isDarwin
+      then let
+        realCaskPkg =
+          if caskPkg == null
+          then pkg
+          else caskPkg;
+      in
+        pkgs.brewCasks.${realCaskPkg}
+      else pkgs.${pkg};
+
     supportedOn = plat: pkg:
       if pkg.meta ? platforms
       then builtins.elem plat pkg.meta.platforms
@@ -559,7 +559,6 @@
       "plex-desktop"
       "plexmediaserver"
       "signal-desktop-bin" # actually free – who knows
-      "spotify"
       "zoom"
     ];
   };
