@@ -108,7 +108,11 @@ FILENAME and NOERROR behave the same as for ‘require‘."
 
 ;; This is a escape hatch for loading non-Nix-managed configuration local to the
 ;; user account. See the contents of ‘user-init-file’ for more information.
-(require-config 'local nil t)
+(when (require-config 'local nil t)
+  (lwarn 'local
+         :warning
+         "This machine has non-Nix-managed configuration in ‘%s/local.el’. Please migrate it to Nix."
+         user-emacs-directory))
 
 (use-package abbrev
   :delight "…")
