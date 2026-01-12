@@ -170,20 +170,6 @@
         pkgs.zoom-us
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-        # (pkgs.brewCasks.google-drive.overrideAttrs (old: {
-        #   src = pkgs.fetchurl {
-        #     url = builtins.head old.src.urls;
-        #     hash = "sha256-mVzXx09p1oKaF4neQigWxgeIuF1OVPTcP2BG2ILgjrM=";
-        #   };
-        # }))
-        # (pkgs.brewCasks.webex-meetings.overrideAttrs (old: {
-        #   src = pkgs.fetchurl {
-        #     url = builtins.head old.src.urls;
-        #     hash = "sha256-1q3UVzgBcW8iqur1gkM73EMITveg8vjpoYJ5dE0pM6Q=";
-        #   };
-        # }))
-        ## FIXME: Above here should be integrated, once I know they work as well
-        ##        as the actual Homebrew packages.
         pkgs.mas
         pkgs.brewCasks.acorn
         pkgs.brewCasks.adium
