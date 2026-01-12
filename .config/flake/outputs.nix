@@ -57,6 +57,9 @@
     programs = {
       firefox.profiles.default =
         lib.recursiveUpdate config.lib.local.firefox.profileDefaults {};
+      thunderbird.profiles.default =
+        lib.recursiveUpdate config.lib.local.thunderbird.profileDefaults
+        {isDefault = true;};
       vscode.profiles.default =
         lib.recursiveUpdate config.lib.local.vscode.profileDefaults {};
     };

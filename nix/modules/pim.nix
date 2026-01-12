@@ -15,6 +15,8 @@
   pkgs,
   ...
 }: {
+  imports = [./mozilla.nix];
+
   config = flaky.lib.multiConfig options {
     darwinConfig = {
       homebrew = {
@@ -103,6 +105,31 @@
 
         primaryEmailAccount =
           config.accounts.email.accounts.${config.lib.local.primaryEmailAccountName};
+
+        ## So that dotfiles doesn’t need to know about any specific profiles,
+        ## this can be used like
+        ##
+        ## > programs.thunderbird.profiles.<name> =
+        ## >   lib.recursiveUpdate config.lib.local.thunderbird.profileDefaults
+        ## >   {…};
+        thunderbird.profileDefaults = {
+          inherit (config.lib.local.mozilla) search;
+          settings =
+            config.lib.local.mozilla.settings
+            // {
+              "calendar.timezone.useSystemTimezone" = true;
+              "calendar.view.dayendhour" = 24;
+              "calendar.view.daystarthour" = 6;
+              "calendar.view.showLocation" = true;
+              "calendar.week.start" = 1; # Monday
+              "calendar.weeks.inview" = 2;
+              "mail.spam.logging.enabled" = true;
+              "mail.spam.manualMark" = true;
+              "mail.spotlight.enable" = true;
+              "privacy.globalprivacycontrol.enabled" = true;
+            };
+          withExternalGnupg = true;
+        };
       };
 
       local.nixpkgs.allowedUnfreePackages = [
@@ -110,6 +137,8 @@
         "1password-cli"
         "onepassword-password-manager"
       ];
+
+      programs.thunderbird.enable = true;
 
       xdg.configFile."emacs/gnus/.gnus.el".text = ''
         (setq gnus-select-method

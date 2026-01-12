@@ -11,12 +11,15 @@
     DisableFirefoxStudies = true;
   };
 in {
+  imports = [./mozilla.nix];
+
   ## So that dotfiles doesn’t need to know about any specific profiles,
   ## this can be used like
   ##
   ## > programs.firefox.profiles.<name> =
   ## >   lib.recursiveUpdate config.lib.local.firefox.profileDefaults {…};
   lib.local.firefox.profileDefaults = {
+    inherit (config.lib.local.mozilla) search;
     ## These are ordered to match `about:addons`.
     extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
       onepassword-password-manager
@@ -43,100 +46,50 @@ in {
       ## Disabled
       foxytab
     ];
-    search = {
-      default = "ddg";
-      engines = {
-        nix-packages = {
-          name = "Nix Packages";
-          urls = [
-            {
-              template = "https://search.nixos.org/packages";
-              params = [
-                {
-                  name = "type";
-                  value = "packages";
-                }
-                {
-                  name = "query";
-                  value = "{searchTerms}";
-                }
-              ];
-            }
-          ];
-
-          icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-          definedAliases = ["@np"];
-        };
-
-        amazon.metaData.alias = "@amazon";
-        bing.metaData.hidden = true;
-        ebay.metaData.hidden = true;
-        google.metaData = {
-          alias = "@google";
-          hidden = true;
-        };
-        wikipedia.metaData.alias = "@wikipedia";
-      };
-      force = true;
-      order = ["ddg" "wikipedia" "nw" "np" "amazon"];
-    };
     ## You can explore the settings at the URL `about:config` in Firefox.
-    settings = let
-      defaultFont = config.lib.local.defaultFont;
-    in {
-      "browser.aboutConfig.showWarning" = false;
-      "browser.display.use_system_colors" = true;
-      "browser.contentblocking.category" = "strict";
-      ## Disable AI features (See https://buc.ci/abucci/p/1763845084.289082)
-      "browser.aiwindow.enabled" = false;
-      "browser.ml.chat.enabled" = false;
-      "browser.ml.chat.menu" = false;
-      "browser.ml.chat.page" = false;
-      "browser.ml.chat.page.footerBadge" = false;
-      "browser.ml.chat.page.menuBadge" = false;
-      "browser.ml.chat.shortcuts" = false;
-      "browser.ml.chat.shortcuts.custom" = false;
-      "browser.ml.chat.sidebar" = false;
-      ## NB: This might be the only one that’s required.
-      "browser.ml.enable" = false;
-      "browser.ml.linkPreview.enabled" = false;
-      "browser.ml.pageAssist.enabled" = false;
-      "browser.ml.smartAssist.enabled" = false;
-      "browser.tabs.groups.smart.enabled" = false;
-      "browser.tabs.groups.smart.optin" = false;
-      "browser.tabs.groups.smart.userEnabled" = false;
-      "extensions.ml.enabled" = false;
-      "sidebar.notification.badge.aichat" = false;
-      ## Disable ads for Mozilla products
-      "browser.preferences.moreFromMozilla" = false;
-      "browser.startup.homepage" = "https://github.com/pulls/review-requested";
-      "browser.toolbars.bookmarks.visibility" = "always";
-      "browser.urlbar.suggest.quicksuggest.sponsored" = false;
-      ## Automatically enable newly-installed extensions.
-      "extensions.autoDisableScopes" = 0;
-      ## fonts
-      "font.default.x-unicode" = "sans-serif";
-      "font.default.x-western" = "sans-serif";
-      "font.name.monospace.x-unicode" = defaultFont.monoFamily;
-      "font.name.monospace.x-western" = defaultFont.monoFamily;
-      "font.name.sans-serif.x-unicode" = defaultFont.sansFamily;
-      "font.name.sans-serif.x-western" = defaultFont.sansFamily;
-      "font.name.serif.x-unicode" = defaultFont.serifFamily;
-      "font.name.serif.x-western" = defaultFont.serifFamily;
-      "font.size.monospace.x-unicode" = builtins.floor defaultFont.size;
-      "font.size.monospace.x-western" = builtins.floor defaultFont.size;
-      "font.size.variable.x-unicode" = builtins.floor defaultFont.size;
-      "font.size.variable.x-western" = builtins.floor defaultFont.size;
-      ## printing
-      "print.prefer_system_dialog" = true;
-      ## privacy
-      "privacy.globalprivacycontrol.enabled" = true;
-      "privacy.globalprivacycontrol.functionality.enabled" = true;
-      "privacy.globalprivacycontrol.pbmode.enabled" = true;
-      ## Mozilla Sync account
-      "services.sync.username" =
-        config.lib.local.primaryEmailAccount.address;
-    };
+    settings =
+      config.lib.local.mozilla.settings
+      // {
+        "browser.aboutConfig.showWarning" = false;
+        "browser.display.use_system_colors" = true;
+        "browser.contentblocking.category" = "strict";
+        ## Disable AI features (See https://buc.ci/abucci/p/1763845084.289082)
+        "browser.aiwindow.enabled" = false;
+        "browser.ml.chat.enabled" = false;
+        "browser.ml.chat.menu" = false;
+        "browser.ml.chat.page" = false;
+        "browser.ml.chat.page.footerBadge" = false;
+        "browser.ml.chat.page.menuBadge" = false;
+        "browser.ml.chat.shortcuts" = false;
+        "browser.ml.chat.shortcuts.custom" = false;
+        "browser.ml.chat.sidebar" = false;
+        ## NB: This might be the only one that’s required.
+        "browser.ml.enable" = false;
+        "browser.ml.linkPreview.enabled" = false;
+        "browser.ml.pageAssist.enabled" = false;
+        "browser.ml.smartAssist.enabled" = false;
+        "browser.tabs.groups.smart.enabled" = false;
+        "browser.tabs.groups.smart.optin" = false;
+        "browser.tabs.groups.smart.userEnabled" = false;
+        "extensions.ml.enabled" = false;
+        "sidebar.notification.badge.aichat" = false;
+        ## Disable ads for Mozilla products
+        "browser.preferences.moreFromMozilla" = false;
+        "browser.startup.homepage" = "https://github.com/pulls/review-requested";
+        "browser.toolbars.bookmarks.visibility" = "always";
+        "browser.urlbar.suggest.quicksuggest.sponsored" = false;
+        ## Automatically enable newly-installed extensions.
+        "extensions.autoDisableScopes" = 0;
+        ## printing
+        "print.prefer_system_dialog" = true;
+        ## privacy
+        "privacy.globalprivacycontrol.enabled" = true;
+        "privacy.globalprivacycontrol.functionality.enabled" = true;
+        "privacy.globalprivacycontrol.pbmode.enabled" = true;
+        ## Mozilla Sync account
+        "services.sync.username" =
+          config.lib.local.primaryEmailAccount.address;
+      };
     userChrome = ''
       /* Hide tab bar in FF Quantum */
       @-moz-document url("chrome://browser/content/browser.xul") {
