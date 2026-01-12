@@ -55,33 +55,15 @@
     ##     to see which casks need `greedy = true;` in order to be upgraded by
     ##     Homebrew.
     casks = [
-      ## This is also installed by home.nix#home.packages, but that _probably_
-      ## has even more of the “wrong location” issue mentioned below, as it’s
-      ## simply an alias to the Nix store, so keep this around until I’m willing
-      ## to fight with that.
-      {
-        name = "1password";
-        ## Doesn’t integrate with browsers properly if moved. Search email for
-        ## #PKL-58745-842 for more info.
-        args.appdir = "/Applications";
-        greedy = true;
-      }
-      ## NB: in brewCasks, but fails in `copyApps` (see jcszymansk/nixcasks#19)
-      "calibre"
       "google-drive" # doesn't respect appdir
       "tor-browser" # fails on `chmod` in brewCasks
       # "virtualbox" # requires Intel architecture
-      "webex-meetings" # I don’t know how to control auto-update
     ];
     global.brewfile = true;
     masApps = {
-      "1Password for Safari" = 1569813296;
       "Amazon Kindle" = 302584613;
       Deliveries = 290986013;
       iMovie = 408981434;
-      Keynote = 409183694;
-      Numbers = 409203825;
-      Pages = 409201541;
       "Prime Video" = 545519333;
       reMarkable = 1276493162;
       "Remote Mouse" = 403195710;

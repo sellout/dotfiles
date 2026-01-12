@@ -130,19 +130,23 @@ in
     };
 
     darwinModules = {
+      communication = ../../nix/modules/communication.nix;
       default = ../../nix/modules/darwin/default.nix;
       garnix-cache = ../../nix/modules/garnix-cache.nix;
       nix-configuration = ../../nix/modules/nix-configuration.nix;
       nixpkgs-configuration = ../../nix/modules/nixpkgs-configuration.nix;
+      pim = ../../nix/modules/pim.nix;
     };
 
     homeModules = {
       default = ../../nix/modules/home-configuration.nix;
+      communication = ../../nix/modules/communication.nix;
       emacs = ../../nix/modules/emacs;
       garnix-cache = ../../nix/modules/garnix-cache.nix;
       i3 = ../../nix/modules/i3.nix;
       nix-configuration = ../../nix/modules/nix-configuration.nix;
       nixpkgs-configuration = ../../nix/modules/nixpkgs-configuration.nix;
+      pim = ../../nix/modules/pim.nix;
       programming = ../../nix/modules/programming;
       shell = ../../nix/modules/shell;
       ssh = ../../nix/modules/ssh.nix;

@@ -577,13 +577,5 @@
       recursive = true;
       source = ./user-directory;
     };
-    "emacs/gnus/.gnus.el".text = ''
-      (setq gnus-select-method
-            '(nnimap "${config.lib.local.primaryEmailAccount.imap.host}")
-            message-send-mail-function 'smtpmail-send-it
-            send-mail-function 'smtpmail-send-it
-            smtpmail-smtp-server
-            "${config.lib.local.primaryEmailAccount.smtp.host}")
-    '';
   };
 }
