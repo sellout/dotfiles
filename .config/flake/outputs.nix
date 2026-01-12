@@ -31,6 +31,10 @@
   supportedSystems = import systems;
 
   exampleHomeConfiguration = {
+    config,
+    lib,
+    ...
+  }: {
     imports = [self.homeModules.default];
 
     ## Attributes that the configuration expects to have set, but
@@ -48,6 +52,13 @@
     programs.git = {
       settings.github.user = "example-user";
       signing.key = "";
+    };
+    ## These ensure that we test the default profile settings.
+    programs = {
+      firefox.profiles.default =
+        lib.recursiveUpdate config.lib.local.firefox.profileDefaults {};
+      vscode.profiles.default =
+        lib.recursiveUpdate config.lib.local.vscode.profileDefaults {};
     };
     ## These attributes are simply required by home-manager.
     home = {
