@@ -31,7 +31,7 @@
   supportedSystems = import systems;
 
   exampleHomeConfiguration = {
-    imports = [self.homeModules.home];
+    imports = [self.homeModules.default];
 
     ## Attributes that the configuration expects to have set, but
     ## aren’t set publicly.
@@ -119,16 +119,16 @@ in
     };
 
     darwinModules = {
-      darwin = ../../nix/modules/darwin/default.nix;
+      default = ../../nix/modules/darwin/default.nix;
       garnix-cache = ../../nix/modules/garnix-cache.nix;
       nix-configuration = ../../nix/modules/nix-configuration.nix;
       nixpkgs-configuration = ../../nix/modules/nixpkgs-configuration.nix;
     };
 
     homeModules = {
+      default = ../../nix/modules/home-configuration.nix;
       emacs = ../../nix/modules/emacs;
       garnix-cache = ../../nix/modules/garnix-cache.nix;
-      home = ../../nix/modules/home-configuration.nix;
       i3 = ../../nix/modules/i3.nix;
       nix-configuration = ../../nix/modules/nix-configuration.nix;
       nixpkgs-configuration = ../../nix/modules/nixpkgs-configuration.nix;
@@ -140,9 +140,9 @@ in
     };
 
     nixosModules = {
+      default = ../../nix/modules/nixos-configuration.nix;
       garnix-cache = ../../nix/modules/garnix-cache.nix;
       nix-configuration = ../../nix/modules/nix-configuration.nix;
-      nixos = ../../nix/modules/nixos-configuration.nix;
       nixpkgs-configuration = ../../nix/modules/nixpkgs-configuration.nix;
     };
 
@@ -150,7 +150,7 @@ in
         name = "${hostPlatform}-example";
         value = self.lib.darwinSystem {
           modules = [
-            self.darwinModules.darwin
+            self.darwinModules.default
             {
               home-manager.users.example-user = exampleHomeConfiguration;
               nixpkgs = {inherit hostPlatform;};
@@ -181,7 +181,7 @@ in
         name = "${hostPlatform}-example";
         value = self.lib.nixosSystem {
           modules = [
-            self.nixosModules.nixos
+            self.nixosModules.default
             {
               boot.loader.grub.devices = ["/dev/vba"];
               fileSystems."/".device = "/dev/vba";
