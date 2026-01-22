@@ -371,7 +371,9 @@
       epkgs.company-posframe # uses a child frame for completions
       epkgs.dap-mode
       pkgs.llvmPackages.lldb
-      epkgs.darcsum
+      ## TODO: Currently failing in Nixpkgs 25.11
+      ##       “Opening directory: Operation not permitted, /etc/ssl/certs”
+      # epkgs.darcsum
       epkgs.default-text-scale # replaces zoom-frm
       epkgs.delight
       epkgs.detached
