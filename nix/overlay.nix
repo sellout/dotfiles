@@ -18,6 +18,17 @@ in {
   ## Idris 1 doesn’t build on Nixpkgs 23.11.
   idris = final.idris2;
 
+  ## TODO: Remove this once NixOS/nixpkgs#488689 is fixed.
+  inetutils = prev.inetutils.overrideAttrs (old: let
+    version = "2.6";
+  in {
+    inherit version;
+    src = final.fetchurl {
+      url = "mirror://gnu/${old.pname}/${old.pname}-${version}.tar.xz";
+      hash = "sha256-aL7b/q9z99hr4qfZm8+9QJPYKfUncIk5Ga4XTAsjV8o=";
+    };
+  });
+
   ## TODO: This gives us Karabiner 15, but the nix-darwin module doesn’t yet
   ##       support that version, and since it involves running services, we
   ##       can’t live without it.
