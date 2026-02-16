@@ -97,14 +97,17 @@ in
     overlays = {
       darwin = self.overlays.default;
       ## TODO: Split Emacs into its own overlay.
-      default = import ../../nix/overlay.nix {
-        inherit
-          flake-utils
-          home-manager
-          nixpkgs
-          nixpkgs-master
-          ;
-      };
+      default = nixpkgs.lib.composeManyExtensions [
+        flaky.overlays.default
+        (import ../../nix/overlay.nix {
+          inherit
+            flake-utils
+            home-manager
+            nixpkgs
+            nixpkgs-master
+            ;
+        })
+      ];
       home = nixpkgs.lib.composeManyExtensions [
         agenix.overlays.default
         agenix-el.overlays.default
