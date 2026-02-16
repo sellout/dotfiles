@@ -13,7 +13,11 @@
 in {
   ## Use the home-manager from our inputs (but it doesn’t provide an overlay
   ## itself).
-  home-manager = home-manager.packages.${final.stdenv.hostPlatform.system}.home-manager;
+  home-manager =
+    ## TODO: This is needed so we pick up the inetutils workaround of
+    ##       NixOS/nixpkgs#488689 from Flaky.
+    home-manager.packages.${final.stdenv.hostPlatform.system}.home-manager.override
+    {inherit (final) inetutils;};
 
   ## Idris 1 doesn’t build on Nixpkgs 23.11.
   idris = final.idris2;
