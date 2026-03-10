@@ -191,6 +191,7 @@
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         pkgs.github-desktop # not supported on darwin
         pkgs.hdhomerun-config-gui # not supported on darwin
+        pkgs.organicmaps # depends on wayland and other non-darwin stuff
         pkgs.powertop # not supported on darwin
         pkgs.racket # doesn’t contain darwin GUI
       ]
