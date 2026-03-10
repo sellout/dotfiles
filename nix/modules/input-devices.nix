@@ -32,7 +32,7 @@
         packages = lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
           ## Atreus keyboard customizer
           ## packaged in Nixpkgs as x86_64-linux binary
-          (config.lib.local.maybeCask "chrysalis" null)
+          (config.lib.local.maybeCask "chrysalis" {})
         ];
       };
       ## TODO: This should symlink the directory, not the file (see

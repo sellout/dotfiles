@@ -68,9 +68,17 @@
     brew = {
       url = "github:BatteredBunny/brew-nix";
       inputs = {
+        brew-api.follows = "brew-formulae";
         nix-darwin.follows = "darwin";
         nixpkgs.follows = "nixpkgs";
       };
+    };
+
+    ## This has the actual Homebrew formulae, so it’s useful to have explicitly,
+    ## because this should be updated more than brew-nix.
+    brew-formulae = {
+      flake = false;
+      url = "github:BatteredBunny/brew-api";
     };
 
     darwin = {

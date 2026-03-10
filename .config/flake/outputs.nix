@@ -5,6 +5,7 @@
   bitbar-solar-time,
   bradix,
   brew,
+  brew-formulae, # this is only used by `brew`, not directly by us
   darwin,
   emacs-color-theme-solarized,
   emacs-extended-faces,

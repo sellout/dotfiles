@@ -22,7 +22,7 @@
         lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
           pkgs.spotify
           ## not actually the same app, but access the same service
-          (config.lib.local.maybeCask "tidal-hifi" "tidal")
+          (config.lib.local.maybeCask "tidal-hifi" {cask = "tidal";})
         ]
         ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
           # (pkgs.brewCasks.ableton-live-standard.overrideAttrs (old: let
