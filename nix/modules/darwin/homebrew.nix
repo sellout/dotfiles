@@ -38,8 +38,6 @@
   # NB: Ideally this would be managed in home.nix, but that's not yet supported.
   homebrew = {
     enable = true;
-    ## TODO: This is a workaround for LnL7/nix-darwin#1314.
-    brews = lib.mkForce [];
     caskArgs = {
       appdir = "/Applications/Homebrew Apps";
       fontdir = "/Library/Fonts/Homebrew Fonts";
