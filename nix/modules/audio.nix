@@ -19,7 +19,10 @@
     };
     homeConfig = {
       home.packages =
-        lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
+        [
+          pkgs.lilypond-unstable # stable version doesn’t build on darwin
+        ]
+        ++ lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
           pkgs.spotify
           ## not actually the same app, but access the same service
           (config.lib.local.maybeCask "tidal-hifi" {cask = "tidal";})
@@ -35,10 +38,6 @@
           #   };
           # }))
           pkgs.brewCasks.lastfm
-        ]
-        ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-          ## TODO: Lilypond derivation stopped building on darwin in Nixpkgs 25.11.
-          pkgs.lilypond
         ]
         ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
           pkgs.cider # we have Music.app on darwin
