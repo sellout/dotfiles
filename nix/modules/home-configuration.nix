@@ -119,26 +119,28 @@
         pkgs.age
         pkgs.agenix
         ## doesn’t contain darwin GUI
-        (config.lib.local.maybeCask "anki" null)
+        (config.lib.local.maybeCask "anki" {})
         pkgs.awscli
         pkgs.bash-strict-mode
-        (config.lib.local.maybeCask "bitcoin" "bitcoin-core")
+        (config.lib.local.maybeCask "bitcoin" {cask = "bitcoin-core";})
         ## DOS game emulator # fails to build on darwin # x86 game emulator
-        (config.lib.local.maybeCask "dosbox" null)
+        (config.lib.local.maybeCask "dosbox" {})
         pkgs.ghostscript
         pkgs.imagemagick
         pkgs.jekyll
         pkgs.magic-wormhole
         pkgs.nix-output-monitor # prettier Nix build output
         ## not available on darwin via Nix
-        (config.lib.local.maybeCask "obs-studio" "obs")
+        (config.lib.local.maybeCask "obs-studio" {cask = "obs";})
         pkgs.python3Packages.opentype-feature-freezer
+        (config.lib.local.maybeCask "plex" {cask = "plex-media-server";})
         pkgs.synergy
         pkgs.tailscale
         pkgs.tikzit
         pkgs.xdg-ninja # home directory complaining
       ]
       ++ lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
+        (config.lib.local.maybeCask "plex-desktop" {cask = "plex";})
         pkgs.unison-ucm # Unison dev tooling
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
@@ -149,7 +151,6 @@
           unpackPhase = "${lib.getExe pkgs.gnutar} -xvzf $src";
         }))
         pkgs.brewCasks.beamer
-        pkgs.brewCasks.controlplane
         pkgs.brewCasks.disk-inventory-x
         pkgs.brewCasks.dropbox
         pkgs.brewCasks.freemind
@@ -162,12 +163,10 @@
         pkgs.brewCasks.kiibohd-configurator
         pkgs.brewCasks.omnigraffle
         pkgs.brewCasks.omnioutliner
-        pkgs.brewCasks.plex # not available on darwin via Nix
-        pkgs.brewCasks.plex-media-server # not available on darwin via Nix
         (pkgs.brewCasks.powerphotos.overrideAttrs (old: {
           src = pkgs.fetchurl {
             url = builtins.head old.src.urls;
-            hash = "sha256-ryPaLb2N8y6rkN5swkfhcj2NGWzYmbSehbqqiQoAf1A=";
+            hash = "sha256-9BJQLdohSzGKJLFIno0eof0aQfRohyVHSddGh34tyYs=";
           };
         }))
         pkgs.brewCasks.processing
@@ -192,13 +191,12 @@
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         pkgs.github-desktop # not supported on darwin
         pkgs.hdhomerun-config-gui # not supported on darwin
-        pkgs.plex # (server) not supported on darwin
+        pkgs.organicmaps # depends on wayland and other non-darwin stuff
         pkgs.powertop # not supported on darwin
         pkgs.racket # doesn’t contain darwin GUI
       ]
       ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
         pkgs.eagle # not supported on darwin
-        pkgs.plex-desktop # not supported on darwin
         pkgs.tor-browser # not supported on darwin
       ];
 
@@ -294,15 +292,21 @@
     ## For packages that should be gotten from brewCasks on darwin. The second
     ## argument may be null, but if the brewCasks package name differs from
     ## the Nixpkgs name, then it needs to be set.
-    maybeCask = pkg: caskPkg:
+    maybeCask = pkg: {
+      cask ? pkg,
+      caskHash ? null,
+    }:
       if pkgs.stdenv.hostPlatform.isDarwin
-      then let
-        realCaskPkg =
-          if caskPkg == null
-          then pkg
-          else caskPkg;
-      in
-        pkgs.brewCasks.${realCaskPkg}
+      then
+        if caskHash == null
+        then pkgs.brewCasks.${cask}
+        else
+          pkgs.brewCasks.${cask}.overrideAttrs (old: {
+            src = pkgs.fetchurl {
+              url = builtins.head old.src.urls;
+              hash = caskHash;
+            };
+          })
       else pkgs.${pkg};
 
     supportedOn = plat: pkg:

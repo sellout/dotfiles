@@ -38,8 +38,6 @@
   # NB: Ideally this would be managed in home.nix, but that's not yet supported.
   homebrew = {
     enable = true;
-    ## TODO: This is a workaround for LnL7/nix-darwin#1314.
-    brews = lib.mkForce [];
     caskArgs = {
       appdir = "/Applications/Homebrew Apps";
       fontdir = "/Library/Fonts/Homebrew Fonts";
@@ -64,6 +62,7 @@
       "Amazon Kindle" = 302584613;
       Deliveries = 290986013;
       iMovie = 408981434;
+      "Organic Maps: Offline Map" = 1567437057;
       "Prime Video" = 545519333;
       reMarkable = 1276493162;
       "Remote Mouse" = 403195710;

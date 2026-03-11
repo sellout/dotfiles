@@ -19,16 +19,19 @@
           # pkgs.element-desktop # currently subsumed by ferdium
           # pkgs.gitter # currently subsumed by ferdium
           ## not available on darwin via Nix
-          (config.lib.local.maybeCask "mumble" null)
+          (config.lib.local.maybeCask "mumble" {})
           pkgs.signal-desktop-bin # src version not supported on darwin
           # pkgs.slack # currently subsumed by ferdium
           # pkgs.wire-desktop # currently subsumed by ferdium
         ]
         ++ lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
-          (config.lib.local.maybeCask "ferdium" null)
+          (config.lib.local.maybeCask "ferdium" {})
           ## GUI not available on darwin via Nix
-          (config.lib.local.maybeCask "keybase-gui" "keybase")
-          (config.lib.local.maybeCask "simplex-chat-desktop" "simplex")
+          (config.lib.local.maybeCask "keybase-gui" {
+            cask = "keybase";
+            caskHash = "sha256-MIxndhGJ0dwe/zsHyTRTMX4/vpa9uEJxDhqXaDDw88s=";
+          })
+          (config.lib.local.maybeCask "simplex-chat-desktop" {cask = "simplex";})
           pkgs.zoom-us
         ]
         ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [

@@ -55,16 +55,6 @@
         };
         sourceRoot = "DEVONthink Pro.app";
       });
-
-      omnifocus = pkgs.brewCasks.omnifocus.overrideAttrs (old: let
-        version = "3.15.8"; # version I have a license for
-      in {
-        inherit version;
-        src = pkgs.fetchurl {
-          url = "https://downloads.omnigroup.com/software/macOS/11/OmniFocus-${version}.dmg";
-          hash = "sha256-8P578Pr8NdUKI/4NYUuUA7WN6UOXBKLj2T+9xgKqtmE=";
-        };
-      });
     in {
       accounts = {
         calendar.basePath = "${config.xdg.stateHome}/calendar";
@@ -78,9 +68,9 @@
           devonthink
           pkgs.brewCasks.fantastical
           ## ostensibly in Nixpkgs, but unpublished
-          (config.lib.local.maybeCask "libreoffice" null)
+          (config.lib.local.maybeCask "libreoffice" {})
           pkgs.brewCasks.netnewswire
-          omnifocus
+          pkgs.brewCasks.omnifocus
         ]
         ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
           pkgs._1password-gui # doesn’t get installed in the correct location on Darwin
