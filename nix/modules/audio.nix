@@ -10,10 +10,11 @@
     darwinConfig = {
       homebrew = {
         casks = ["yousician"];
-        masApps = {
-          GarageBand = 682658836;
-          SoundCloud = 412754595;
-        };
+        masApps =
+          {
+            GarageBand = 682658836;
+          }
+          // config.lib.local.iosApps {SoundCloud = 336353151;};
       };
       system.startup.chime = false;
     };

@@ -65,6 +65,11 @@
   '';
 
   lib.local = {
+    ## BLOCKED: This is just meant to bundle and hide iOS apps until
+    ##          mas-cli/mas#321 is fixed. After that, this can either be removed
+    ##          or updated to make whatever adjustments are necessary.
+    iosApps = _: {};
+
     ## Converts a NixOS `networking.hosts` value to lines suitable for writing to
     ## /etc/hosts (which is the format required by nix-darwin).
     toHostsFile = hosts:
