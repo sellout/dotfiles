@@ -58,19 +58,21 @@
       # "virtualbox" # requires Intel architecture
     ];
     global.brewfile = true;
-    masApps = {
-      "Amazon Kindle" = 302584613;
-      Deliveries = 290986013;
-      iMovie = 408981434;
-      "Organic Maps: Offline Map" = 1567437057;
-      "Prime Video" = 545519333;
-      reMarkable = 1276493162;
-      "Remote Mouse" = 403195710;
-      ## NB: Evernote has killed Skitch, and it’s subsequently been removed from
-      ##     Homebrew (https://github.com/orgs/Homebrew/discussions/6243).
-      ##     However, we can still get it from the App store, so do so for now.
-      Skitch = 425955336;
-    };
+    masApps =
+      {
+        "Amazon Kindle" = 302584613;
+        Deliveries = 290986013;
+        iMovie = 408981434;
+        "Prime Video" = 545519333;
+        reMarkable = 1276493162;
+        "Remote Mouse" = 403195710;
+        ## NB: Evernote has killed Skitch, and it’s subsequently been removed
+        ##     from Homebrew
+        ##     (https://github.com/orgs/Homebrew/discussions/6243). However, we
+        ##     can still get it from the App store, so do so for now.
+        Skitch = 425955336;
+      }
+      // config.lib.local.iosApps {"Organic Maps: Offline Map" = 1567437057;};
     ## NB: These settings unfortunately make `darwin-rebuild switch`
     ##     non-idempotent, but the alternative is having Homebrew just be
     ##     outdated forever (because I’ll never do it manually).

@@ -1,4 +1,5 @@
 {
+  config,
   flaky,
   lib,
   options,
@@ -13,7 +14,7 @@
           # I don’t know how to control auto-update
           "steam"
         ];
-        masApps.Robotek = 462238382;
+        masApps = config.lib.local.iosApps {Robotek = 437602797;};
       };
     };
 
