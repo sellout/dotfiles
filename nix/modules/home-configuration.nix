@@ -174,7 +174,6 @@
         pkgs.brewCasks.rowmote-helper
         pkgs.brewCasks.screenflow
         pkgs.brewCasks.scrivener
-        pkgs.brewCasks.squeak # not available on darwin via Nix
         pkgs.brewCasks.stellarium
         (pkgs.brewCasks.timemachineeditor.overrideAttrs (old: {
           src = pkgs.fetchurl {
