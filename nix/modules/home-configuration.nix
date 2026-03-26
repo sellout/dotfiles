@@ -135,7 +135,6 @@
         pkgs.python3Packages.opentype-feature-freezer
         (config.lib.local.maybeCask "plex" {cask = "plex-media-server";})
         pkgs.tailscale
-        pkgs.tikzit
         pkgs.xdg-ninja # home directory complaining
       ]
       ++ lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
@@ -192,6 +191,7 @@
         pkgs.organicmaps # depends on wayland and other non-darwin stuff
         pkgs.powertop # not supported on darwin
         pkgs.racket # doesn’t contain darwin GUI
+        pkgs.tikzit # not compiling on darwin currently
       ]
       ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
         pkgs.eagle # not supported on darwin
