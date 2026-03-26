@@ -141,7 +141,10 @@
     nixpkgs-unstable.follows = "flaky/project-manager/nixpkgs-unstable";
 
     nur = {
-      inputs.flake-parts.follows = "flake-parts";
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs";
+      };
       url = "github:nix-community/nur";
     };
 
