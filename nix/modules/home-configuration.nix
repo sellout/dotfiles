@@ -134,7 +134,6 @@
         (config.lib.local.maybeCask "obs-studio" {cask = "obs";})
         pkgs.python3Packages.opentype-feature-freezer
         (config.lib.local.maybeCask "plex" {cask = "plex-media-server";})
-        pkgs.synergy
         pkgs.tailscale
         pkgs.tikzit
         pkgs.xdg-ninja # home directory complaining
