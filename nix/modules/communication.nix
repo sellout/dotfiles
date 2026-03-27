@@ -20,7 +20,7 @@
           # pkgs.gitter # currently subsumed by ferdium
           ## not available on darwin via Nix
           (config.lib.local.maybeCask "mumble" {})
-          pkgs.signal-desktop-bin # src version not supported on darwin
+          pkgs.signal-desktop
           # pkgs.slack # currently subsumed by ferdium
           # pkgs.wire-desktop # currently subsumed by ferdium
         ]
@@ -42,10 +42,7 @@
           # pkgs.brewCasks.whatsapp # currently subsumed by ferdium # broken
         ];
 
-      local.nixpkgs.allowedUnfreePackages = [
-        "signal-desktop-bin" # actually free – who knows
-        "zoom"
-      ];
+      local.nixpkgs.allowedUnfreePackages = ["zoom"];
     };
   };
 }

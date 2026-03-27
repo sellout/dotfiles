@@ -19,26 +19,13 @@ in {
     home-manager.packages.${final.stdenv.hostPlatform.system}.home-manager.override
     {inherit (final) inetutils;};
 
-  ## Idris 1 doesn’t build on Nixpkgs 23.11.
-  idris = final.idris2;
-
-  ## TODO: This gives us Karabiner 15, but the nix-darwin module doesn’t yet
-  ##       support that version, and since it involves running services, we
-  ##       can’t live without it.
-  # karabiner-elements = master.karabiner-elements;
-
   lexica-ultralegible = final.callPackage ./packages/lexica-ultralegible.nix {};
 
-  ## These tests are failing on aarch64-darwin with Nixpkgs 24.11, so disable
-  ## them for now.
-  nodejs-slim = prev.nodejs-slim.overrideAttrs (old: {
+  ## Used by Signal, but the one in Nixpkgs 25.11 has tests that fail on darwin.
+  nodejs_24 = prev.nodejs_24.overrideAttrs (old: {
     doCheck = false;
+    sandboxProfile = "";
   });
-
-  ## TODO: This should be in Nixpkgs 25.05, but check to see if
-  ##       https://github.com/NixOS/nixpkgs/commit/002d82c95fdc43b69b58357791fe4474c0160b0c
-  ##       makes it into nixpks-unstable sooner.
-  ntfy = master.ntfy;
 
   ## NB: Python 2 is EOL, so I don’t know why it’s still the default. Since we
   ##     pull Python in for at least some Emacs tooling, ensure that `python`
