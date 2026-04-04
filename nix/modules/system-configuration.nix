@@ -14,6 +14,7 @@
     ./nixos-wiki.nix
     ./nixpkgs-configuration.nix
     ./pim.nix
+    ./programming
     ./storage.nix
     ./vcs
   ];
