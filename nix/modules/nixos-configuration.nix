@@ -84,6 +84,10 @@
       openFirewall = true;
     };
 
+    ## System auto-tuning, based on BPF observability
+    ## (https://github.com/oracle/bpftune)
+    bpftune.enable = true;
+
     blueman.enable = true;
 
     displayManager.gdm = {
