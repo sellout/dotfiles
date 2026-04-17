@@ -313,6 +313,28 @@
         "type": "github"
       }
     },
+    "devshell": {
+      "inputs": {
+        "nixpkgs": [
+          "size-indication-iec",
+          "le-grille",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1768818222,
+        "narHash": "sha256-460jc0+CZfyaO8+w8JNtlClB2n4ui1RbHfPTLkpwhU8=",
+        "owner": "numtide",
+        "repo": "devshell",
+        "rev": "255a2b1725a20d060f566e4755dbf571bbbb5f76",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "devshell",
+        "type": "github"
+      }
+    },
     "elisp-reader": {
       "inputs": {
         "flake-utils": [
@@ -943,6 +965,37 @@
         "type": "github"
       }
     },
+    "le-grille": {
+      "inputs": {
+        "devshell": "devshell",
+        "flake-parts": [
+          "size-indication-iec",
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "size-indication-iec",
+          "nixpkgs"
+        ],
+        "systems": [
+          "size-indication-iec",
+          "systems"
+        ],
+        "treefmt-nix": "treefmt-nix_2"
+      },
+      "locked": {
+        "lastModified": 1772501175,
+        "narHash": "sha256-8GP59xWvzknuWFB77SBKOpQ1nJ59bzQfkTfpWxOxfiU=",
+        "ref": "refs/heads/main",
+        "rev": "9a3f2f863e5daef471d0d7fb7917913052656192",
+        "revCount": 36,
+        "type": "git",
+        "url": "https://codeberg.org/rossabaker/le-grille"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://codeberg.org/rossabaker/le-grille"
+      }
+    },
     "lowdown-src": {
       "flake": false,
       "locked": {
@@ -1490,6 +1543,7 @@
         ],
         "nur": "nur",
         "org-invoice": "org-invoice",
+        "size-indication-iec": "size-indication-iec",
         "systems": "systems_2",
         "unison-nix": "unison-nix"
       }
@@ -1508,6 +1562,33 @@
         "owner": "Fuuzetsu",
         "repo": "shellcheck-nix-attributes",
         "type": "github"
+      }
+    },
+    "size-indication-iec": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "le-grille": "le-grille",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "systems": [
+          "systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1772513947,
+        "narHash": "sha256-f/0hsA9SivPiZ7symkbi4R2sm1ZDpod9WNFqEYaU69M=",
+        "ref": "refs/heads/main",
+        "rev": "c00fa9622d45fc904af7201868b4a0224da92aa4",
+        "revCount": 15,
+        "type": "git",
+        "url": "https://codeberg.org/rossabaker/size-indication-iec.el"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://codeberg.org/rossabaker/size-indication-iec.el"
       }
     },
     "stackage": {
@@ -1570,6 +1651,28 @@
         "owner": "numtide",
         "repo": "treefmt-nix",
         "rev": "e96d59dff5c0d7fddb9d113ba108f03c3ef99eca",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "treefmt-nix_2": {
+      "inputs": {
+        "nixpkgs": [
+          "size-indication-iec",
+          "le-grille",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1770228511,
+        "narHash": "sha256-wQ6NJSuFqAEmIg2VMnLdCnUc0b7vslUohqqGGD+Fyxk=",
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "rev": "337a4fe074be1042a35086f15481d763b8ddc0e7",
         "type": "github"
       },
       "original": {

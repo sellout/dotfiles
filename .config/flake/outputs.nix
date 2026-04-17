@@ -26,6 +26,7 @@
   nur,
   org-invoice,
   self,
+  size-indication-iec,
   systems,
   unison-nix,
 }: let
@@ -127,6 +128,7 @@ in
             prev
           else {})
         nur.overlays.default
+        size-indication-iec.overlays.default
         unison-nix.overlays.default
         self.overlays.default
       ];

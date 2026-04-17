@@ -27,6 +27,7 @@
   lib,
   org-invoice,
   pkgs,
+  size-indication-iec,
   ...
 }: {
   home = {
@@ -461,6 +462,7 @@
       epkgs.sbt-mode
       epkgs.scala-mode
       epkgs.scratch # https://codeberg.org/emacs-weirdware/scratch#readme
+      epkgs.size-indication-iec
       epkgs.treesit-fold # code folding for treesitter modes
       epkgs.undo-tree
       epkgs.unison-ts-mode

@@ -1163,6 +1163,13 @@ Committer: %cN <%cE>
   (column-number-mode t)
   (mail-user-agent 'wl-user-agent))
 
+(use-package size-indication-iec
+  :after simple
+  :custom
+  (size-indication-mode t)
+  (size-indication-iec-mode t)
+  :defer nil)
+
 (use-package slime
   :after paredit
   :bind

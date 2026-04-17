@@ -153,6 +153,15 @@
       url = "github:sellout/org-invoice";
     };
 
+    size-indication-iec = {
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs";
+        systems.follows = "systems";
+      };
+      url = "git+https://codeberg.org/rossabaker/size-indication-iec.el";
+    };
+
     unison-nix = {
       inputs = {
         flake-utils.follows = "flake-utils";
