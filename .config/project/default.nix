@@ -11,50 +11,31 @@
     devPackages = [pkgs.home-manager];
   };
 
-  ## dependency management
-  services.renovate.enable = true;
-
   ## development
   project.file.".dir-locals.el".source = lib.mkForce ../emacs/.dir-locals.el;
-  programs = {
-    direnv.enable = true;
-    # This should default by whether there is a .git file/dir (and whether it’s
-    # a file (worktree) or dir determines other things – like where hooks
-    # are installed.
-    git.enable = true;
-  };
 
   ## formatting
-  editorconfig.enable = true;
-  programs = {
-    treefmt.enable = true;
-    vale = {
-      enable = true;
-      coreSettings.Vocab = "dotfiles";
-      excludes = [
-        "*.lisp"
-        "./home/.local/bin/*"
-        "./nix/modules/edit"
-        "./nix/modules/emacs-pager"
-        "./nix/modules/programming/envrc"
-        "./nix/modules/programming/javascript/npmrc"
-        "./nix/modules/vcs/git-bare"
-        "./nix/modules/vcs/git-gc-branches"
-        "./nix/modules/vcs/git-ls-subtrees"
-        "./nix/modules/vcs/git/template/hooks/post-checkout"
-      ];
-      vocab.${config.project.name}.accept = [
-        "dotfiles"
-      ];
-    };
+  programs.vale = {
+    excludes = [
+      "*.lisp"
+      "./home/.local/bin/*"
+      "./nix/modules/edit"
+      "./nix/modules/emacs-pager"
+      "./nix/modules/programming/envrc"
+      "./nix/modules/programming/javascript/npmrc"
+      "./nix/modules/vcs/git-bare"
+      "./nix/modules/vcs/git-gc-branches"
+      "./nix/modules/vcs/git-ls-subtrees"
+      "./nix/modules/vcs/git/template/hooks/post-checkout"
+    ];
+    vocab.${config.project.name}.accept = [
+      "dotfiles"
+    ];
   };
 
-  ## CI
-  services.garnix.enable = true;
-
   ## publishing
-  services = {
-    flakehub.enable = true;
-    github.enable = true;
+  services.github.settings.repository = {
+    private = false;
+    topics = [];
   };
 }
