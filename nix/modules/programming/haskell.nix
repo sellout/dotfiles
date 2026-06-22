@@ -67,7 +67,7 @@
         ## NB: I didn’t change the directory name to “stack” to help tools that
         ##     look for “stack-work” still succeed. Although … those tools
         ##     should query the Stack `work-dir` value.
-        work-dir = "${config.xdg.cacheHome}/stack-work";
+        work-dir = "${config.lib.local.xdg.cache.rel}/stack-work";
       };
     };
   };
