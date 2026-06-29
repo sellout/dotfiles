@@ -467,7 +467,7 @@
       epkgs.undo-tree
       epkgs.unison-ts-mode
       epkgs.vc-darcs
-      epkgs.vc-pijul
+      # epkgs.vc-pijul
       epkgs.wakatime-mode
       epkgs.wanderlust
       epkgs.which-key
@@ -505,25 +505,27 @@
             })
           ];
       });
-      ## NB: This should be a flake input, as it’s my own library, but there
-      ##     isn’t currently flake support for Pijul, so it needs to be fetched
-      ##     traditionally.
-      vc-pijul = final.trivialBuild {
-        pname = "vc-pijul";
-        version = "0.1.0";
+      ## WAIT: fetchpijul is broken in 26.05. See NixOS/nixpkgs#536546
+      ##
+      # ## NB: This should be a flake input, as it’s my own library, but there
+      # ##     isn’t currently flake support for Pijul, so it needs to be fetched
+      # ##     traditionally.
+      # vc-pijul = final.trivialBuild {
+      #   pname = "vc-pijul";
+      #   version = "0.1.0";
 
-        src = pkgs.fetchpijul {
-          url = "https://nest.pijul.com/sellout/vc-pijul";
-          hash = "sha256-FNZSHYpkvZOdhDP4sD2z+DNkHDIKW1NI52nEs4o3WC8=";
-        };
+      #   src = pkgs.fetchpijul {
+      #     url = "https://nest.pijul.com/sellout/vc-pijul";
+      #     hash = "sha256-FNZSHYpkvZOdhDP4sD2z+DNkHDIKW1NI52nEs4o3WC8=";
+      #   };
 
-        meta = {
-          homepage = "https://nest.pijul.com/sellout/vc-pijul";
-          description = "Pijul integration for Emacs’ VC library";
-          license = lib.licenses.gpl3Plus;
-          maintainers = [lib.maintainers.sellout];
-        };
-      };
+      #   meta = {
+      #     homepage = "https://nest.pijul.com/sellout/vc-pijul";
+      #     description = "Pijul integration for Emacs’ VC library";
+      #     license = lib.licenses.gpl3Plus;
+      #     maintainers = [lib.maintainers.sellout];
+      #   };
+      # };
       wakatime-mode = prev.wakatime-mode.overrideAttrs (old: {
         patches =
           (old.patches or [])
