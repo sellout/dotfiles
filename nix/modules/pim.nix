@@ -74,7 +74,6 @@
         ]
         ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
           pkgs._1password-gui # doesn’t get installed in the correct location on Darwin
-          pkgs.calibre # marked broken on darwin
           pkgs.hunspell # needed for spellcheck in libreoffice
           ## TODO: Build lists of these from the configured locales.
           pkgs.hunspellDicts.en_US # needed for spellcheck in libreoffice
@@ -128,7 +127,11 @@
         "onepassword-password-manager"
       ];
 
-      programs.thunderbird.enable = true;
+      programs = {
+        ## marked broken on darwin
+        calibre.enable = pkgs.stdenv.hostPlatform.isLinux;
+        thunderbird.enable = true;
+      };
 
       xdg.configFile."emacs/gnus/.gnus.el".text = ''
         (setq gnus-select-method

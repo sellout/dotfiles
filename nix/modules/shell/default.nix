@@ -81,11 +81,6 @@
       };
     in {
       enable = true;
-      package = pkgs.ntfy.override {
-        ## In Nixpkgs 25.05, this fails when building the requisite Python
-        ## dependencies.
-        withSlack = false;
-      };
       bashIntegration = shellIntegration;
       ignoredCommands = ["emacs" "less" "man" "ssh"];
       zshIntegration = shellIntegration;
@@ -110,8 +105,6 @@
     };
 
     zsh = {
-      ## TODO: This will be the default value with `stateVersion` 26.05.
-      dotDir = "${config.xdg.configHome}/zsh";
       enable = true;
       autosuggestion.enable = true;
       enableVteIntegration = true;

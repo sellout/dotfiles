@@ -68,7 +68,6 @@
       enable = true;
       enableSSHSupport = true;
     };
-    light.enable = true;
     mosh.enable = true;
     # mtr.enable = true;
   };

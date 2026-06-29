@@ -128,13 +128,12 @@
       programs = {
         ## This is for pairing with VSCode users, including Ronnie. Would be ideal
         ## if there were something like Floobits, but that seems effectively dead.
-        vscode = {
+        vscodium = {
           enable = true;
           ## TODO: Would like to disable this, but seems like if it’s not mutable,
           ##       then extensions.json never gets created, so VSCode thinks it has
           ##       no extensions.
           # mutableExtensionsDir = false; # See comment on `enable*`.
-          package = pkgs.vscodium; # Without non-MIT MS telemetry, etc.
         };
 
         wakatime = {
@@ -168,7 +167,7 @@
         ##
         ## TODO: Replace with `PROJECTS` once  nix-community/home-manager#7937 is in
         ##       a release.
-        userDirs.extraConfig.XDG_PROJECTS_DIR =
+        userDirs.extraConfig.PROJECTS =
           config.lib.local.xdg.userDirs.projects.home;
       };
     };

@@ -50,11 +50,8 @@
       '';
     };
     userDirs = {
-      ## TODO: Use `true` once  nix-community/home-manager#7937 is in a release.
-      enable = pkgs.stdenv.hostPlatform.isLinux;
+      enable = true;
       createDirectories = true;
-      ## TODO: Uncomment once  nix-community/home-manager#7937 is in a release.
-      # setSessionVariables = false;
       videos =
         lib.mkIf pkgs.stdenv.hostPlatform.isDarwin
         (config.lib.local.addHome "Movies");

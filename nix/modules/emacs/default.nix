@@ -197,7 +197,7 @@
           '(envrc
             (envrc-direnv-executable "${pkgs.direnv}/bin/direnv"))
           '(floobits
-            (floobits-python-executable "${pkgs.python}/bin/python"))
+            (floobits-python-executable "${pkgs.python3}/bin/python"))
           '(flycheck
             (flycheck-rust-cargo-executable "${pkgs.cargo}/bin/cargo"))
           '(ggtags
@@ -249,7 +249,7 @@
           '(sbt-mode
             (sbt:program-name "${pkgs.sbt}/bin/sbt"))
           '(treemacs
-            (treemacs-python-executable "${pkgs.python}/bin/python"))
+            (treemacs-python-executable "${pkgs.python3}/bin/python"))
           '(vc-pijul
             (vc-pijul-program-name "${pkgs.pijul}/bin/pijul")))
 
@@ -372,7 +372,7 @@
       epkgs.company-posframe # uses a child frame for completions
       epkgs.dap-mode
       pkgs.llvmPackages.lldb
-      ## TODO: Currently failing in Nixpkgs 25.11
+      ## TODO: Currently failing in Nixpkgs 25.11 & 26.05
       ##       “Opening directory: Operation not permitted, /etc/ssl/certs”
       # epkgs.darcsum
       epkgs.default-text-scale # replaces zoom-frm
@@ -426,7 +426,7 @@
       epkgs.lsp-mode
       # Nix doesn’t recognize that python is a runtime dep of lsp-treemacs
       epkgs.lsp-treemacs
-      pkgs.python
+      pkgs.python3
       epkgs.lsp-ui
       epkgs.magit
       epkgs.magit-popup
@@ -512,29 +512,10 @@
         pname = "vc-pijul";
         version = "0.1.0";
 
-        src =
-          (pkgs.fetchpijul {
-            url = "https://ssh.pijul.com/sellout/vc-pijul";
-            hash = "sha256-FNZSHYpkvZOdhDP4sD2z+DNkHDIKW1NI52nEs4o3WC8=";
-          })
-          .overrideAttrs (old: {
-            ## FIXME: `pijul clone` is complaining about a bad certificate, so we
-            ##        add the `-k` flag to ignore certificates, which is not good.
-            installPhase = ''
-              set -x
-              runHook preInstall
-
-              pijul clone \
-                ''${change:+--change "$change"} \
-                -k \
-                ''${state:+--state "$state"} \
-                --channel "$channel" \
-                "$url" \
-                "$out"
-
-              runHook postInstall
-            '';
-          });
+        src = pkgs.fetchpijul {
+          url = "https://nest.pijul.com/sellout/vc-pijul";
+          hash = "sha256-FNZSHYpkvZOdhDP4sD2z+DNkHDIKW1NI52nEs4o3WC8=";
+        };
 
         meta = {
           homepage = "https://nest.pijul.com/sellout/vc-pijul";

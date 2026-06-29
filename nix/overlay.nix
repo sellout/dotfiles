@@ -21,18 +21,6 @@ in {
 
   lexica-ultralegible = final.callPackage ./packages/lexica-ultralegible.nix {};
 
-  ## Used by Signal, but the one in Nixpkgs 25.11 has tests that fail on darwin.
-  nodejs_24 = prev.nodejs_24.overrideAttrs (old: {
-    doCheck = false;
-    sandboxProfile = "";
-  });
-
-  ## NB: Python 2 is EOL, so I don’t know why it’s still the default. Since we
-  ##     pull Python in for at least some Emacs tooling, ensure that `python`
-  ##     means Python 3.
-  python = final.python3;
-  pythonPackages = final.python3Packages;
-
   ## The install checks for unison-nix’s UCM derivation can’t be sandboxed, so
   ## we disable them in order to use Garnix.
   unison-ucm = prev.unison-ucm.overrideAttrs (old: {doInstallCheck = false;});

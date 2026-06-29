@@ -194,7 +194,6 @@
         pkgs.tikzit # not compiling on darwin currently
       ]
       ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
-        pkgs.eagle # not supported on darwin
         pkgs.tor-browser # not supported on darwin
       ];
 
@@ -554,10 +553,7 @@
       ## This helps keep the size of the Nix store down by periodically expiring
       ## old generations then running `nix-collect-garbage`.
       autoExpire = {
-        # Can change this to `true` once
-        # https://github.com/nix-community/home-manager/commit/20974416338898f0725a87832e4cd9bd82cbdaad
-        # is on the version of Home Manager we use (probably 25.11).
-        enable = pkgs.stdenv.hostPlatform.isLinux;
+        enable = true;
         frequency = "weekly";
         store.cleanup = true;
       };
