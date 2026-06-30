@@ -130,7 +130,10 @@
       programs = {
         ## marked broken on darwin
         calibre.enable = pkgs.stdenv.hostPlatform.isLinux;
-        thunderbird.enable = true;
+        ## TODO: Thunderbird hasn’t been good, and now compilation is killing my
+        ##       laptop. Figure out what to do, which is probably switching to a
+        ##       number of decoupled applications.
+        thunderbird.enable = false;
       };
 
       xdg.configFile."emacs/gnus/.gnus.el".text = ''
