@@ -230,7 +230,7 @@
             (nix-build-executable "${pkgs.nix}/bin/nix-build")
             (nix-executable "${pkgs.nix}/bin/nix")
             (nix-instantiate-executable "${pkgs.nix}/bin/nix-instantiate")
-            (nix-nixfmt-bin "${pkgs.nixfmt-classic}/bin/nixfmt")
+            (nix-nixfmt-bin "${pkgs.nixfmt}/bin/nixfmt")
             (nix-shell-executable "${pkgs.nix}/bin/nix-shell")
             (nix-store-executable "${pkgs.nix}/bin/nix-store"))
           ;; FIXME: This pulls in a version of Chromium that has to be built

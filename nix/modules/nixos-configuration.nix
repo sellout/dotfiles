@@ -52,7 +52,7 @@
     useDHCP = false;
     wireless = {
       enable = !config.networking.networkmanager.enable;
-      userControlled.enable = true;
+      userControlled = true;
     };
   };
 
