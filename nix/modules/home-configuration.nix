@@ -204,7 +204,7 @@
     ];
 
     sessionVariables = {
-      PGPASSFILE = "$XDG_CONFIG_HOME/pg/pgpass";
+      PGPASSFILE = "${config.xdg.configHome}/pg/pgpass";
       ## TODO: Make emacs-pager better (needs to handle ANSI escapes, like I do
       ##       in compilation buffers).
       # PAGER = "${config.lib.local.xdg.bin.home}/emacs-pager";

@@ -68,10 +68,10 @@
       ];
 
     sessionVariables = {
-      ALTERNATIVE_EDITOR = "${config.programs.emacs.package}/bin/emacs";
+      ALTERNATIVE_EDITOR = lib.getExe config.programs.emacs.package;
       # set by services.emacs on Linux, but not MacOS.
-      EDITOR = "${config.programs.emacs.package}/bin/emacsclient";
-      VISUAL = "${config.programs.emacs.package}/bin/emacsclient";
+      EDITOR = "${lib.getBin config.programs.emacs.package}/bin/emacsclient";
+      VISUAL = "${lib.getBin config.programs.emacs.package}/bin/emacsclient";
     };
   };
 
@@ -136,122 +136,130 @@
         (add-to-list 'load-path "${emacs-color-theme-solarized}")
         (add-to-list 'load-path "${org-invoice}")
 
-        ;;; This contains settings we want to customize with Nix-dependent values,
-        ;;; organized by package.
+        ;;; This contains settings we want to customize with Nix-dependent
+        ;;; values, organized by package.
 
         ;;; The setup for paths is split into two groups – the first is global
         ;;; settings, generally where we expect to always use the Emacs-side
-        ;;; binary for things. The second is local settings, where we only want to
-        ;;; use the Emacs-side binary for local buffers. However, there is another
-        ;;; use case – we can also set values we want used for remote instances in
-        ;;; the first group, then use the second group to override them for local
-        ;;; instances. We should comment in both places when this is done.
+        ;;; binary for things. The second is local settings, where we only want
+        ;;; to use the Emacs-side binary for local buffers. However, there is
+        ;;; another use case – we can also set values we want used for remote
+        ;;; instances in the first group, then use the second group to override
+        ;;; them for local instances. We should comment in both places when this
+        ;;; is done.
 
-        (custom-pseudo-theme-set-variables 'sellout-system-configurations-nix-path
+        (custom-pseudo-theme-set-variables
+          'sellout-system-configurations-nix-path
           ;; Emacs packages
 
           ;; ispell
-          '(ispell-program-name "${pkgs.ispell}/bin/ispell")
+          '(ispell-program-name "${lib.getBin pkgs.ispell}/bin/ispell")
 
           ;; third-party packages
 
           ;; editorconfig
-          '(editorconfig-exec-path "${pkgs.editorconfig-core-c}/bin/editorconfig")
+          '(editorconfig-exec-path "${lib.getExe pkgs.editorconfig-core-c}")
           ;; flycheck
-          '(flycheck-rust-binary-name "${pkgs.rustc}/bin/rustc")
-          '(flycheck-rust-executable "${pkgs.rustc}/bin/rustc")
-          '(flycheck-sh-bash-executable "${pkgs.bash}/bin/bash")
-          '(flycheck-sh-posix-bash-executable "${pkgs.bash}/bin/bash")
-          '(flycheck-sh-shellcheck-executable "${pkgs.shellcheck}/bin/shellcheck")
-          '(flycheck-sh-zsh-executable "${pkgs.zsh}/bin/zsh")
+          '(flycheck-rust-binary-name "${lib.getExe pkgs.rustc}")
+          '(flycheck-rust-executable "${lib.getExe pkgs.rustc}")
+          '(flycheck-sh-bash-executable "${lib.getExe pkgs.bash}")
+          '(flycheck-sh-posix-bash-executable "${lib.getExe pkgs.bash}")
+          '(flycheck-sh-shellcheck-executable "${lib.getExe pkgs.shellcheck}")
+          '(flycheck-sh-zsh-executable "${lib.getExe pkgs.zsh}")
           ;; flycheck-vale
-          '(flycheck-vale-program "${pkgs.vale}/bin/vale")
+          '(flycheck-vale-program "${lib.getExe pkgs.vale}")
           ;; wakatime-mode
           ;; wakatime/wakatime-mode#67
-          '(wakatime-cli-path "${config.programs.wakatime.package}/bin/wakatime-cli"))
+          '(wakatime-cli-path "${lib.getExe config.programs.wakatime.package}"))
 
-        ;; This should be moved to an upstream overlay containing settings for full
-        ;; Nix-store paths.
+        ;; This should be moved to an upstream overlay containing settings for
+        ;; full Nix-store paths.
         (custom-pseudo-theme-set-local-variables
             'sellout-system-configurations-nix-path
           ;; Emacs packages
           '(octave
-            (inferior-octave-program "${pkgs.octave}/bin/octave"))
+            (inferior-octave-program "${lib.getBin pkgs.octave}/bin/octave"))
           '(tex-mode
-            (latex-run-command "${config.programs.texlive.package}/bin/latex")
+            (latex-run-command
+             "${lib.getBin config.programs.texlive.package}/bin/latex")
             (slitex-run-command nil nil () "I can’t find this command anywhere")
-            (tex-bibtex-command "${config.programs.texlive.package}/bin/bibtex")
-            (tex-run-command "${config.programs.texlive.package}/bin/tex"))
+            (tex-bibtex-command
+             "${lib.getBin config.programs.texlive.package}/bin/bibtex")
+            (tex-run-command
+             "${lib.getBin config.programs.texlive.package}/bin/tex"))
           '(vc-darcs
-            (vc-darcs-program-name "${pkgs.darcs}/bin/darcs"))
+            (vc-darcs-program-name "${lib.getExe pkgs.darcs}"))
 
           ;; third-party packages
           '(agenix
-            (agenix-age-program "${pkgs.age}/bin/age"))
+            (agenix-age-program "${lib.getExe pkgs.age}"))
           '(darcsum
-            (darcsum-program "${pkgs.darcs}/bin/darcs"))
+            (darcsum-program "${lib.getExe pkgs.darcs}"))
           '(detached
-            (detached-dtach-program "${pkgs.dtach}/bin/dtach"))
+            (detached-dtach-program "${lib.getExe pkgs.dtach}"))
           '(dhall-mode
-            (dhall-command "${pkgs.dhall}/bin/dhall"))
+            (dhall-command "${lib.getExe pkgs.dhall}"))
           '(envrc
-            (envrc-direnv-executable "${pkgs.direnv}/bin/direnv"))
+            (envrc-direnv-executable "${lib.getExe pkgs.direnv}"))
           '(floobits
-            (floobits-python-executable "${pkgs.python3}/bin/python"))
+            (floobits-python-executable "${lib.getExe pkgs.python3}"))
           '(flycheck
-            (flycheck-rust-cargo-executable "${pkgs.cargo}/bin/cargo"))
+            (flycheck-rust-cargo-executable "${lib.getExe pkgs.cargo}"))
           '(ggtags
-            (ggtags-executable-directory "${pkgs.global}/bin/"))
+            (ggtags-executable-directory "${lib.getBin pkgs.global}/bin/"))
           '(graphviz-dot-mode
-            (graphviz-dot-dot-program "${pkgs.graphviz}/bin/dot")
+            (graphviz-dot-dot-program "${lib.getBin pkgs.graphviz}/bin/dot")
             (graphviz-dot-layout-programs
-             '("${pkgs.graphviz}/bin/dot"
-               "${pkgs.graphviz}/bin/neato"
-               "${pkgs.graphviz}/bin/fdp"
-               "${pkgs.graphviz}/bin/sfdp"
-               "${pkgs.graphviz}/bin/twopi"
-               "${pkgs.graphviz}/bin/circo"))
-            (graphviz-dot-view-command "${pkgs.graphviz}/bin/dotty %s"))
+             '("${lib.getBin pkgs.graphviz}/bin/dot"
+               "${lib.getBin pkgs.graphviz}/bin/neato"
+               "${lib.getBin pkgs.graphviz}/bin/fdp"
+               "${lib.getBin pkgs.graphviz}/bin/sfdp"
+               "${lib.getBin pkgs.graphviz}/bin/twopi"
+               "${lib.getBin pkgs.graphviz}/bin/circo"))
+            (graphviz-dot-view-command
+             "${lib.getBin pkgs.graphviz}/bin/dotty %s"))
           '(helm-rg
-            (helm-rg-git-executable "${pkgs.git}/bin/git")
-            (helm-rg-ripgrep-executable "${pkgs.ripgrep}/bin/ripgrep"))
+            (helm-rg-git-executable "${lib.getExe pkgs.git}")
+            (helm-rg-ripgrep-executable "${lib.getExe pkgs.ripgrep}"))
           '(idris-mode
-            (idris-interpreter-path "${pkgs.idris}/bin/idris"))
+            (idris-interpreter-path "${lib.getBin pkgs.idris}/bin/idris"))
           '(lsp-nix
-            (lsp-nix-nil-server-path "${pkgs.nil}/bin/nil"))
+            (lsp-nix-nil-server-path "${lib.getExe pkgs.nil}"))
           '(lsp-rust
             (lsp-rust-analyzer-server-command
-             '("${pkgs.rust-analyzer}/bin/rust-analyzer")))
+             '("${lib.getExe pkgs.rust-analyzer}")))
           '(magit
-            (magit-git-executable "${pkgs.git}/bin/git"))
+            (magit-git-executable "${lib.getExe pkgs.git}"))
           '(markdown-mode
-            (markdown-command "${pkgs.pandoc}/bin/pandoc"))
+            (markdown-command "${lib.getExe pkgs.pandoc}"))
           '(nix-mode
-            (nix-build-executable "${pkgs.nix}/bin/nix-build")
-            (nix-executable "${pkgs.nix}/bin/nix")
-            (nix-instantiate-executable "${pkgs.nix}/bin/nix-instantiate")
-            (nix-nixfmt-bin "${pkgs.nixfmt}/bin/nixfmt")
-            (nix-shell-executable "${pkgs.nix}/bin/nix-shell")
-            (nix-store-executable "${pkgs.nix}/bin/nix-store"))
+            (nix-build-executable "${lib.getBin pkgs.nix}/bin/nix-build")
+            (nix-executable "${lib.getExe pkgs.nix}")
+            (nix-instantiate-executable
+             "${lib.getBin pkgs.nix}/bin/nix-instantiate")
+            (nix-nixfmt-bin "${lib.getExe pkgs.nixfmt}")
+            (nix-shell-executable "${lib.getBin pkgs.nix}/bin/nix-shell")
+            (nix-store-executable "${lib.getBin pkgs.nix}/bin/nix-store"))
           ;; FIXME: This pulls in a version of Chromium that has to be built
           ;;        from source.
           ;; '(ob-mermaid
-          ;;   (ob-mermaid-cli-path "''${pkgs.mermaid-cli}/bin/mmdc"))
-          ;; NB: This (and probably plenty of other settings currently in here) is
-          ;;     project-specific, and should inherit whatever’s in the context of
-          ;;     the project, rather than some global value.
+          ;;   (ob-mermaid-cli-path "''${lib.getExe pkgs.mermaid-cli}"))
+          ;; NB: This (and probably plenty of other settings currently in here)
+          ;;     is project-specific, and should inherit whatever’s in the
+          ;;     context of the project, rather than some global value.
           ;; '(ormolu
-          ;;   (ormolu-process-path "${pkgs.ormolu}/bin/ormolu"))
+          ;;   (ormolu-process-path "${lib.getExe pkgs.ormolu}"))
           '(projectile
-            (projectile-darcs-command "${pkgs.darcs}/bin/darcs show files -0 ."))
+            (projectile-darcs-command
+             "${lib.getExe pkgs.darcs} show files -0 ."))
           '(rustic
-            (rustic-rustfmt-bin "${pkgs.rustfmt}/bin/rustfmt"))
+            (rustic-rustfmt-bin "${lib.getExe pkgs.rustfmt}"))
           '(sbt-mode
-            (sbt:program-name "${pkgs.sbt}/bin/sbt"))
+            (sbt:program-name "${lib.getExe pkgs.sbt}"))
           '(treemacs
-            (treemacs-python-executable "${pkgs.python3}/bin/python"))
+            (treemacs-python-executable "${lib.getExe pkgs.python3}"))
           '(vc-pijul
-            (vc-pijul-program-name "${pkgs.pijul}/bin/pijul")))
+            (vc-pijul-program-name "${lib.getExe pkgs.pijul}")))
 
         ;; TODO: These variables don’t work if set via a theme. See
         ;;       jwiegley/use-package#1002. Unfortunately, this means they get
@@ -259,12 +267,12 @@
         ;;       values over time.
         (custom-set-variables
          ;; easy-pg
-         '(epg-gpg-program "${pkgs.gnupg}/bin/gpg2")
+         '(epg-gpg-program "${lib.getExe pkgs.gnupg}")
          '(epg-gpgconf-program "${pkgs.gnupg}/bin/gpgconf")
          '(epg-gpgsm-program "${pkgs.gnupg}/bin/gpgsm"))
 
-        ;; These are personal settings that should remain after everything else is
-        ;; upstreamed.
+        ;; These are personal settings that should remain after everything else
+        ;; is upstreamed.
         (custom-pseudo-theme-set-variables 'sellout-system-configurations
           ;; Emacs packages
 
@@ -274,12 +282,14 @@
           '(user-mail-address
             "${config.lib.local.primaryEmailAccount.address}")
           ;; org
-          '(org-default-notes-file "${config.xdg.userDirs.documents}/org/notes.org")
+          '(org-default-notes-file
+            "${config.xdg.userDirs.documents}/org/notes.org")
           '(org-directory "${config.xdg.userDirs.documents}/org")
           ;; tramp
           ;; NB: This one should _not_ be upstreamed, because the default is nil.
           '(tramp-auto-save-directory "${emacs-state-home}/tramp/auto-save/")
-          ;; NB: Set here instead of in default.el because it depends on home-manager.
+          ;; NB: Set here instead of in default.el because it depends on
+          ;;     home-manager.
           '(tramp-use-ssh-controlmaster-options
             nil
             nil
@@ -318,9 +328,10 @@
         (custom-pseudo-theme-set-local-variables 'sellout-system-configurations
           ;; Emacs packages
           '(autorevert
-            ;; TODO: This doesn’t depend on Nix, but it does require ‘c-p-t-s-l-v’.
-            ;;       Those functions should be moved into their own module (package?)
-            ;;       so they can easily be referenced from default.el as well.
+            ;; TODO: This doesn’t depend on Nix, but it does require
+            ;;       ‘c-p-t-s-l-v’. Those functions should be moved into their
+            ;;       own module (package?) so they can easily be referenced from
+            ;;       default.el as well.
             (auto-revert-check-vc-info
              t
              nil
