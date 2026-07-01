@@ -74,7 +74,6 @@
         ]
         ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
           pkgs._1password-gui # doesn’t get installed in the correct location on Darwin
-          pkgs.calibre # marked broken on darwin
           pkgs.hunspell # needed for spellcheck in libreoffice
           ## TODO: Build lists of these from the configured locales.
           pkgs.hunspellDicts.en_US # needed for spellcheck in libreoffice
@@ -128,7 +127,14 @@
         "onepassword-password-manager"
       ];
 
-      programs.thunderbird.enable = true;
+      programs = {
+        ## marked broken on darwin
+        calibre.enable = pkgs.stdenv.hostPlatform.isLinux;
+        ## TODO: Thunderbird hasn’t been good, and now compilation is killing my
+        ##       laptop. Figure out what to do, which is probably switching to a
+        ##       number of decoupled applications.
+        thunderbird.enable = false;
+      };
 
       xdg.configFile."emacs/gnus/.gnus.el".text = ''
         (setq gnus-select-method

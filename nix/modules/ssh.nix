@@ -68,7 +68,7 @@ in {
       extraConfig = ''
         AddKeysToAgent yes
       '';
-      matchBlocks."*" = {
+      settings."*" = {
         controlMaster = "auto";
         # This moves the default `controlPath`, but also changes %n to %h, so we
         # share the connection even if we typed different hostnames on the

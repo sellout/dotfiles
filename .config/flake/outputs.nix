@@ -62,12 +62,12 @@
       thunderbird.profiles.default =
         lib.recursiveUpdate config.lib.local.thunderbird.profileDefaults
         {isDefault = true;};
-      vscode.profiles.default =
+      vscodium.profiles.default =
         lib.recursiveUpdate config.lib.local.vscode.profileDefaults {};
     };
     ## These attributes are simply required by home-manager.
     home = {
-      stateVersion = "25.11";
+      stateVersion = "26.05";
       homeDirectory = "/tmp/example";
       username = "example-user";
     };
@@ -183,7 +183,7 @@ in
                 ## `homebrew.enable`) that were previously applied to the user
                 ## running `darwin-rebuild`.
                 primaryUser = "example-user";
-                stateVersion = 6;
+                stateVersion = 7;
               };
               users.users.example-user.home = "/tmp/example";
             }
@@ -208,10 +208,13 @@ in
             self.nixosModules.default
             {
               boot.loader.grub.devices = ["/dev/vba"];
-              fileSystems."/".device = "/dev/vba";
+              fileSystems."/" = {
+                device = "/dev/vba";
+                fsType = "auto";
+              };
               home-manager.users.example-user = exampleHomeConfiguration;
               nixpkgs = {inherit hostPlatform;};
-              system.stateVersion = "25.11";
+              system.stateVersion = "26.05";
               users = {
                 groups.example-user = {};
                 users.example-user = {

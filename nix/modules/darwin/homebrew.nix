@@ -9,6 +9,11 @@
 }: {
   imports = [homebrew.darwinModules.nix-homebrew];
 
+  environment.systemPath = [
+    # TODO: Support this via the homebrew module.
+    "${config.homebrew.prefix}/bin"
+  ];
+
   nix-homebrew = {
     enable = true;
     autoMigrate = true;

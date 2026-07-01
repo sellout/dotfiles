@@ -26,6 +26,8 @@
   # gets rebuilt, but want it here for email support
   gitPackage = pkgs.gitFull;
 
+  jujutsuPackage = pkgs.jujutsu;
+
   mercurialPackage = pkgs.mercurial;
 
   ## FIXME: This is shared between Git and Mercurial, but I don"t think the
@@ -64,6 +66,7 @@ in {
         ++ [
           darcsPackage
           gitPackage
+          jujutsuPackage
           mercurialPackage
         ];
     };
@@ -86,7 +89,6 @@ in {
             pkgs.difftastic
             pkgs.git-revise # unfortunately not supported by magit
             pkgs.git-standup
-            pkgs.mergiraf
           ];
         sessionVariables.BRZ_LOG = "${config.xdg.stateHome}/breezy/log";
         shellAliases.svn = "svn --config-dir '${config.xdg.configHome}/subversion'";
@@ -104,6 +106,7 @@ in {
             "(^|/)\.DS_Store$"
           ];
         };
+
         git = {
           enable = true;
           ## NB: not doing `git = super.gitFull` in the overlay, because then
@@ -136,13 +139,7 @@ in {
               templateDir = "${./git/template}";
             };
             log.showSignatures = true;
-            merge = {
-              conflictStyle = "diff3";
-              mergiraf = {
-                name = "mergiraf";
-                driver = "mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P -l %L";
-              };
-            };
+            merge.conflictStyle = "diff3";
             pager.difftool = true;
             rebase.autosquash = true;
             sendemail.identity = config.lib.local.primaryEmailAccountName;
@@ -172,12 +169,23 @@ in {
           };
         };
 
+        jujutsu = {
+          enable = true;
+          package = jujutsuPackage;
+        };
+
         mercurial = {
           enable = true;
           ignores = ignores;
-          package = pkgs.mercurial;
+          package = mercurialPackage;
           userEmail = config.lib.local.primaryEmailAccount.address;
           userName = config.lib.local.primaryEmailAccount.realName;
+        };
+
+        mergiraf = {
+          enable = true;
+          enableGitIntegration = true;
+          enableJujutsuIntegration = true;
         };
       };
 
@@ -193,6 +201,7 @@ in {
         commonPackages
         ++ [
           darcsPackage
+          jujutsuPackage
           mercurialPackage
         ];
       programs.git = {

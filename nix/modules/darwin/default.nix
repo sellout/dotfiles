@@ -31,10 +31,6 @@
       ## remote connections
       pkgs.mosh # NixOS has a module for this, nix-darwin doesn’t.
     ];
-    systemPath = [
-      # TODO: Support this via the homebrew module.
-      config.homebrew.brewPrefix
-    ];
   };
 
   ## TODO: Build this incrementally from arbitrarily-named scripts.

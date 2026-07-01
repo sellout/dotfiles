@@ -39,9 +39,6 @@
           #   };
           # }))
           pkgs.brewCasks.lastfm
-        ]
-        ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
-          pkgs.cider # we have Music.app on darwin
         ];
 
       local.nixpkgs.allowedUnfreePackages = [

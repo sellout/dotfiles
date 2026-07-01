@@ -83,7 +83,7 @@
 
     darwin = {
       inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:LnL7/nix-darwin/nix-darwin-25.11";
+      url = "github:LnL7/nix-darwin/nix-darwin-26.05";
     };
 
     emacs-color-theme-solarized = {
@@ -168,7 +168,9 @@
         home-manager.follows = "home-manager";
         nixpkgs.follows = "nixpkgs";
       };
-      url = "github:ceedubs/unison-nix";
+      ## TODO: Restore this after it’s merged upstream.
+      # url = "github:ceedubs/unison-nix";
+      url = "github:sellout/unison-nix/nixpkgs-26.05";
     };
   };
 }

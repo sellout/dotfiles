@@ -52,7 +52,7 @@
     useDHCP = false;
     wireless = {
       enable = !config.networking.networkmanager.enable;
-      userControlled.enable = true;
+      userControlled = true;
     };
   };
 
@@ -68,7 +68,6 @@
       enable = true;
       enableSSHSupport = true;
     };
-    light.enable = true;
     mosh.enable = true;
     # mtr.enable = true;
   };
