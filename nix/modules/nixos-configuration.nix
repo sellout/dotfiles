@@ -142,9 +142,4 @@
       HandleLidSwitchExternalPower = "ignore";
     };
   };
-
-  system.autoUpgrade = {
-    allowReboot = true;
-    enable = true;
-  };
 }
