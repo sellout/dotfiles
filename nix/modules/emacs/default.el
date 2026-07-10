@@ -1216,8 +1216,9 @@ Committer: %cN <%cE>
   :config (add-to-list 'markdown-code-lang-modes '("unison" . unison-ts-mode))
   :hook (unison-ts-mode . eglot-ensure))
 
-(use-package vc-pijul
-  :init (add-to-list 'vc-handled-backends 'Pijul))
+;; WAIT: fetchpijul is broken in 26.05. See NixOS/nixpkgs#536546
+;; (use-package vc-pijul
+;;   :init (add-to-list 'vc-handled-backends 'Pijul))
 
 (use-package wakatime-mode
   :delight "⏱"
