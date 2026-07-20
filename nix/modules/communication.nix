@@ -35,10 +35,6 @@
           pkgs.zoom-us
         ]
         ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-          pkgs.brewCasks.adium
-          pkgs.brewCasks.gotomeeting
-          pkgs.brewCasks.psi
-          pkgs.brewCasks.skype
           # pkgs.brewCasks.whatsapp # currently subsumed by ferdium # broken
         ];
 
