@@ -21,6 +21,10 @@ in {
 
   lexica-ultralegible = final.callPackage ./packages/lexica-ultralegible.nix {};
 
+  ## Signal expires itself, and the Nixpkgs releases often have a version that
+  ## expired before the release.
+  signal-desktop = master.signal-desktop;
+
   ## The install checks for unison-nix’s UCM derivation can’t be sandboxed, so
   ## we disable them in order to use Garnix.
   unison-ucm = prev.unison-ucm.overrideAttrs (old: {doInstallCheck = false;});
