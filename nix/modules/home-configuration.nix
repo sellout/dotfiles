@@ -38,7 +38,8 @@
   age.secretsDir = "${config.lib.local.xdg.runtimeDir}/agenix";
 
   garnix.cache = {
-    enable = true;
+    ## This service is now dead, but may rise again.
+    enable = false;
     config = "on";
   };
 
