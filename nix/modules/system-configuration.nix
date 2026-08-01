@@ -33,7 +33,8 @@
   ## Don’t let Home Manager conflicts get in the way of system updates.
   home-manager.backupFileExtension = "before-home-manager";
 
-  garnix.cache.enable = true;
+  ## This service is now dead, but may rise again.
+  garnix.cache.enable = false;
 
   nix = {
     ## Remove old-style tools & configs, preferring flakes.
