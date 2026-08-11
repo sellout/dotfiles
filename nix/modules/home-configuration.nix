@@ -154,6 +154,7 @@
         pkgs.brewCasks.hammerspoon
         pkgs.brewCasks.imageoptim
         pkgs.brewCasks.kiibohd-configurator
+        pkgs.brewCasks.little-snitch
         pkgs.brewCasks.omnigraffle
         pkgs.brewCasks.omnioutliner
         (pkgs.brewCasks.powerphotos.overrideAttrs (old: {
