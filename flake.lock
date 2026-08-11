@@ -224,6 +224,22 @@
         "type": "github"
       }
     },
+    "cleardisk-homebrew-tap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786028916,
+        "narHash": "sha256-Ob6k02edM7nCI00KsOVNTRG5Zuj+cqDpO+USW4unXDU=",
+        "owner": "bysiber",
+        "repo": "cleardisk",
+        "rev": "1aaec92b91c40fdc0c2fce92fef20df08b5f5c43",
+        "type": "github"
+      },
+      "original": {
+        "owner": "bysiber",
+        "repo": "cleardisk",
+        "type": "github"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -955,6 +971,7 @@
         "bradix": "bradix",
         "brew": "brew",
         "brew-formulae": "brew-formulae",
+        "cleardisk-homebrew-tap": "cleardisk-homebrew-tap",
         "darwin": "darwin",
         "emacs-color-theme-solarized": "emacs-color-theme-solarized",
         "emacs-extended-faces": "emacs-extended-faces",

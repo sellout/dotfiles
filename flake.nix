@@ -81,6 +81,11 @@
       url = "github:BatteredBunny/brew-api";
     };
 
+    cleardisk-homebrew-tap = {
+      flake = false;
+      url = "github:bysiber/cleardisk";
+    };
+
     darwin = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:LnL7/nix-darwin/nix-darwin-26.05";

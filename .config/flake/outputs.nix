@@ -6,6 +6,7 @@
   bradix,
   brew,
   brew-formulae, # this is only used by `brew`, not directly by us
+  cleardisk-homebrew-tap,
   darwin,
   emacs-color-theme-solarized,
   emacs-extended-faces,
@@ -79,6 +80,7 @@ in
         agenix
         bitbar-solar-time
         brew
+        cleardisk-homebrew-tap
         darwin
         emacs-color-theme-solarized
         flaky
