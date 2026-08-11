@@ -49,6 +49,7 @@
         XDG_VIDEOS_DIR="$HOME/Movies"
       '';
     };
+    localBinInPath = true;
     userDirs = {
       enable = true;
       createDirectories = true;
