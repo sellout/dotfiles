@@ -20,12 +20,16 @@
 
   inputs = {
     ## Flaky should generally be the source of truth for its inputs.
-    flaky.url = "github:sellout/flaky";
+    flaky = {
+      inputs.systems.follows = "systems";
+      url = "github:sellout/flaky";
+    };
 
     bash-strict-mode.follows = "flaky/bash-strict-mode";
     flake-utils.follows = "flaky/flake-utils";
     home-manager.follows = "flaky/home-manager";
     nixpkgs.follows = "flaky/nixpkgs";
+
     ## NB: i686 isn’t well supported, and I don’t currently have any systems
     ##     using it, so punt on the failures until I need to care.
     systems.url = "github:nix-systems/default";
@@ -77,6 +81,11 @@
       url = "github:BatteredBunny/brew-api";
     };
 
+    cleardisk-homebrew-tap = {
+      flake = false;
+      url = "github:bysiber/cleardisk";
+    };
+
     darwin = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:LnL7/nix-darwin/nix-darwin-26.05";
@@ -88,7 +97,10 @@
     };
 
     emacs-extended-faces = {
-      inputs.flaky.follows = "flaky";
+      inputs = {
+        flaky.follows = "flaky";
+        systems.follows = "systems";
+      };
       url = "github:sellout/emacs-extended-faces";
     };
 
@@ -152,6 +164,7 @@
     size-indication-iec = {
       inputs = {
         flake-parts.follows = "flake-parts";
+        le-grille.inputs.treefmt-nix.follows = "flaky/project-manager/treefmt-nix";
         nixpkgs.follows = "nixpkgs";
         systems.follows = "systems";
       };

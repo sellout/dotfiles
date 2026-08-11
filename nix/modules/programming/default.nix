@@ -74,7 +74,7 @@
       ## So that dotfiles doesn’t need to know about any specific profiles,
       ## this can be used like
       ##
-      ## > programs.vscode.profiles.<name> =
+      ## > programs.vscodium.profiles.<name> =
       ## >   lib.recursiveUpdate config.lib.local.vscode.profileDefaults {…};
       lib.local.vscode.profileDefaults = {
         enableExtensionUpdateCheck = false; # Nervous about these two, see how

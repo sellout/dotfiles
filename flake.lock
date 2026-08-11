@@ -224,6 +224,22 @@
         "type": "github"
       }
     },
+    "cleardisk-homebrew-tap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786028916,
+        "narHash": "sha256-Ob6k02edM7nCI00KsOVNTRG5Zuj+cqDpO+USW4unXDU=",
+        "owner": "bysiber",
+        "repo": "cleardisk",
+        "rev": "1aaec92b91c40fdc0c2fce92fef20df08b5f5c43",
+        "type": "github"
+      },
+      "original": {
+        "owner": "bysiber",
+        "repo": "cleardisk",
+        "type": "github"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -339,7 +355,9 @@
           "flaky",
           "nixpkgs"
         ],
-        "systems": "systems"
+        "systems": [
+          "systems"
+        ]
       },
       "locked": {
         "lastModified": 1778555254,
@@ -470,7 +488,7 @@
     },
     "flake-utils_2": {
       "inputs": {
-        "systems": "systems_4"
+        "systems": "systems_2"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -495,7 +513,9 @@
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
         "project-manager": "project-manager",
-        "systems": "systems_2"
+        "systems": [
+          "systems"
+        ]
       },
       "locked": {
         "lastModified": 1785555248,
@@ -613,7 +633,11 @@
           "size-indication-iec",
           "systems"
         ],
-        "treefmt-nix": "treefmt-nix_2"
+        "treefmt-nix": [
+          "flaky",
+          "project-manager",
+          "treefmt-nix"
+        ]
       },
       "locked": {
         "lastModified": 1772501175,
@@ -947,6 +971,7 @@
         "bradix": "bradix",
         "brew": "brew",
         "brew-formulae": "brew-formulae",
+        "cleardisk-homebrew-tap": "cleardisk-homebrew-tap",
         "darwin": "darwin",
         "emacs-color-theme-solarized": "emacs-color-theme-solarized",
         "emacs-extended-faces": "emacs-extended-faces",
@@ -980,7 +1005,7 @@
         "nur": "nur",
         "org-invoice": "org-invoice",
         "size-indication-iec": "size-indication-iec",
-        "systems": "systems_3",
+        "systems": "systems",
         "unison-nix": "unison-nix"
       }
     },
@@ -1060,36 +1085,6 @@
     },
     "systems_2": {
       "locked": {
-        "lastModified": 1726558681,
-        "narHash": "sha256-vta8mxLa5XxpHfb9HCiavFqBrX2xJDvZiKHZOy4kvlA=",
-        "owner": "sellout",
-        "repo": "nix-systems",
-        "rev": "aa9520a9a0f92098d3576c3b4eafcb32c13d6800",
-        "type": "github"
-      },
-      "original": {
-        "owner": "sellout",
-        "repo": "nix-systems",
-        "type": "github"
-      }
-    },
-    "systems_3": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
-    "systems_4": {
-      "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
         "owner": "nix-systems",
@@ -1117,28 +1112,6 @@
         "owner": "numtide",
         "repo": "treefmt-nix",
         "rev": "df3c0640565d04a0261253cdd89fce78ec50168a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "treefmt-nix",
-        "type": "github"
-      }
-    },
-    "treefmt-nix_2": {
-      "inputs": {
-        "nixpkgs": [
-          "size-indication-iec",
-          "le-grille",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1770228511,
-        "narHash": "sha256-wQ6NJSuFqAEmIg2VMnLdCnUc0b7vslUohqqGGD+Fyxk=",
-        "owner": "numtide",
-        "repo": "treefmt-nix",
-        "rev": "337a4fe074be1042a35086f15481d763b8ddc0e7",
         "type": "github"
       },
       "original": {

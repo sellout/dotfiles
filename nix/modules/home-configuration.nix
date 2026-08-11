@@ -145,21 +145,16 @@
       ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
         pkgs.mas
         pkgs.brewCasks.acorn
-        (pkgs.brewCasks.alfred.overrideAttrs (old: {
-          ## From BatteredBunny/brew-nix#15
-          unpackPhase = "${lib.getExe pkgs.gnutar} -xvzf $src";
-        }))
+        pkgs.brewCasks.alfred
         pkgs.brewCasks.beamer
         pkgs.brewCasks.disk-inventory-x
         pkgs.brewCasks.dropbox
         pkgs.brewCasks.freemind
         pkgs.brewCasks.github
         pkgs.brewCasks.hammerspoon
-        (pkgs.brewCasks.imageoptim.overrideAttrs (old: {
-          ## From BatteredBunny/brew-nix#15
-          unpackPhase = "${lib.getExe pkgs.gnutar} -xvJf $src";
-        }))
+        pkgs.brewCasks.imageoptim
         pkgs.brewCasks.kiibohd-configurator
+        pkgs.brewCasks.little-snitch
         pkgs.brewCasks.omnigraffle
         pkgs.brewCasks.omnioutliner
         (pkgs.brewCasks.powerphotos.overrideAttrs (old: {

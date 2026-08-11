@@ -1,4 +1,5 @@
 {
+  cleardisk-homebrew-tap,
   config,
   homebrew,
   homebrew-cask,
@@ -20,9 +21,11 @@
     enableRosetta = pkgs.stdenv.hostPlatform.isAarch64;
     mutableTaps = false;
     taps = {
+      "bysiber/cleardisk" = cleardisk-homebrew-tap;
       "homebrew/homebrew-cask" = homebrew-cask;
       "homebrew/homebrew-core" = homebrew-core;
     };
+    trust.casks = ["cleardisk"];
     user = config.system.primaryUser;
   };
 
@@ -58,6 +61,7 @@
     ##     to see which casks need `greedy = true;` in order to be upgraded by
     ##     Homebrew.
     casks = [
+      "cleardisk"
       "google-drive" # doesn't respect appdir
       "tor-browser" # fails on `chmod` in brewCasks
       # "virtualbox" # requires Intel architecture

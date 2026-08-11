@@ -2,6 +2,7 @@
   agenix,
   bitbar-solar-time,
   brew,
+  cleardisk-homebrew-tap,
   darwin,
   emacs-color-theme-solarized,
   flaky,
@@ -70,6 +71,7 @@ in {
         specialArgs = {
           inherit
             brew
+            cleardisk-homebrew-tap
             flaky
             homebrew
             homebrew-cask

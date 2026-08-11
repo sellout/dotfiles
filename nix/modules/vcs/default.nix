@@ -33,10 +33,12 @@
   ## FIXME: This is shared between Git and Mercurial, but I don"t think the
   ##        syntax is actually the same, so need to post-process this list
   ##        appropriately.
+  ##
+  ## TODO: Make this an option, so we can add to it from different places (like
+  ##       the Emacs module, and the Floobits module, etc.)
   ignores =
     [
       ".cache/" # semi-standard XDG-like cache directory
-      ".dir-locals-2.el" # Local emacs config for repos that have a config.
       ".local/" # less standard XDG-like local directory
 
       # Directories potentially created on network file systems
@@ -44,6 +46,14 @@
       ".AppleDesktop" # created by Macs
       ".TemporaryItems/" # created by Macs
       ".apdisk" # created by Macs
+
+      # Emacs
+      #
+      # NB: This is for files created by using Emacs as an editor. Files created
+      #     for Emacs Lisp development (like “.cask/”, “*.elc”, etc.) should be
+      #     in ignore files for projects containing Emacs Lisp.
+      ".#*"
+      ".dir-locals-2.el" # Unlike .dir-locals.el, this should never be committed
 
       # Floobits
       ".floo"
