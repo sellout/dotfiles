@@ -10,6 +10,7 @@
   darwin,
   emacs-color-theme-solarized,
   emacs-extended-faces,
+  emacs-tramp-rpc,
   epresent,
   firefox-darwin,
   flake-parts, # unused, but unifies inputs
@@ -118,6 +119,7 @@ in
         bash-strict-mode.overlays.default
         bradix.overlays.default
         emacs-extended-faces.overlays.default
+        emacs-tramp-rpc.overlays.default
         epresent.overlays.default
         (final: prev:
           if prev.stdenv.hostPlatform.isDarwin

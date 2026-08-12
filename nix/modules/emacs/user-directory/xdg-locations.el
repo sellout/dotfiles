@@ -128,6 +128,10 @@ According to the XDG Base Directory Specification version
       ,(xl-emacs-state-home "projectile/bookmarks.eld"))
     ;; slime
     `(slime-repl-history-file ,(xl-emacs-state-home "slime/history.eld"))
+    ;; tramp-rpc
+    `(tramp-rpc-deploy-local-cache-directory
+      ,(xl-emacs-cache-home "tramp-rpc/remote-binaries"))
+    `(tramp-rpc-deploy-remote-directory ,(xl-emacs-cache-home "tramp-rpc"))
     ;; transient
     `(transient-history-file ,(xl-emacs-state-home "transient/history.el"))
     `(transient-levels-file ,(xl-emacs-state-home "transient/levels.el"))

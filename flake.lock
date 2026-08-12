@@ -373,6 +373,27 @@
         "type": "github"
       }
     },
+    "emacs-tramp-rpc": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "rust-overlay": "rust-overlay"
+      },
+      "locked": {
+        "lastModified": 1786465197,
+        "narHash": "sha256-8nMRbmPjn1182NuIXVe/3aYu0U+sNHVOnXPMwTZaIaU=",
+        "owner": "ArthurHeymans",
+        "repo": "emacs-tramp-rpc",
+        "rev": "e1d4632d576ecf2472c321de1e713b776ea2b78f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ArthurHeymans",
+        "repo": "emacs-tramp-rpc",
+        "type": "github"
+      }
+    },
     "epresent": {
       "inputs": {
         "flake-utils": [
@@ -975,6 +996,7 @@
         "darwin": "darwin",
         "emacs-color-theme-solarized": "emacs-color-theme-solarized",
         "emacs-extended-faces": "emacs-extended-faces",
+        "emacs-tramp-rpc": "emacs-tramp-rpc",
         "epresent": "epresent",
         "firefox-darwin": "firefox-darwin",
         "flake-parts": "flake-parts",
@@ -1007,6 +1029,27 @@
         "size-indication-iec": "size-indication-iec",
         "systems": "systems",
         "unison-nix": "unison-nix"
+      }
+    },
+    "rust-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "emacs-tramp-rpc",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1768445213,
+        "narHash": "sha256-y0BglISgDr61vvdb35m0O4npuqh1pojlBNDILo9j8AI=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "1cd63408e71cc0e6a89ff2cb7c4107214e2523cc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
       }
     },
     "shellcheck-nix-attributes": {
