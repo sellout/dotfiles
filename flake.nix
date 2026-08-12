@@ -104,6 +104,11 @@
       url = "github:sellout/emacs-extended-faces";
     };
 
+    emacs-tramp-rpc = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:ArthurHeymans/emacs-tramp-rpc";
+    };
+
     epresent = {
       inputs.flaky.follows = "flaky";
       ## TODO: Remove branch after eschulte/epresent#76 is merged.
