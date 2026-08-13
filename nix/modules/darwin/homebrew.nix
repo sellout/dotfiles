@@ -20,8 +20,10 @@
     autoMigrate = true;
     enableRosetta = pkgs.stdenv.hostPlatform.isAarch64;
     mutableTaps = false;
+    ## NOTE: The key here must always start with “homebrew-”. See
+    ##       https://github.com/zhaofengli/nix-homebrew#declarative-taps
     taps = {
-      "bysiber/cleardisk" = cleardisk-homebrew-tap;
+      "bysiber/homebrew-cleardisk" = cleardisk-homebrew-tap;
       "homebrew/homebrew-cask" = homebrew-cask;
       "homebrew/homebrew-core" = homebrew-core;
     };
