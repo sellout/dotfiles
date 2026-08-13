@@ -25,7 +25,7 @@
       "homebrew/homebrew-cask" = homebrew-cask;
       "homebrew/homebrew-core" = homebrew-core;
     };
-    trust.casks = ["cleardisk"];
+    trust.casks = ["bysiber/cleardisk/cleardisk"];
     user = config.system.primaryUser;
   };
 
