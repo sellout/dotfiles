@@ -486,14 +486,6 @@
       epkgs.yasnippet
     ];
     overrides = final: prev: {
-      auto-dark = prev.auto-dark.overrideAttrs (old: {
-        src = pkgs.fetchFromGitHub {
-          owner = "LionyxML";
-          repo = "auto-dark-emacs";
-          tag = "v0.13.6";
-          hash = "sha256-RKq2gruVKyxWYZ/xWwNO6U0c0fXcZfDeZfH0RQXTPDU=";
-        };
-      });
       envrc = prev.envrc.overrideAttrs (old: {
         ## Temporarily set to my lighter branch, but eventually get that fixed &
         ## merged.
