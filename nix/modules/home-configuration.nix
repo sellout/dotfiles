@@ -483,7 +483,6 @@
   local.nixpkgs = {
     enable = true;
     allowedUnfreePackages = [
-      "eagle"
       "plex-desktop"
       "plexmediaserver"
     ];
