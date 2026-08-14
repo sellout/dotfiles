@@ -1,5 +1,4 @@
 {
-  cleardisk-homebrew-tap,
   config,
   homebrew,
   homebrew-cask,
@@ -20,14 +19,10 @@
     autoMigrate = true;
     enableRosetta = pkgs.stdenv.hostPlatform.isAarch64;
     mutableTaps = false;
-    ## NOTE: The key here must always start with “homebrew-”. See
-    ##       https://github.com/zhaofengli/nix-homebrew#declarative-taps
     taps = {
-      "bysiber/homebrew-cleardisk" = cleardisk-homebrew-tap;
       "homebrew/homebrew-cask" = homebrew-cask;
       "homebrew/homebrew-core" = homebrew-core;
     };
-    trust.casks = ["bysiber/cleardisk/cleardisk"];
     user = config.system.primaryUser;
   };
 
@@ -63,7 +58,6 @@
     ##     to see which casks need `greedy = true;` in order to be upgraded by
     ##     Homebrew.
     casks = [
-      "cleardisk"
       "google-drive" # doesn't respect appdir
       "tor-browser" # fails on `chmod` in brewCasks
       # "virtualbox" # requires Intel architecture
