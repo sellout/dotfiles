@@ -199,8 +199,8 @@
             (detached-dtach-program "${lib.getExe pkgs.dtach}"))
           '(dhall-mode
             (dhall-command "${lib.getExe pkgs.dhall}"))
-          '(envrc
-            (envrc-direnv-executable "${lib.getExe pkgs.direnv}"))
+          ;; NOTE: We don’t set ‘envrc-direnv-executable’ because it’s also used
+          ;;       on remote hosts, which won’t have the same package.
           '(floobits
             (floobits-python-executable "${lib.getExe pkgs.python3}"))
           '(flycheck
