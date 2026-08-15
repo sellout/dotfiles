@@ -61,13 +61,12 @@
         ## this in my Flaky config for Haskell.
         ##
         ## Unfortunately, this won’t put _all_ the work directories at the
-        ## top-level of the project. It will also create .cache/stack-work in
-        ## each package directory as well.
+        ## top-level of the project. It will also create .cache/stack/ in each
+        ## package directory as well.
         ##
-        ## NB: I didn’t change the directory name to “stack” to help tools that
-        ##     look for “stack-work” still succeed. Although … those tools
-        ##     should query the Stack `work-dir` value.
-        work-dir = "${config.lib.local.xdg.cache.rel}/stack-work";
+        ## NOTE: Tools are likely to just look for ‘.stack-work’, but
+        ##       commercialhaskell/stack#5600.
+        work-dir = "${config.lib.local.xdg.cache.rel}/stack";
       };
     };
   };
