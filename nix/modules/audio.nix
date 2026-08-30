@@ -13,6 +13,7 @@
         masApps =
           {
             GarageBand = 682658836;
+            "HxMIDI Tools" = 6737767548;
           }
           // config.lib.local.iosApps {SoundCloud = 336353151;};
       };
