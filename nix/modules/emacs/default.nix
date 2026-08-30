@@ -474,6 +474,7 @@
       epkgs.scala-mode
       epkgs.scratch # https://codeberg.org/emacs-weirdware/scratch#readme
       epkgs.size-indication-iec
+      epkgs.tramp-rpc
       epkgs.treesit-fold # code folding for treesitter modes
       epkgs.undo-tree
       epkgs.unison-ts-mode
