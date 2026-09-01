@@ -90,6 +90,12 @@ FILENAME and NOERROR behave the same as for ‘require‘."
   ;;        remove this.
   :demand t)
 
+;; Stolen from https://www.emacswiki.org/emacs/DisabledCommands
+(defun sellout--disabled-commands-in-custom-file (orig-fun &rest orig-args)
+  "Put declarations in `custom-file'."
+  (let ((user-init-file custom-file))
+    (apply orig-fun orig-args)))
+
 ;; This package is assumed to be loaded already, so do the rest of the setup
 ;; immediately.
 (use-package custom
@@ -98,10 +104,9 @@ FILENAME and NOERROR behave the same as for ‘require‘."
   :after (inheritance-theme solarized-theme)
   :config
   ;; Stolen from https://www.emacswiki.org/emacs/DisabledCommands
-  (defadvice en/disable-command (around put-in-custom-file activate)
-    "Put declarations in `custom-file'."
-    (let ((user-init-file custom-file))
-      ad-do-it))
+  (advice-add 'en/disable-command
+              :around
+              #'sellout--disabled-commands-in-custom-file)
   :custom
   (custom-enabled-themes '(bringhurst solarized inheritance))
   (custom-unlispify-remove-prefixes t))
@@ -148,12 +153,18 @@ FILENAME and NOERROR behave the same as for ‘require‘."
   ;; See https://physics.nist.gov/cuu/Units/binary.html for more about these
   ;; prefixes.
   (defconst base-binary-multiple (expt 2 10))
-  (defconst Ki (expt base-binary-multiple 1))
-  (defconst Mi (expt base-binary-multiple 2))
-  (defconst Gi (expt base-binary-multiple 3))
-  (defconst Ti (expt base-binary-multiple 4))
-  (defconst Pi (expt base-binary-multiple 5))
-  (defconst Ei (expt base-binary-multiple 6))
+  (defconst Ki (expt base-binary-multiple 1)
+    "kibi- (1 024⠊ × – about 1⠊ thousand)")
+  (defconst Mi (expt base-binary-multiple 2)
+    "mebi- (1 048 576⠊ × – about 1⠊ million)")
+  (defconst Gi (expt base-binary-multiple 3)
+    "gibi- (1 073 741 824⠊ × – about 1⠊1 billion)")
+  (defconst Ti (expt base-binary-multiple 4)
+    "tebi- (1 099 511 527 776⠊ × – about 1⠊1 trillion)")
+  (defconst Pi (expt base-binary-multiple 5)
+    "pebi- (1 125 899 906 842 624⠊ × – about 1⠊1 quadrillion)")
+  (defconst Ei (expt base-binary-multiple 6)
+    "exbi- (1 152 921 504 606 846 976⠊ × – about 1⠊2 quintillion)")
   :config
   (defconst seconds-in-day (bradix-parse "86 399⠊999 85")
     "Mean seconds per day.
@@ -165,7 +176,7 @@ This is needed since Emacs generally wants time values in seconds.")
 
   (defconst dozenal-blink-rate
     (days-to-seconds (* (bradix-parse "0⠌000 02") 𝜏))
-    "Blink at a rate of 0⠌000 02𝜏.")
+    "Blink at a rate of 0⠌000 02𝜏 (0⠊7 s).")
   :functions bradix-parse days-to-seconds)
 
 (use-package bug-reference
@@ -203,17 +214,18 @@ This is needed since Emacs generally wants time values in seconds.")
   :custom
   (compilation-save-buffers-predicate
    'projectile-current-project-buffer-p
-   "This only asks to save buffers in the project being compiled ... unless we're not in a project, then it asks for all files."))
+   "This only asks to save buffers in the project being compiled ... unless \
+    we're not in a project, then it asks for all files."))
 
 (use-package dap-mode
   :commands dap-debug
   :functions dap-hydra
   :hook
-  (dap-stopped . (lambda (arg) (call-interactively #'dap-hydra))))
+  (dap-stopped . (lambda (_arg) (call-interactively #'dap-hydra))))
 
 (use-package dap-python
   :config
-  (defun dap-python--pyenv-executable-find (command)
+  (defun dap-python--pyenv-executable-find (_command)
     (with-venv (executable-find "python")))
   :custom (dap-python-debugger 'debugpy)
   :functions with-venv)
@@ -301,7 +313,8 @@ characters of FACE plus any specified ‘fringe’."
   (display-line-numbers-type 'relative)
   :custom-face
   (line-number-current-line ((t (:inherit (line-number) :inverse-video t))))
-  (line-number-major-tick ((t (:inherit (line-number) :strike-through t :weight bold))))
+  (line-number-major-tick
+   ((t (:inherit (line-number) :strike-through t :weight bold))))
   (line-number-minor-tick ((t (:inherit (line-number) :weight bold))))
   ;; TODO: This should be managed differently so it can be toggled via
   ;;      ‘over-the-shoulder’.
@@ -363,16 +376,27 @@ characters of FACE plus any specified ‘fringe’."
   (default-frame-alist '((height . 82) (width . 196)))
   (enable-recursive-minibuffers t)
   (fill-column 80)
-  (gc-cons-threshold (* 100 Mi) "Bumped to 100 MiB based on C++ LSP tutorial")
+  (gc-cons-threshold (* 100 Mi) "Bumped to 100⠊ MiB based on C++ LSP tutorial")
   (history-delete-duplicates t)
   (indent-tabs-mode nil)
   (indicate-buffer-boundaries 'right)
   (load-prefer-newer t)
   (mode-line-format
-   '("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification
-     " " mode-line-position
+   '("%e"
+     mode-line-front-space
+     mode-line-mule-info
+     mode-line-client
+     mode-line-modified
+     mode-line-remote
+     mode-line-frame-identification
+     mode-line-buffer-identification
+     " "
+     mode-line-position
      (vc-mode vc-mode)
-     " " mode-line-modes mode-line-misc-info mode-line-end-spaces))
+     " "
+     mode-line-modes
+     mode-line-misc-info
+     mode-line-end-spaces))
   (ns-alternate-modifier 'none)
   (ns-function-modifier 'meta)
   (scroll-bar-mode nil)
@@ -470,7 +494,7 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
   (text-mode . flyspell-mode))
 
 (use-package forge
-  :after magit
+  :after (cl-lib color magit)
   :preface
   (defun forge--fake-alpha (rgb alpha &optional underlying-face)
     (let ((underlying-face (or underlying-face 'default)))
@@ -490,9 +514,16 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
                                        (* label-g 0.7152)
                                        (* label-b 0.0722)))
                (border-threshold 0.96)
-               (border-alpha (if light-mode (if (< border-threshold perceived-lightness) 1 0) 0.3))
-               (lightness-switch (if (< perceived-lightness lightness-threshold) 1 0))
-               ;; TODO: Redefine this in terms of ‘lightness-switch’ once we’re in dark mode again.
+               (border-alpha (if light-mode
+                                 (if (< border-threshold perceived-lightness)
+                                     1
+                                   0)
+                               0.3))
+               (lightness-switch (if (< perceived-lightness lightness-threshold)
+                                     1
+                                   0))
+               ;; TODO: Redefine this in terms of ‘lightness-switch’ once we’re
+               ;;       in dark mode again.
                (lighten-by (max 0 (- lightness-threshold perceived-lightness))))
           (list
            :foreground
@@ -506,7 +537,9 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
            (if light-mode
                label
              (apply #'color-rgb-to-hex
-                    (forge--fake-alpha (list label-r label-g label-b) 0.18 underlying-face)))
+                    (forge--fake-alpha (list label-r label-g label-b)
+                                       0.18
+                                       underlying-face)))
            :box
            (list
             :line-width (if (>= emacs-major-version 28) (cons -1 -1) -1)
@@ -516,7 +549,8 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
                                                         label-s
                                                         (if light-mode
                                                             (- label-l 0.25)
-                                                          (+ label-l lighten-by)))
+                                                          (+ label-l
+                                                             lighten-by)))
                                       border-alpha
                                       underlying-face))))))))
 
@@ -558,8 +592,8 @@ STATUS defaults to `flycheck-last-status-change' if omitted or nil."
   :hook
   (git-commit-setup . git-commit-save-message)
   (git-commit-setup . git-commit-setup-changelog-support)
-  (git-commit-setup . git-commit-turn-on-auto-fill)
-  (git-commit-setup . git-commit-turn-on-flyspell)
+  (git-commit-setup . git-commit-setup-auto-fill)
+  (git-commit-setup . git-commit-setup-flyspell)
   (git-commit-setup . git-commit-propertize-diff)
   (git-commit-setup . bug-reference-mode)
   (git-commit-setup . with-editor-usage-message))
@@ -846,8 +880,10 @@ in the project environment it’s being run from.")
     :major-modes '(rust-mode rustic-mode)
     :initialization-options 'lsp-rust-analyzer--make-init-options
     :notification-handlers (ht<-alist lsp-rust-notification-handlers)
-    :action-handlers (ht ("rust-analyzer.runSingle" #'lsp-rust--analyzer-run-single))
-    :library-folders-fn (lambda (_workspace) lsp-rust-analyzer-library-directories)
+    :action-handlers
+    (ht ("rust-analyzer.runSingle" #'lsp-rust--analyzer-run-single))
+    :library-folders-fn (lambda (_workspace)
+                          lsp-rust-analyzer-library-directories)
     :after-open-fn (lambda ()
                      (when lsp-rust-analyzer-server-display-inlay-hints
                        (lsp-rust-analyzer-inlay-hints-mode)))
@@ -858,7 +894,9 @@ in the project environment it’s being run from.")
   :custom
   (lsp-rust-analyzer-cargo-watch-command
    "clippy"
-   "TODO: Determine if this is meant to be a subcommand (in which case, update this comment and send doc patch upstream), or if it’s meant to be a path to a command (in which case, move to emacs.nix).")
+   "TODO: Determine if this is meant to be a subcommand (in which case, update \
+          this comment and send doc patch upstream), or if it’s meant to be a \
+          path to a command (in which case, move to emacs.nix).")
   (lsp-rust-analyzer-display-chaining-hints t)
   (lsp-rust-analyzer-display-closure-return-type-hints t)
   (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
@@ -889,12 +927,12 @@ in the project environment it’s being run from.")
 FIXME: ARGS is currently ignored when ‘magit-blame’ is used."
   (if (eq (vc-responsible-backend file) 'Git)
       (magit-blame)
-    (apply orig-fn file args)))
+    (apply vc-annotate file args)))
 
 (use-package magit
   :bind-keymap ("C-c g" . magit-mode-map)
   :config
-  (advice-add 'vc-or-magit-annotate :around #'vc-annotate)
+  (advice-add 'vc-annotate :around #'vc-or-magit-annotate)
   (transient-append-suffix
     'magit-commit
     "-C"
@@ -952,12 +990,16 @@ Committer: %cN <%cE>
 "
    nil
    nil
-   "The padding here is specific to my ‘default’ face, Lexica Ultralegible. If that changes, this should as well. Ideally I could use text properties to align all this, but can’t get that to work (presumably because it’s passed to `git`.")
+   "The padding here is specific to my ‘default’ face, Lexica Ultralegible. If \
+    that changes, this should as well. Ideally I could use text properties to \
+    align all this, but can’t get that to work (presumably because it’s passed \
+    to `git`).")
   (magit-revision-show-gravatars
    '("^\\(\\)Author: " . "^\\(\\)Committer: ")
    nil
    nil
-   "This relies on my custom changes for Gravatar placement. Update once magit/magit#4861 is resolved.")
+   "This relies on my custom changes for Gravatar placement. Update once \
+    magit/magit#4861 is resolved.")
   (magit-wip-mode t)
   (magit-wip-mode-lighter "🚧")
   :delight (magit-status-mode "✨"))
@@ -1280,7 +1322,8 @@ Committer: %cN <%cE>
   :delight (yas-minor-mode "✂️")
   :init (yas-global-mode))
 
-;; Stolen from (https://oleksandrmanzyuk.wordpress.com/2011/11/05/better-emacs-shell-part-i/)
+;; Stolen from
+;; https://oleksandrmanzyuk.wordpress.com/2011/11/05/better-emacs-shell-part-i/
 (defun regexp-alternatives (regexps)
   "Return the alternation of a list of REGEXPS."
   (mapconcat (lambda (regexp)
@@ -1307,7 +1350,7 @@ Committer: %cN <%cE>
             non-sgr-control-sequence-regexp end t)
       (replace-match ""))))
 
-(defun filter-non-sgr-control-sequences-in-output (ignored)
+(defun filter-non-sgr-control-sequences-in-output (_ignored)
   (let ((start-marker
          (or comint-last-output-start
              (point-min-marker)))
@@ -1455,8 +1498,8 @@ Position the cursor at it's beginning, according to the current mode."
   (let (r g b)
     (if (zerop s)
     (setq r v g v b v)
-      (let* ((h (/ (if (>= h (* 2 pi)) 0.0 h)
-           (/ pi 3)))
+      (let* ((h (/ (if (>= h (* 2 float-pi)) 0.0 h)
+           (/ float-pi 3)))
          (i (truncate h))
          (f (- h i)))
     (let ((p (* v (- 1.0 s)))
