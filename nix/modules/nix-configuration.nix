@@ -1,5 +1,6 @@
 {
   brew,
+  config,
   flaky,
   lib,
   math,
@@ -96,8 +97,17 @@ in {
       environment = {inherit systemPackages;};
     };
     homeConfig = {
-      inherit nix;
       home = {inherit packages;};
+      nix = {
+        inherit (nix) registry;
+        settings =
+          nix.settings
+          ## The default is /nix/var/nix/builds, which doesn’t get cleaned up on
+          ## reboot, etc. At least for a regular user, we can avoid that issue.
+          ## See
+          ## https://nix.dev/manual/nix/2.30/release-notes/rl-2.30.html#backward-incompatible-changes-and-deprecations
+          // {build-dir = "${config.lib.local.xdg.runtimeDir}/nix/builds";};
+      };
     };
     nixosConfig = {
       inherit nix;
