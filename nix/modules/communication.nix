@@ -29,7 +29,7 @@
           ## GUI not available on darwin via Nix
           (config.lib.local.maybeCask "keybase-gui" {
             cask = "keybase";
-            caskHash = "sha256-MIxndhGJ0dwe/zsHyTRTMX4/vpa9uEJxDhqXaDDw88s=";
+            caskHash = "sha256-CnFlLeU/BIhiUYebtRpUjJWE0QrsdZsiiZGzRUi31zg=";
           })
           (config.lib.local.maybeCask "simplex-chat-desktop" {cask = "simplex";})
           pkgs.zoom-us
