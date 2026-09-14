@@ -149,7 +149,6 @@
         pkgs.brewCasks.beamer
         pkgs.brewCasks.disk-inventory-x
         pkgs.brewCasks.dropbox
-        pkgs.brewCasks.freemind
         pkgs.brewCasks.github
         pkgs.brewCasks.hammerspoon
         pkgs.brewCasks.imageoptim
