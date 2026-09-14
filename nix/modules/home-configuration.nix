@@ -149,7 +149,6 @@
         pkgs.brewCasks.beamer
         pkgs.brewCasks.disk-inventory-x
         pkgs.brewCasks.dropbox
-        pkgs.brewCasks.freemind
         pkgs.brewCasks.github
         pkgs.brewCasks.hammerspoon
         pkgs.brewCasks.imageoptim
@@ -160,7 +159,7 @@
         (pkgs.brewCasks.powerphotos.overrideAttrs (old: {
           src = pkgs.fetchurl {
             url = builtins.head old.src.urls;
-            hash = "sha256-zjpYk9/LHbF8RzpWne7d2u9j5qqnZ1bhoHCcOUE1MU8=";
+            hash = "sha256-AXudYvVX5wteGruSdW/2OgvWFqEesHhkFmtJlJ7VSIU=";
           };
         }))
         pkgs.brewCasks.processing
