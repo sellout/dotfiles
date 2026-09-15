@@ -22,6 +22,7 @@ in {
     inherit (config.lib.local.mozilla) search;
     ## These are ordered to match `about:addons`.
     extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
+      bitwarden
       onepassword-password-manager
       # Add to MyRegistry.com Button
       # Add to OmniFocus
