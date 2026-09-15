@@ -63,7 +63,11 @@
       };
 
       home.packages =
-        []
+        [
+          ## password manager
+          pkgs.bitwarden-cli
+          pkgs.bitwarden-desktop
+        ]
         ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
           devonthink
           pkgs.brewCasks.fantastical
