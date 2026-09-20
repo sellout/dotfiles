@@ -17,6 +17,7 @@
   home-manager,
   homebrew,
   homebrew-cask,
+  homebrew-cleardisk,
   homebrew-core,
   nix-index-database,
   nix-math,
@@ -85,6 +86,7 @@ in
         home-manager
         homebrew
         homebrew-cask
+        homebrew-cleardisk
         homebrew-core
         nix-index-database
         nix-math

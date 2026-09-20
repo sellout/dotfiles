@@ -126,6 +126,11 @@
       url = "github:homebrew/homebrew-cask";
     };
 
+    homebrew-cleardisk = {
+      flake = false;
+      url = "github:bysiber/homebrew-cleardisk";
+    };
+
     homebrew-core = {
       flake = false;
       url = "github:homebrew/homebrew-core";

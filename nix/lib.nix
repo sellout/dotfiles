@@ -8,6 +8,7 @@
   home-manager,
   homebrew,
   homebrew-cask,
+  homebrew-cleardisk,
   homebrew-core,
   nix-index-database,
   nix-math,
@@ -73,6 +74,7 @@ in {
             flaky
             homebrew
             homebrew-cask
+            homebrew-cleardisk
             homebrew-core
             math
             nixpkgs

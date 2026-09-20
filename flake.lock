@@ -570,6 +570,22 @@
         "type": "github"
       }
     },
+    "homebrew-cleardisk": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789061221,
+        "narHash": "sha256-xSxEs5SFidgSBW6nYHkqGUg6Vx2BVLtiR3E+D+j84zY=",
+        "owner": "bysiber",
+        "repo": "homebrew-cleardisk",
+        "rev": "c391b61c4970c32c255ac8fd3bbbe01008f94d43",
+        "type": "github"
+      },
+      "original": {
+        "owner": "bysiber",
+        "repo": "homebrew-cleardisk",
+        "type": "github"
+      }
+    },
     "homebrew-core": {
       "flake": false,
       "locked": {
@@ -956,6 +972,7 @@
         ],
         "homebrew": "homebrew",
         "homebrew-cask": "homebrew-cask",
+        "homebrew-cleardisk": "homebrew-cleardisk",
         "homebrew-core": "homebrew-core",
         "nix-index-database": "nix-index-database",
         "nix-math": "nix-math",
