@@ -2,6 +2,7 @@
   config,
   homebrew,
   homebrew-cask,
+  homebrew-cleardisk,
   homebrew-core,
   lib,
   pkgs,
@@ -19,10 +20,14 @@
     autoMigrate = true;
     enableRosetta = pkgs.stdenv.hostPlatform.isAarch64;
     mutableTaps = false;
+    ## NOTE: The key here must always start with “homebrew-”. See
+    ##       https://github.com/zhaofengli/nix-homebrew#declarative-taps
     taps = {
+      "bysiber/homebrew-cleardisk" = homebrew-cleardisk;
       "homebrew/homebrew-cask" = homebrew-cask;
       "homebrew/homebrew-core" = homebrew-core;
     };
+    trust.casks = ["bysiber/cleardisk/cleardisk"];
     user = config.system.primaryUser;
   };
 
@@ -58,6 +63,7 @@
     ##     to see which casks need `greedy = true;` in order to be upgraded by
     ##     Homebrew.
     casks = [
+      "cleardisk"
       "google-drive" # doesn't respect appdir
       "tor-browser" # fails on `chmod` in brewCasks
       # "virtualbox" # requires Intel architecture
@@ -86,7 +92,13 @@
       cleanup = "uninstall";
       upgrade = true;
     };
-    taps = builtins.attrNames config.nix-homebrew.taps;
+    taps =
+      ## WAIT: This `map` is a workaround for zhaofengli/nix-homebrew#172.
+      lib.map (name: {
+        inherit name;
+        trusted = true;
+      })
+      (builtins.attrNames config.nix-homebrew.taps);
   };
 
   ## Don’t auto-upgrade from the Mac App Store (this is handled by
