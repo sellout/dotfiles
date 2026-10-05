@@ -39,12 +39,7 @@
     systems.url = "github:nix-systems/default";
 
     agenix = {
-      inputs = {
-        darwin.follows = "darwin";
-        home-manager.follows = "home-manager";
-        nixpkgs.follows = "nixpkgs";
-        systems.follows = "systems";
-      };
+      inputs.nixpkgs.follows = "nixpkgs";
       url = "github:ryantm/agenix";
     };
 
