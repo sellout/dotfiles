@@ -10,7 +10,7 @@
       "sellout.cachix.org-1:v37cTpWBEycnYxSPAgSQ57Wiqd3wjljni2aC0Xry1DE="
     ];
     ## WAIT: This should be `"fatal"`, but NixOS/nixpkgs#544986.
-    lint-absolute-path-literals = "warn";
+    lint-absolute-path-literals = "ignore";
     lint-short-path-literals = "fatal";
     lint-url-literals = "fatal";
     ## Isolate the build.
@@ -39,12 +39,7 @@
     systems.url = "github:nix-systems/default";
 
     agenix = {
-      inputs = {
-        darwin.follows = "darwin";
-        home-manager.follows = "home-manager";
-        nixpkgs.follows = "nixpkgs";
-        systems.follows = "systems";
-      };
+      inputs.nixpkgs.follows = "nixpkgs";
       url = "github:ryantm/agenix";
     };
 

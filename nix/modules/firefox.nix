@@ -54,7 +54,53 @@ in {
         "browser.aboutConfig.showWarning" = false;
         "browser.display.use_system_colors" = true;
         "browser.contentblocking.category" = "strict";
-        ## Disable AI features (See https://buc.ci/abucci/p/1763845084.289082)
+        "browser.uidensity" = 1; # compact
+        ## new tab page
+        "browser.newtabpage.activity-stream.feeds.section.highlights" = true;
+        "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
+        "browser.newtabpage.activity-stream.hideLogo" = true;
+        "browser.newtabpage.activity-stream.showSponsored" = false;
+        "browser.newtabpage.activity-stream.showSponsoredCheckboxes" = false;
+        "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
+        "browser.newtabpage.activity-stream.widgets.weather.enabled" = false;
+        "browser.newtabpage.pinned" = [
+          {
+            label = "Dagny";
+            url = "https://dagny.co/";
+          }
+          {
+            label = "Home Assistant";
+            url = "http://100.124.17.149:8123";
+          }
+          {
+            label = "NeoDB";
+            url = "https://neodb.social/";
+          }
+          {
+            label = "Home Manager configuration";
+            url = "https://nix-community.github.io/home-manager/options/home-manager";
+          }
+          {
+            label = "NixOS configuration";
+            url = "https://nixos.org/manual/nixos/stable/options.html";
+          }
+          {
+            label = "nix-darwin configuration";
+            url = "https://nix-darwin.github.io/nix-darwin/manual";
+          }
+        ];
+        ## disable AI features
+        ##
+        ## - https://buc.ci/abucci/p/1763845084.289082
+        ## - https://www.shigjeta.net/how-to-kill-every-ai-feature-in-firefox-for-good/
+        "browser.ai.control.default" = "blocked";
+        "browser.ai.control.linkPreviewKeyPoints" = "blocked";
+        "browser.ai.control.pdfjsAltText" = "blocked";
+        "browser.ai.control.sidebarChatbot" = "blocked";
+        "browser.ai.control.smartTabGroups" = "blocked";
+        "browser.ai.control.smartWindow" = "blocked";
+        "browser.ai.control.speechRecognition" = "blocked";
+        "browser.ai.control.translations" = "blocked";
         "browser.aiwindow.enabled" = false;
         "browser.ml.chat.enabled" = false;
         "browser.ml.chat.menu" = false;
@@ -69,10 +115,16 @@ in {
         "browser.ml.linkPreview.enabled" = false;
         "browser.ml.pageAssist.enabled" = false;
         "browser.ml.smartAssist.enabled" = false;
+        "browser.search.visualSearch.featureGate" = false;
         "browser.tabs.groups.smart.enabled" = false;
         "browser.tabs.groups.smart.optin" = false;
         "browser.tabs.groups.smart.userEnabled" = false;
+        "browser.urlbar.quicksuggest.mlEnabled" = false;
         "extensions.ml.enabled" = false;
+        "pdfjs.enableAltText" = false;
+        "pdfjs.enableAltTextModelDownload" = false;
+        "pdfjs.enableGuessAltText" = false;
+        "places.semanticHistory.featureGate" = false;
         "sidebar.notification.badge.aichat" = false;
         ## Disable ads for Mozilla products
         "browser.preferences.moreFromMozilla" = false;
