@@ -42,6 +42,6 @@
   ## publishing
   services.github.settings.repository = {
     private = false;
-    topics = [];
+    topics = ["config"];
   };
 }
