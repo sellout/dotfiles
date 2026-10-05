@@ -159,7 +159,7 @@
         (pkgs.brewCasks.powerphotos.overrideAttrs (old: {
           src = pkgs.fetchurl {
             url = builtins.head old.src.urls;
-            hash = "sha256-AXudYvVX5wteGruSdW/2OgvWFqEesHhkFmtJlJ7VSIU=";
+            hash = "sha256-MKGtTtT4x01HWXmZMS0S6Jct7zbhG7XFfpxnZoN13zU=";
           };
         }))
         pkgs.brewCasks.processing
