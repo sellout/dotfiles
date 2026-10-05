@@ -1,8 +1,0 @@
-Hacktoberfest
-direnv
-formatter
-[Nn]ix
-Pfeil
-ShellCheck
-dotfiles
-Eldev
