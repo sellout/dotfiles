@@ -9,6 +9,7 @@
     ./common-lisp
     ./haskell.nix
     ./javascript
+    ./python.nix
     ./r
     ./rust.nix
   ];
@@ -30,10 +31,6 @@
           MAKEFLAGS = "-j$(nproc)";
           OCTAVE_INITFILE = "${config.lib.local.addHome config.xdg.configFile."octave/octaverc".target}";
           PSQLRC = "${config.lib.local.addHome config.xdg.configFile."psql/psqlrc".target}";
-          # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONPYCACHEPREFIX
-          PYTHONPYCACHEPREFIX = "${config.xdg.cacheHome}/python";
-          # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUSERBASE
-          PYTHONUSERBASE = "${config.xdg.stateHome}/python";
         };
 
         shellAliases = let
