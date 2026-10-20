@@ -263,6 +263,11 @@ characters of FACE plus any specified ‘fringe’."
 (use-package delsel
   :custom (delete-selection-mode t))
 
+(use-package desktop
+  :custom
+  (desktop-load-locked-desktop 'check-pid)
+  (desktop-save-mode t))
+
 (defun sellout--detached--db-update-sessions (orig-fn)
   "Ensure ORIG-FN doesn’t truncate data written to the sessions DB."
   (let ((print-level nil)
