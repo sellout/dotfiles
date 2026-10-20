@@ -21,7 +21,7 @@ in {
     };
 
     settings = lib.mkOption {
-      type = lib.types.attrs;
+      type = lib.types.attrsOf lib.types.anything;
       default = {};
       description = ''
         The “settings” section of the wakatime.cfg file.

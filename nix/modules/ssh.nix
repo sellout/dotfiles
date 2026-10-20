@@ -16,7 +16,7 @@
 in {
   options.programs.ssh = {
     knownHosts = lib.mkOption {
-      type = lib.types.nullOr (lib.types.attrsOf lib.types.attrs);
+      type = lib.types.nullOr (lib.types.attrsOf (lib.types.attrsOf lib.types.anything));
       default = null;
       description = ''
         A list of known_hosts entries. If this is set, it is used instead of
