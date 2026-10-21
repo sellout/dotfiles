@@ -38,9 +38,6 @@
   ##       the Emacs module, and the Floobits module, etc.)
   ignores =
     [
-      ".cache/" # semi-standard XDG-like cache directory
-      ".local/" # less standard XDG-like local directory
-
       # Directories potentially created on network file systems
       ".AppleDB/" # created by Macs
       ".AppleDesktop" # created by Macs
