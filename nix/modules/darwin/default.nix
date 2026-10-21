@@ -10,6 +10,7 @@
   imports = [
     ../system-configuration.nix
     ./homebrew.nix
+    ../no-chroot/darwin.nix
   ];
 
   environment = {
