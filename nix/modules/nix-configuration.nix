@@ -65,8 +65,7 @@
       ## value as the one used by this flake. For more information, see
       ## https://nixos-and-flakes.thiscute.world/best-practices/nix-path-and-flake-registry
       nix-path = lib.mkForce "nixpkgs=${nixpkgs}";
-      ## TODO: Enable globally once NixOS/nix#4119 is fixed.
-      sandbox = !pkgs.stdenv.hostPlatform.isDarwin;
+      sandbox = true;
       show-trace = true;
       use-xdg-base-directories = true;
     };

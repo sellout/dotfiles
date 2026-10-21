@@ -22,6 +22,7 @@
     ./nix-configuration.nix
     ./nixos-wiki.nix
     ./nixpkgs-configuration.nix
+    ./no-chroot
     ./pim.nix
     ./programming
     ./shell
