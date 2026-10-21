@@ -108,7 +108,7 @@ in
             flake-utils
             home-manager
             nixpkgs
-            nixpkgs-master
+            nixpkgs-unstable
             ;
         })
       ];
