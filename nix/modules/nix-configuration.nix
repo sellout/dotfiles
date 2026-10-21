@@ -58,7 +58,9 @@
       extra-experimental-features = [
         "flakes"
         "nix-command"
+        "recursive-nix"
       ];
+      extra-system-features = ["recursive-nix"];
       extra-trusted-public-keys = [cachix.public-key];
       extra-trusted-substituters = ["https://${cachix.name}.cachix.org"];
       ## NIX_PATH is still used by many useful tools, so we set it to the same
