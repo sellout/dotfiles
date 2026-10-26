@@ -65,7 +65,7 @@
         '';
 
       reviewXdgNinja = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        ${pkgs.xdg-ninja}/bin/xdg-ninja --skip-unsupported || true
+        ${pkgs.xdg-ninja}/bin/xdg-ninja --skip-unsupported
       '';
     };
 
@@ -686,6 +686,7 @@
   ## TODO: Make this modular so, for example, ‘.sbclrc’ can be specified next to
   ##       where that file is defined.
   xdg.configFile."xdg-ninja/ignore".text = lib.concatLines ([
+      ".Xauthority" # This isn’t specific to one program.
       ".newsrc" # This file isn’t specific to alpine, as xdg-ninja thinks.
       ".profile" # Required by POSIX shells.
       ".sbclrc" #Can’t actually be moved per-user, requires system-level config.

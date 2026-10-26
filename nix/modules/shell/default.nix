@@ -53,6 +53,7 @@
     atuin = {
       enable = true;
       settings = {
+        logs.dir = "${config.xdg.stateHome}/atuin/logs";
         update_check = false;
         workspaces = true; # filters within whatever git repo you’re in
       };
