@@ -30,4 +30,10 @@ in {
   ## The install checks for unison-nix’s UCM derivation can’t be sandboxed, so
   ## we disable them in order to use Garnix.
   unison-ucm = prev.unison-ucm.overrideAttrs (old: {doInstallCheck = false;});
+
+  ## WAIT: The version in Nixpkgs 26.05 doesn’t support ignore files. Remove
+  ##       when
+  ##       https://github.com/NixOS/nixpkgs/commit/d0baf01bdc3f93ffe56210daa7f15e50bfb0ac52
+  ##       is in a release.
+  xdg-ninja = unstable.xdg-ninja;
 }
