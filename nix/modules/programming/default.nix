@@ -26,6 +26,7 @@
         ];
 
         sessionVariables = {
+          DOCKER_CONFIG = "${config.xdg.stateHome}/docker";
           IRBRC = config.lib.local.addHome config.xdg.configFile."irb/irbrc".target;
           LEIN_HOME = "${config.xdg.dataHome}/lein";
           MAKEFLAGS = "-j$(nproc)";

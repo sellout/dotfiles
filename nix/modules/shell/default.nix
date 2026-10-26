@@ -16,7 +16,10 @@
       pkgs.viddy # `watch` replacement
       pkgs.wget
     ];
-    sessionVariables.LESSHISTFILE = "${config.xdg.stateHome}/less/history";
+    sessionVariables = {
+      LESSHISTFILE = "${config.xdg.stateHome}/less/history";
+      SHELL_SESSIONS_DISABLE = "1";
+    };
     shellAliases.watch = "${pkgs.viddy}/bin/viddy";
   };
 
@@ -114,7 +117,7 @@
         path = "${config.xdg.stateHome}/zsh/history";
       };
       initContent = ''
-        compinit -d "$XDG_CACHE_HOME"/zsh/zcompdump-"$ZSH_VERSION"
+        compinit -d "${config.xdg.cacheHome}/zsh/zcompdump-$ZSH_VERSION"
 
         autoload -U colors && colors
       '';
