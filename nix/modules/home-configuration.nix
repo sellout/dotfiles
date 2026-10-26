@@ -65,7 +65,7 @@
         '';
 
       reviewXdgNinja = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        ${pkgs.xdg-ninja}/bin/xdg-ninja --skip-unsupported || true
+        ${pkgs.xdg-ninja}/bin/xdg-ninja --skip-unsupported
       '';
     };
 
