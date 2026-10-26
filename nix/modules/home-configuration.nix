@@ -683,6 +683,20 @@
     search = "DuckDuckGo";
   };
 
+  ## TODO: Make this modular so, for example, ‘.sbclrc’ can be specified next to
+  ##       where that file is defined.
+  xdg.configFile."xdg-ninja/ignore".text = lib.concatLines ([
+      ".newsrc" # This file isn’t specific to alpine, as xdg-ninja thinks.
+      ".profile" # Required by POSIX shells.
+      ".sbclrc" #Can’t actually be moved per-user, requires system-level config.
+      ".unison" # This is for a different program than xdg-ninja thinks.
+      ".zshenv" # Can’t actually be moved per-user, requires system-level config.
+    ]
+    ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+      ".cups" # I don’t _think_ this is movable on macOS.
+      ".trash"
+    ]);
+
   xresources.path = "${config.xdg.configHome}/x/resources";
 
   xsession = {
