@@ -1306,7 +1306,8 @@ Committer: %cN <%cE>
      tab-mark))
   :delight
   (global-whitespace-mode)
-  (whitespace-mode "␠"))
+  (whitespace-mode "␠")
+  :hook (special-mode . (lambda () (whitespace-mode -1))))
 
 (use-package wl
   ;; Binding mnemonic: “Read Mail”
