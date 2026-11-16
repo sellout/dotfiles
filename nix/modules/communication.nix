@@ -26,11 +26,6 @@
         ]
         ++ lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
           (config.lib.local.maybeCask "ferdium" {})
-          ## GUI not available on darwin via Nix
-          (config.lib.local.maybeCask "keybase-gui" {
-            cask = "keybase";
-            caskHash = "sha256-CnFlLeU/BIhiUYebtRpUjJWE0QrsdZsiiZGzRUi31zg=";
-          })
           (config.lib.local.maybeCask "simplex-chat-desktop" {cask = "simplex";})
           pkgs.zoom-us
         ]
