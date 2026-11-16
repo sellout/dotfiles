@@ -185,11 +185,11 @@
     "brew-formulae": {
       "flake": false,
       "locked": {
-        "lastModified": 1794728198,
-        "narHash": "sha256-NnMt2ESUtgyXo8KBMJlyBHMVytfX13tmAk681ky/XwE=",
+        "lastModified": 1794851696,
+        "narHash": "sha256-IIN1IgHeNSCOZMigD2kdZKc6gYdgQjyOEv2Dm/3rVaM=",
         "owner": "BatteredBunny",
         "repo": "brew-api",
-        "rev": "4708456afd6d7e13f79e1b4f42b4d9ffadaf7b2e",
+        "rev": "2bbd927de153766618bf145069ba1a710d95df84",
         "type": "github"
       },
       "original": {
@@ -245,11 +245,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1768818222,
-        "narHash": "sha256-460jc0+CZfyaO8+w8JNtlClB2n4ui1RbHfPTLkpwhU8=",
+        "lastModified": 1791918082,
+        "narHash": "sha256-oN9JrhRfHa7MUTdUq+11dHn7u0Z4WfEA4mhzBq0/zoQ=",
         "owner": "numtide",
         "repo": "devshell",
-        "rev": "255a2b1725a20d060f566e4755dbf571bbbb5f76",
+        "rev": "9e29c63dde99a2d80c94b3d024c9768c01544558",
         "type": "github"
       },
       "original": {
@@ -391,11 +391,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794715896,
-        "narHash": "sha256-qf1vJbDkh8DfUGxnNy3jpdqqoBHz6kHJ4ak9BuQ/C9E=",
+        "lastModified": 1794802226,
+        "narHash": "sha256-/JDBm+w9bp6gmSYY9Tx+512AbQm8eXxXwsb+QCB0QWA=",
         "owner": "bandithedoge",
         "repo": "nixpkgs-firefox-darwin",
-        "rev": "2f07e785c8438206bf81ecc59d937dde8f5a0ffc",
+        "rev": "b2d2d99e29ffe393b3456fd9cd1d10dc15fddaa7",
         "type": "github"
       },
       "original": {
@@ -493,11 +493,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794746988,
-        "narHash": "sha256-rff559m9opUxjNF08bzh1PK+Z2/GlXW42wSht4gCNIY=",
+        "lastModified": 1794872474,
+        "narHash": "sha256-SRiuErvsM8q9IOvWnrkApKixGXCob2CbQ8Cz/cJKgZ8=",
         "owner": "sellout",
         "repo": "flaky",
-        "rev": "b9af015f01c24124977edb4c448d8bdb0bfdd130",
+        "rev": "f79dc49580c9f12764e969853086be70f3f56902",
         "type": "github"
       },
       "original": {
@@ -564,11 +564,11 @@
     "homebrew-cask": {
       "flake": false,
       "locked": {
-        "lastModified": 1794747221,
-        "narHash": "sha256-Ku3g92qdjLv+H/rDZc6PQX28hLdwIJYtpeB6ThEHirM=",
+        "lastModified": 1794870921,
+        "narHash": "sha256-77qAYKlSifu9Nfc9KajkX1WA5Cg5QNFsmYnB4JEh7PQ=",
         "owner": "homebrew",
         "repo": "homebrew-cask",
-        "rev": "303dca8565c8a3d371fc9cbd7d0af390cb545147",
+        "rev": "03a358d1ec7882b79f215a7c6bc30364ca6cb9f0",
         "type": "github"
       },
       "original": {
@@ -596,11 +596,11 @@
     "homebrew-core": {
       "flake": false,
       "locked": {
-        "lastModified": 1794746830,
-        "narHash": "sha256-xmm8E4mapXL4n0HyUjL0lqfHx1ocfRi5z2ajM87PAKg=",
+        "lastModified": 1794872244,
+        "narHash": "sha256-oZOgoZwZLVNolgaginf/TEDoLEFqBB6zxAeb0/xf9+U=",
         "owner": "homebrew",
         "repo": "homebrew-core",
-        "rev": "e0ff2de45eba0f7a91088f5f6776959a063b251e",
+        "rev": "4cfde3cf075c9a8abf9ef920c1862d94d9c7b10d",
         "type": "github"
       },
       "original": {
@@ -631,11 +631,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772501175,
-        "narHash": "sha256-8GP59xWvzknuWFB77SBKOpQ1nJ59bzQfkTfpWxOxfiU=",
+        "lastModified": 1794536142,
+        "narHash": "sha256-Bom2ayfsA/s3J2FU7oHXMSqdBGwu+wwf26QDwG4jYPo=",
         "ref": "refs/heads/main",
-        "rev": "9a3f2f863e5daef471d0d7fb7917913052656192",
-        "revCount": 36,
+        "rev": "e8da93db3a297aab55cdbe675a331c32c51174d9",
+        "revCount": 45,
         "type": "git",
         "url": "https://codeberg.org/rossabaker/le-grille"
       },
@@ -689,16 +689,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1794731784,
-        "narHash": "sha256-UGMa+Ll2cahhmxhcUrQ/JP0vAkqskds7SE2j73PAS88=",
+        "lastModified": 1794217284,
+        "narHash": "sha256-Ya0ojDh1BF5zgyZRlehygC0ZvvEg2WaGZWn1xiNozmM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "412a41999f1e1d667edefc0ab9ac1693a2bba6ce",
+        "rev": "f4244ef33645badc8157562b5e80748929b396c2",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "release-26.05",
+        "ref": "nixpkgs-26.05-darwin",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -817,11 +817,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1794747854,
-        "narHash": "sha256-TOugkLbF3IHhiv72cNTw8LYtf51zuAU33duYukEMdlY=",
+        "lastModified": 1794872173,
+        "narHash": "sha256-4QjH5OuUCKft5Ndha097tud/4YjdgqUMbT37VdOu8J8=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "ddf5c8f018c8ce99e764e3d43d27238fdcee1d20",
+        "rev": "5eb3a7b782967a345001cffef910065fd67b70a7",
         "type": "github"
       },
       "original": {
@@ -873,11 +873,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794747079,
-        "narHash": "sha256-o+iF9nG/uamul3cutXBSJcoZ765fzcz2OPRnomexNOs=",
+        "lastModified": 1794872269,
+        "narHash": "sha256-2kza9gdyx7z2svVhmLDR3weOb2AFOefVmk/bbWkeXrA=",
         "owner": "nix-community",
         "repo": "nur",
-        "rev": "5e151b30e6e4e3546d43fc1dbdd14eec988efdc0",
+        "rev": "5baecdc3ce94198f841ec0d52048a5b7e3bfe3e6",
         "type": "github"
       },
       "original": {
@@ -1030,11 +1030,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794709988,
-        "narHash": "sha256-oqCJBzm48lkfOahJDk6kJ50yw5vtCDkNlWXXdD4FJAI=",
+        "lastModified": 1794800468,
+        "narHash": "sha256-5Sqf65m7RqkQuLUA3wEIYJchJcsFp1eZbVCUqIDzRNc=",
         "ref": "refs/heads/main",
-        "rev": "1e0456f42bbfdb0cc4dd95f7e5352811be3bdb19",
-        "revCount": 16,
+        "rev": "ec363a24ed94c12a40eeec9046c3ead9fbde14d2",
+        "revCount": 18,
         "type": "git",
         "url": "https://codeberg.org/rossabaker/size-indication-iec.el"
       },
