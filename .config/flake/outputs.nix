@@ -236,6 +236,26 @@ in
       flaky.overlays.default
     ];
   in {
+    ## These are system-qualified configurations, so that Nix CI can find them.
+    packages =
+      {
+        home-configuration-example =
+          self.homeConfigurations."${system}-example".activationPackage;
+      }
+      // (
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then {
+          darwin-configuration-example =
+            self.darwinConfigurations."${system}-example".config.system.build.toplevel;
+        }
+        else if pkgs.stdenv.hostPlatform.isLinux
+        then {
+          nixos-configuration-example =
+            self.nixosConfigurations."${system}-example".config.system.build.toplevel;
+        }
+        else {}
+      );
+
     projectConfigurations = flaky.lib.projectConfigurations.nix {
       inherit pkgs self supportedSystems;
       modules = [
@@ -246,7 +266,18 @@ in
 
     devShells =
       self.projectConfigurations.${system}.devShells
-      // {default = flaky.lib.devShells.default system self [] "";};
+      // {
+        ## NOTE: This doesn’t use Flaky’s default `devShell`, because that pulls
+        ##       in the `inputsFrom` `self.packages`, which includes everything
+        ##       in our configurations.
+        default = pkgs.mkShell {
+          inputsFrom =
+            [self.projectConfigurations.${system}.devShells.project-manager]
+            ## `unwrapped` avoids forcing the IFD in `runEmptyCommand` checks.
+            ++ map (drv: drv.unwrapped or drv) (builtins.attrValues
+              self.projectConfigurations.${system}.sandboxedChecks or {});
+        };
+      };
 
     checks = self.projectConfigurations.${system}.checks;
     formatter = self.projectConfigurations.${system}.formatter;
