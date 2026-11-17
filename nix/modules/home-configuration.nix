@@ -675,7 +675,9 @@
         EnableTopTilingByEdgeDrag = 0;
       };
       "com.apple.universalaccess" = {
-        closeViewScrollWheelToggle = true;
+        ## These two are intended to disable screen zooming.
+        closeViewHotkeysEnabled = false;
+        closeViewScrollWheelToggle = false;
         reduceTransparency = true;
       };
       "org.hammerspoon.Hammerspoon".MJConfigFile = "${config.xdg.configHome}/hammerspoon/init.lua";
