@@ -74,12 +74,6 @@
   };
 
   packages = [
-    ## Make it easy to figure out why derivations are being built.
-    ## https://github.com/Gabriella439/nix-diff#readme
-    pkgs.nix-diff
-    ## Figure out which roots are eating up your disk.
-    ## https://github.com/symphorien/nix-du#readme
-    pkgs.nix-du
     ## Various tools to simplify Nix usage.
     ## https://github.com/madjar/nox#readme
     pkgs.nox

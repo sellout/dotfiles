@@ -2,7 +2,6 @@
   config,
   homebrew,
   homebrew-cask,
-  homebrew-cleardisk,
   homebrew-core,
   lib,
   pkgs,
@@ -23,11 +22,9 @@
     ## NOTE: The key here must always start with “homebrew-”. See
     ##       https://github.com/zhaofengli/nix-homebrew#declarative-taps
     taps = {
-      "bysiber/homebrew-cleardisk" = homebrew-cleardisk;
       "homebrew/homebrew-cask" = homebrew-cask;
       "homebrew/homebrew-core" = homebrew-core;
     };
-    trust.casks = ["bysiber/cleardisk/cleardisk"];
     user = config.system.primaryUser;
   };
 
@@ -63,7 +60,6 @@
     ##     to see which casks need `greedy = true;` in order to be upgraded by
     ##     Homebrew.
     casks = [
-      "cleardisk"
       "google-drive" # doesn't respect appdir
       "tor-browser" # fails on `chmod` in brewCasks
       # "virtualbox" # requires Intel architecture

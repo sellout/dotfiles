@@ -2,6 +2,7 @@
 ## system-manager, etc.)
 {pkgs, ...}: {
   imports = [
+    ./administration.nix
     ./audio.nix
     ./communication.nix
     ./direnv.nix

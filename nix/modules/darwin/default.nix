@@ -36,25 +36,6 @@
 
   ## TODO: Build this incrementally from arbitrarily-named scripts.
   system.activationScripts.postActivation.text = ''
-    echo "checking for un-managed apps ..."
-    installed_packages=$(mktemp --tmpdir installed-packages.XXXXXX)
-    ${lib.getExe' pkgs.mas "mas"} list | sort >"$installed_packages"
-    echo "App Store apps that are installed, but not in the nix-darwin configuration:"
-    join -v1 -1 1 "$installed_packages" - <<EOF
-    ${lib.concatStringsSep "\n"
-      (lib.sort (a: b: a <= b) (map toString (lib.attrValues config.homebrew.masApps)))}
-    EOF
-    rm "$installed_packages"
-
-    ## The “default” profile is created by the original Nix install. It can be
-    ## dangerous to remove it, and some things reference it explicitly,
-    ## unfortunately, so we can at least keep it up to date.
-    ##
-    ## NB: For this to work, I had to initially replace the original packages in
-    ##     the profile with ones from the nixpkgs flake.
-    echo "upgrading default nix profile ..."
-    nix profile upgrade --all --profile /nix/var/nix/profiles/default &>/dev/null
-
     ## List manual tasks that happen after activating a new configuration.
     echo "Now that a new configuration is activated, there are some steps that need to be"
     echo "performed manually:"
