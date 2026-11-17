@@ -142,7 +142,6 @@
         pkgs.brewCasks.hammerspoon
         pkgs.brewCasks.imageoptim
         pkgs.brewCasks.kiibohd-configurator
-        pkgs.brewCasks.little-snitch
         pkgs.brewCasks.omnigraffle
         pkgs.brewCasks.omnioutliner
         (pkgs.brewCasks.powerphotos.overrideAttrs (old: {
@@ -541,6 +540,8 @@
       enable = pkgs.stdenv.hostPlatform.isLinux;
       settings.font = config.lib.local.defaultFont.string;
     };
+
+    opensnitch-ui.enable = pkgs.stdenv.hostPlatform.isLinux;
 
     screen-locker.lockCmd = "${pkgs.i3lock}/bin/i3lock -n -c 000000";
   };
