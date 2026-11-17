@@ -10,8 +10,26 @@
     defaultFont = config.lib.local.defaultFont;
   in {
     search = {
-      default = "ddg";
+      default = "oddg";
       engines = {
+        ## See https://www.vice.com/en/article/duckduckgo-no-ai-mode/
+        ##
+        ## TODO: Should just modify the default “ddg”, but wasn’t sure the
+        ##       right way to do that.
+        oddg = {
+          name = "DuckDuckGo (without AI)";
+          urls = [
+            {
+              template = "https://noai.duckduckgo.com/";
+              params = [
+                {
+                  name = "q";
+                  value = "{searchTerms}";
+                }
+              ];
+            }
+          ];
+        };
         nix-packages = {
           name = "Nix Packages";
           urls = [
@@ -44,7 +62,7 @@
         wikipedia.metaData.alias = "@wikipedia";
       };
       force = true;
-      order = ["ddg" "wikipedia" "nw" "np" "amazon"];
+      order = ["oddg" "wikipedia" "nw" "np" "amazon"];
     };
     ## You can explore the settings at the URL `about:config` in Firefox. It‘s a
     ## bit harder to find them for Thunderbird.
