@@ -61,6 +61,10 @@
     ##     Homebrew.
     casks = [
       "google-drive" # doesn't respect appdir
+      {
+        name = "little-snitch";
+        args.appdir = "/Applications"; # Little Snitch will only run from there.
+      }
       "tor-browser" # fails on `chmod` in brewCasks
       # "virtualbox" # requires Intel architecture
     ];
