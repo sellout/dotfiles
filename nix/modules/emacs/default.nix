@@ -73,6 +73,16 @@
       EDITOR = "${lib.getBin config.programs.emacs.package}/bin/emacsclient";
       VISUAL = "${lib.getBin config.programs.emacs.package}/bin/emacsclient";
     };
+
+    ## Show current dtach sockets. See crigler/dtach#2.
+    shellAliases.dtach-list = ''
+      ${lib.getExe pkgs.lsof} -U -w -FcnTLpf \
+        | awk -v OFS=':' '
+            BEGIN {print "Name:TCP Info:User:PID:FD";}
+            {t = substr($0, 1, 1); f[t] = substr($0, 2)}
+            { if (t == "T" && f["c"] == "dtach") print f["n"], f["T"], f["L"], f["p"], f["f"];}' \
+        | column -s ':' --table
+    '';
   };
 
   launchd.agents = {
