@@ -8,6 +8,7 @@
 }: {
   imports = [
     agenix.homeManagerModules.age
+    ./administration.nix
     ./audio.nix
     ./communication.nix
     ./direnv.nix
@@ -50,19 +51,6 @@
       setUpErrorTrap = lib.hm.dag.entryBefore ["checkLaunchAgents"] ''
         trap '_iError "Home Manager activation failed with $? at $(basename $0):$LINENO"; exit 1' ERR
       '';
-
-      # Stolen from https://twitter.com/volpegabriel87/status/1585204086240346112
-      reportChanges = let
-        profiles = "/nix/var/nix/profiles/per-user/${config.home.username}/home-manager-*-link";
-      in
-        lib.hm.dag.entryAfter ["writeBoundary"] ''
-          # Disable nvd if there are less than 2 hm profiles.
-          if [ $(ls -d1v ${profiles} 2>/dev/null | wc -l) -lt 2 ]; then
-            echo "Skipping changes report..."
-          else
-            ${pkgs.nvd}/bin/nvd diff $(ls -d1v ${profiles} | tail -2)
-          fi
-        '';
 
       reviewXdgNinja = lib.hm.dag.entryAfter ["writeBoundary"] ''
         ${pkgs.xdg-ninja}/bin/xdg-ninja --skip-unsupported
@@ -544,20 +532,6 @@
   };
 
   services = {
-    home-manager = {
-      ## This helps keep the size of the Nix store down by periodically expiring
-      ## old generations then running `nix-collect-garbage`.
-      autoExpire = {
-        enable = true;
-        frequency = "weekly";
-        store.cleanup = true;
-      };
-      autoUpgrade = {
-        enable = pkgs.stdenv.hostPlatform.isLinux;
-        frequency = "daily";
-      };
-    };
-
     ## NB: On a new user account, it’s important to run `keybase login` to avoid
     ##   > ▶ [WARN keybase kbfs_pin_tlfs.go:161] 062 TLF Pin operation failed: Login required: no sessionArgs available since no login path worked [tags:PIN=IMq0lVNJdY1P]
     keybase.enable = pkgs.stdenv.hostPlatform.isLinux;
